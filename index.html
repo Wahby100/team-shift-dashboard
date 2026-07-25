@@ -1316,6 +1316,7 @@
             const lines = csvText.split('\n');
             const now = new Date();
             const dayNum = now.getDate();
+            const monthNum = now.getMonth() + 1;
 
             // Reset isSwapped status for all employees before applying fresh swaps
             employees.forEach(e => {
@@ -1324,15 +1325,15 @@
 
             let currentMatchingDate = false;
 
-            // Match date cell starting with today's day number (e.g. 25/7, 25/07, 25/5)
-            const dayRegex = new RegExp(`^0?${dayNum}[/-]`);
+            // Strict regex matching current Day (25) AND current Month (7 or 07): e.g. 25/7, 25/07, 25/7/2026
+            const todayRegex = new RegExp(`^0?${dayNum}[/-]0?${monthNum}(?:[/-]|$)`);
 
             for (let i = 0; i < lines.length; i++) {
                 const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
                 const dateCell = cols[0] ? cols[0].trim().replace(/\s/g, '') : '';
 
                 if (dateCell.length > 0) {
-                    if (dayRegex.test(dateCell)) {
+                    if (todayRegex.test(dateCell)) {
                         currentMatchingDate = true;
                     } else {
                         currentMatchingDate = false;
