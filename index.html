@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CC MANAGEMENT SHIFT | Dashboard</title>
+    <title>CC MANAGEMENT SHIFT</title>
     <!-- Google Fonts: Cairo & Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -115,7 +115,7 @@
             padding: 1.2rem;
             border-radius: var(--radius);
         }
-        .metric-card span { font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
+        .metric-card span { font-size: 0.88rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
         .metric-card h2 { font-size: 1.8rem; font-weight: 800; }
 
         /* Styled Targets Bar */
@@ -221,15 +221,6 @@
             outline: none;
             margin-bottom: 0.8rem;
         }
-
-        .notice {
-            background: rgba(59, 130, 246, 0.08);
-            border-right: 4px solid var(--primary);
-            padding: 0.8rem 1rem;
-            border-radius: 6px;
-            font-size: 0.83rem;
-            margin-bottom: 1.2rem;
-        }
     </style>
 </head>
 <body>
@@ -238,7 +229,6 @@
         <!-- Top Header -->
         <header>
             <div class="logo-box">
-                <!-- Clickable Logo Avatar (User can click to upload custom logo) -->
                 <div class="logo-avatar" title="اضغط لرفع اللوغو الخاص بك" onclick="document.getElementById('logoInput').click()">
                     <img id="logoImage" src="" style="display:none;" alt="CC Logo">
                     <i id="logoIcon" class="fa-solid fa-headset"></i>
@@ -256,11 +246,11 @@
                 <select id="filterStatus" class="input-text" onchange="render()">
                     <option value="all">كافة الكادر (23 موظف)</option>
                     <option value="working">عدد موظفين اليوم (13 موظف)</option>
-                    <option value="Ready">Ready 🟢 (المتواجدون)</option>
-                    <option value="Lunch">Lunch 🍱 (استراحة غداء)</option>
-                    <option value="Break">Break ☕ (استراحة قصيرة)</option>
-                    <option value="Not Ready">غير متصل / غائب 🔴 (المداومون غير المتصلين)</option>
-                    <option value="OFF">Day OFF (غير المطلوبين للشفت اليوم)</option>
+                    <option value="Ready">Ready 🟢</option>
+                    <option value="Lunch">Lunch 🍱</option>
+                    <option value="Break">Break ☕</option>
+                    <option value="Not Ready">غير متصل 🔴</option>
+                    <option value="OFF">Day OFF</option>
                 </select>
                 <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث الجدول</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير السجل الزمني</button>
@@ -293,7 +283,7 @@
             </div>
         </div>
 
-        <!-- KPI General Metrics -->
+        <!-- KPI Minimal Clean Metrics -->
         <div class="metrics-grid">
             <div class="metric-card">
                 <span>إجمالي الموظفين</span>
@@ -304,23 +294,23 @@
                 <h2 id="workingCount" style="color:var(--primary)">13</h2>
             </div>
             <div class="metric-card" style="border-color: var(--success);">
-                <span>(Ready 🟢) المتواجدون الفعليين</span>
+                <span style="color:var(--success)">Ready 🟢</span>
                 <h2 id="readyCount" style="color:var(--success)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--warning);">
-                <span>(Lunch 🍱) استراحة غداء</span>
+                <span style="color:var(--warning)">Lunch 🍱</span>
                 <h2 id="lunchCount" style="color:var(--warning)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--purple);">
-                <span>(Break ☕) استراحة قصيرة</span>
+                <span style="color:var(--purple)">Break ☕</span>
                 <h2 id="breakAmeyoCount" style="color:var(--purple)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--danger);">
-                <span>غير متصل / غائب 🔴</span>
+                <span style="color:var(--danger)">غير متصل 🔴</span>
                 <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
             </div>
             <div class="metric-card">
-                <span>(Day OFF) غير المطلوبين اليوم</span>
+                <span>Day OFF</span>
                 <h2 id="offCount" style="color:var(--text-muted)">10</h2>
             </div>
         </div>
@@ -331,12 +321,6 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fa-solid fa-calendar-day"></i> جدول دوام الشفت اليومي (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
-                    <small style="color:var(--text-muted)">الموظف بدون وقت مكتوب يعتبر دوامه الافتراضي (4:30 PM إلى 12:30 AM)</small>
-                </div>
-                
-                <div class="notice">
-                    📐 <strong>حساب التواجد المستهدف بالسيستم:</strong> 
-                    تُحسب الفترات أوتوماتيكياً حسب الدوامات المسجلة بجدول كوكل شيت لكل فترة زمنية.
                 </div>
 
                 <div class="table-responsive">
@@ -431,7 +415,7 @@
         let employees = JSON.parse(localStorage.getItem('evening_in_employees')) || initialEveningEmployees.map(e => ({
             ...e,
             ameyoCategory: (e.status === 'OFF' || e.status === 'Vacation') ? 'OFF' : 'Not Ready',
-            ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'غير متصل / غائب 🔴',
+            ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'غير متصل 🔴',
             breaks: []
         }));
 
@@ -455,7 +439,7 @@
             return { isWorking: true, slot1: true, slot2: true, slot3: true, label: '4:30 PM - 12:30 AM' };
         }
 
-        // Render Function with Cleaned Slot Targets & Exact PM/AM Formatting
+        // Render Function
         function render() {
             const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
             const filterVal = document.getElementById('filterStatus').value;
@@ -563,7 +547,7 @@
                     } else if (emp.ameyoCategory === 'Break') {
                         ameyoBadge = `<span class="badge badge-break" onclick="toggleState(${emp.id})"><i class="fa-solid fa-mug-hot"></i> ${emp.ameyoDetail || 'Break ☕'}</span>`;
                     } else {
-                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-xmark"></i> ${emp.ameyoDetail || 'غير متصل / غائب 🔴'}</span>`;
+                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-xmark"></i> ${emp.ameyoDetail || 'غير متصل 🔴'}</span>`;
                     }
                 }
 
@@ -678,11 +662,11 @@
                             emp.ameyoDetail = 'Ready 🟢';
                         } else {
                             emp.ameyoCategory = 'Not Ready';
-                            emp.ameyoDetail = 'غير متصل / غائب 🔴';
+                            emp.ameyoDetail = 'غير متصل 🔴';
                         }
                     } else {
                         emp.ameyoCategory = 'Not Ready';
-                        emp.ameyoDetail = 'غير متصل / غائب 🔴';
+                        emp.ameyoDetail = 'غير متصل 🔴';
                     }
                 }
             });
@@ -751,7 +735,7 @@
                         const existingEmp = employees.find(e => clean(e.name) === clean(name));
                         const breaks = existingEmp ? existingEmp.breaks : [];
                         const ameyoCategory = existingEmp ? existingEmp.ameyoCategory : (shiftToday === 'OFF' ? 'OFF' : 'Not Ready');
-                        const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'غير متصل / غائب 🔴');
+                        const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'غير متصل 🔴');
 
                         eveningRows.push({
                             id: eveningRows.length + 1,
