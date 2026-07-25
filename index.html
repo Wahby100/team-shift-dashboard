@@ -1323,17 +1323,30 @@
                 e.isSwapped = false;
             });
 
-            let currentMatchingDate = false;
+            // 1. Strict regex matching current Day AND current Month (e.g. 25/7 or 25/07/2026)
+            const strictRegex = new RegExp(`^0?${dayNum}[/-]0?${monthNum}(?:[/-]|$)`);
+            // 2. Fallback regex matching day number (e.g. 25/)
+            const dayRegex = new RegExp(`^0?${dayNum}[/-]`);
 
-            // Strict regex matching current Day (25) AND current Month (7 or 07): e.g. 25/7, 25/07, 25/7/2026
-            const todayRegex = new RegExp(`^0?${dayNum}[/-]0?${monthNum}(?:[/-]|$)`);
+            let isStrictFound = false;
+            for (let i = 0; i < lines.length; i++) {
+                const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                const dateCell = cols[0] ? cols[0].trim().replace(/\s/g, '') : '';
+                if (dateCell && strictRegex.test(dateCell)) {
+                    isStrictFound = true;
+                    break;
+                }
+            }
+
+            const activeRegex = isStrictFound ? strictRegex : dayRegex;
+            let currentMatchingDate = false;
 
             for (let i = 0; i < lines.length; i++) {
                 const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
                 const dateCell = cols[0] ? cols[0].trim().replace(/\s/g, '') : '';
 
                 if (dateCell.length > 0) {
-                    if (todayRegex.test(dateCell)) {
+                    if (activeRegex.test(dateCell)) {
                         currentMatchingDate = true;
                     } else {
                         currentMatchingDate = false;
