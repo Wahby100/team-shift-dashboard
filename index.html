@@ -11,13 +11,13 @@
     
     <style>
         :root {
-            --bg-body: #0a0e17;
-            --bg-card: #131b2e;
-            --bg-card-hover: #19243d;
-            --bg-hover: #1e2c4a;
+            --bg-body: #080c14;
+            --bg-card: #121929;
+            --bg-sidebar: #0e1422;
+            --bg-hover: #192338;
             --border: rgba(255, 255, 255, 0.08);
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.2);
+            --primary-glow: rgba(59, 130, 246, 0.25);
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -25,93 +25,129 @@
             --cyan: #06b6d4;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --radius: 16px;
+            --sidebar-width: 270px;
+            --radius: 14px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        body { background: var(--bg-body); color: var(--text-main); padding: 1.5rem; background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.05), transparent 40%); }
+        body { background: var(--bg-body); color: var(--text-main); min-height: 100vh; display: flex; }
 
-        .container { max-width: 1750px; margin: 0 auto; }
-
-        /* Top Header */
-        header {
+        /* Sidebar Styling */
+        aside.sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-left: 1px solid var(--border);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(19, 27, 46, 0.75);
-            backdrop-filter: blur(12px);
-            padding: 1.2rem 1.8rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            margin-bottom: 1.2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            flex-direction: column;
+            padding: 1.2rem 1rem;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 100;
+            overflow-y: auto;
         }
-        .logo-box { display: flex; align-items: center; gap: 1.2rem; }
-        
-        .logo-avatar {
-            width: 54px;
-            height: 54px;
-            border-radius: 14px;
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-brand .logo-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             cursor: pointer;
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-            transition: transform 0.2s ease;
         }
-        .logo-avatar:hover { transform: scale(1.05); }
-        .logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar-brand .logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .logo-title h1 {
+        .brand-text h2 {
             font-family: 'Montserrat', 'Cairo', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             font-weight: 900;
-            letter-spacing: 0.5px;
-            background: linear-gradient(135deg, #ffffff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: white;
+            line-height: 1.2;
         }
-        .logo-title small { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+        .brand-text small { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; }
 
-        /* Modern Navigation Tabs Bar */
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            background: rgba(19, 27, 46, 0.6);
-            backdrop-filter: blur(8px);
-            padding: 0.6rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
+        .sidebar-menu { display: flex; flex-direction: column; gap: 0.3rem; }
+        .menu-category {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 1.2rem 0.8rem 0.4rem 0.8rem;
         }
-        .nav-tab {
-            padding: 0.7rem 1.3rem;
+        .menu-item {
+            padding: 0.75rem 1rem;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            justify-content: space-between;
             transition: all 0.2s ease;
+            text-decoration: none;
         }
-        .nav-tab:hover { background: var(--bg-hover); color: var(--text-main); }
-        .nav-tab.active { background: var(--primary); color: white; box-shadow: 0 4px 12px var(--primary-glow); }
+        .menu-item div { display: flex; align-items: center; gap: 0.7rem; }
+        .menu-item:hover { background: var(--bg-hover); color: var(--text-main); }
+        .menu-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px var(--primary-glow);
+        }
+        .menu-badge {
+            font-size: 0.72rem;
+            padding: 0.15rem 0.55rem;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            font-weight: 800;
+        }
+        .menu-item.active .menu-badge { background: rgba(255,255,255,0.25); color: white; }
+
+        /* Main Content Wrapper */
+        main.main-content {
+            margin-right: var(--sidebar-width);
+            flex: 1;
+            padding: 1.5rem 2rem;
+            max-width: calc(100vw - var(--sidebar-width));
+        }
+
+        /* Top Header */
+        header.top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .page-header-title h2 { font-size: 1.3rem; font-weight: 900; display: flex; align-items: center; gap: 0.6rem; }
+        .page-header-title small { color: var(--text-muted); font-size: 0.82rem; }
 
         .actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
 
         .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 10px;
+            padding: 0.55rem 1.1rem;
+            border-radius: 9px;
             border: none;
             font-weight: 700;
             cursor: pointer;
@@ -123,68 +159,65 @@
             text-decoration: none;
         }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px var(--primary-glow); }
-        .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-primary:hover { background: #2563eb; }
         .btn-success { background: var(--success); color: white; }
-        .btn-success:hover { background: #059669; }
         .btn-outline { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: var(--text-main); }
-        .btn-outline:hover { background: var(--bg-hover); border-color: rgba(255,255,255,0.2); }
-        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+        .btn-outline:hover { background: var(--bg-hover); }
+        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
 
         .input-text {
             background: var(--bg-body);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 0.6rem 1.1rem;
-            border-radius: 10px;
+            padding: 0.55rem 1rem;
+            border-radius: 9px;
             font-size: 0.88rem;
             outline: none;
-            transition: all 0.2s ease;
         }
-        .input-text:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+        .input-text:focus { border-color: var(--primary); }
 
         /* General Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1.1rem;
             margin-bottom: 1.5rem;
         }
         .metric-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            padding: 1.3rem;
+            padding: 1.2rem;
             border-radius: var(--radius);
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            transition: transform 0.2s ease;
         }
-        .metric-card:hover { transform: translateY(-2px); border-color: rgba(255, 255, 255, 0.15); }
-        .metric-card span { font-size: 0.88rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.4rem; }
-        .metric-card h2 { font-size: 1.9rem; font-weight: 900; }
+        .metric-card:hover { transform: translateY(-2px); }
+        .metric-card span { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
+        .metric-card h2 { font-size: 1.8rem; font-weight: 900; }
 
         /* Styled Targets Bar */
         .targets-panel {
-            background: linear-gradient(135deg, rgba(19, 27, 46, 0.9), rgba(11, 15, 25, 0.95));
+            background: linear-gradient(135deg, rgba(18, 25, 41, 0.9), rgba(10, 14, 23, 0.95));
             border: 1px solid rgba(59, 130, 246, 0.3);
             border-radius: var(--radius);
-            padding: 1.3rem 1.6rem;
+            padding: 1.2rem 1.5rem;
             margin-bottom: 1.5rem;
             display: grid;
             grid-template-columns: 1.2fr 3fr;
             gap: 1.5rem;
             align-items: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
         @media (max-width: 900px) { .targets-panel { grid-template-columns: 1fr; } }
 
         .now-box {
             background: rgba(139, 92, 246, 0.12);
             border: 1px solid rgba(139, 92, 246, 0.35);
-            border-radius: 14px;
-            padding: 1.1rem;
+            border-radius: 12px;
+            padding: 1rem;
             text-align: center;
         }
-        .now-box span { font-size: 0.88rem; color: var(--purple); font-weight: 800; display: block; }
-        .now-box h2 { font-size: 2.4rem; font-weight: 900; color: #c4b5fd; margin: 0.2rem 0; }
-        .now-box small { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        .now-box span { font-size: 0.85rem; color: var(--purple); font-weight: 800; display: block; }
+        .now-box h2 { font-size: 2.3rem; font-weight: 900; color: #c4b5fd; margin: 0.2rem 0; }
+        .now-box small { font-size: 0.78rem; color: var(--text-muted); }
 
         .slots-grid {
             display: grid;
@@ -197,8 +230,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.1rem;
-            transition: all 0.2s ease;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -206,10 +238,9 @@
         .slot-card.active-slot {
             border-color: var(--primary);
             background: rgba(59, 130, 246, 0.1);
-            box-shadow: 0 0 15px var(--primary-glow);
         }
-        .slot-card-title { font-size: 0.88rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
-        .slot-card-val { font-size: 1.7rem; font-weight: 900; color: var(--text-main); }
+        .slot-card-title { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
+        .slot-card-val { font-size: 1.6rem; font-weight: 900; color: var(--text-main); }
 
         .card {
             background: var(--bg-card);
@@ -217,62 +248,54 @@
             border-radius: var(--radius);
             padding: 1.4rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.2rem;
-            padding-bottom: 0.9rem;
+            padding-bottom: 0.8rem;
             border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
             gap: 1rem;
         }
-        .card-header h3 { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
+        .card-header h3 { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
 
-        /* Sort Controls Toolbar */
         .sort-toolbar {
             display: flex;
             align-items: center;
             gap: 0.8rem;
             background: rgba(255, 255, 255, 0.02);
-            padding: 0.5rem 0.8rem;
-            border-radius: 10px;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
             border: 1px solid var(--border);
         }
-        .sort-toolbar label { font-size: 0.82rem; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
 
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; text-align: right; }
-        th, td { padding: 0.95rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th, td { padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
         th {
             color: var(--text-muted);
             font-weight: 800;
             background: rgba(255,255,255,0.02);
             cursor: pointer;
             user-select: none;
-            transition: color 0.2s ease;
         }
         th:hover { color: var(--primary); }
-        th.sort-active { color: var(--primary); }
-        th .sort-icon { font-size: 0.75rem; margin-right: 0.3rem; opacity: 0.6; }
 
         tr { transition: background 0.15s ease; }
-        tr:hover { background: var(--bg-card-hover); }
+        tr:hover { background: var(--bg-hover); }
 
         .badge {
-            padding: 0.3rem 0.75rem;
+            padding: 0.25rem 0.7rem;
             border-radius: 20px;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0.3rem;
             cursor: pointer;
-            transition: transform 0.15s ease;
         }
-        .badge:hover { transform: scale(1.05); }
         .badge-ready { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
         .badge-notready { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
         .badge-lunch { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
@@ -291,11 +314,8 @@
             font-size: 0.88rem;
             outline: none;
             margin-bottom: 0.8rem;
-            transition: border-color 0.2s ease;
         }
-        textarea:focus { border-color: var(--primary); }
 
-        /* Embedded Google Sheets Frames */
         .sheet-frame-container {
             width: 100%;
             height: 82vh;
@@ -304,11 +324,7 @@
             border: 1px solid var(--border);
             background: #ffffff;
         }
-        .sheet-frame-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .sheet-frame-container iframe { width: 100%; height: 100%; border: none; }
 
         /* Page View Switcher */
         .page-content { display: none; }
@@ -317,50 +333,89 @@
 </head>
 <body>
 
-    <div class="container">
-        <!-- Top Header -->
-        <header>
-            <div class="logo-box">
-                <div class="logo-avatar" title="اضغط لرفع اللوغو الخاص بك" onclick="document.getElementById('logoInput').click()">
-                    <img id="logoImage" src="" style="display:none;" alt="CC Logo">
-                    <i id="logoIcon" class="fa-solid fa-headset"></i>
-                </div>
-                <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="uploadCustomLogo(event)">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo-avatar" title="اضغط لرفع اللوغو الخاص بك" onclick="document.getElementById('logoInput').click()">
+                <img id="logoImage" src="" style="display:none;" alt="CC Logo">
+                <i id="logoIcon" class="fa-solid fa-headset"></i>
+            </div>
+            <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="uploadCustomLogo(event)">
 
-                <div class="logo-title">
-                    <h1>CC MANAGEMENT SHIFT</h1>
-                    <small id="syncText"><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</small>
-                </div>
+            <div class="brand-text">
+                <h2>CC MANAGEMENT</h2>
+                <small>SHIFT DASHBOARD</small>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-category">الرئيسية والإحصائيات</div>
+            <div class="menu-item active" onclick="switchPage('home')">
+                <div><i class="fa-solid fa-chart-pie text-primary"></i> الرئيسية (Dashboard)</div>
+            </div>
+            <div class="menu-item" onclick="switchPage('schedule')">
+                <div><i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل</div>
+                <span class="menu-badge" id="sideWorkingBadge">13</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('ameyo')">
+                <div><i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo</div>
+            </div>
+
+            <div class="menu-category">حالات الكادر اليوم</div>
+            <div class="menu-item" onclick="switchPage('ready')">
+                <div><i class="fa-solid fa-circle-check text-success"></i> Ready 🟢</div>
+                <span class="menu-badge" id="sideReadyBadge">0</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('lunch')">
+                <div><i class="fa-solid fa-utensils text-warning"></i> Lunch 🍱</div>
+                <span class="menu-badge" id="sideLunchBadge">0</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('break')">
+                <div><i class="fa-solid fa-mug-hot text-purple"></i> Break ☕</div>
+                <span class="menu-badge" id="sideBreakBadge">0</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('notready')">
+                <div><i class="fa-solid fa-circle-xmark text-danger"></i> غير متصل 🔴</div>
+                <span class="menu-badge" id="sideNotReadyBadge">0</span>
+            </div>
+            <div class="menu-item" onclick="switchPage('off')">
+                <div><i class="fa-solid fa-umbrella-beach text-muted"></i> Day OFF</div>
+                <span class="menu-badge" id="sideOffBadge">10</span>
+            </div>
+
+            <div class="menu-category">الجداول المباشرة</div>
+            <div class="menu-item" onclick="switchPage('sheet1')">
+                <div><i class="fa-solid fa-file-excel text-success"></i> Google Sheet الرئيسي</div>
+            </div>
+            <div class="menu-item" onclick="switchPage('sheet2')">
+                <div><i class="fa-solid fa-file-excel text-cyan"></i> Google Sheet الثانوي</div>
+            </div>
+
+            <div class="menu-category">السجل والدليل</div>
+            <div class="menu-item" onclick="switchPage('roster')">
+                <div><i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل</div>
+                <span class="menu-badge">23</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Top Header Bar -->
+        <header class="top-header">
+            <div class="page-header-title">
+                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)</h2>
+                <small id="syncText"><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</small>
             </div>
 
             <div class="actions">
-                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث الجدول</button>
+                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث البيانات</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير السجل الزمني</button>
             </div>
         </header>
 
-        <!-- Navigation Tabs Bar -->
-        <div class="nav-tabs">
-            <div class="nav-tab active" onclick="switchPage('home')">
-                <i class="fa-solid fa-chart-pie"></i> الصفحة الرئيسية (Dashboard)
-            </div>
-            <div class="nav-tab" onclick="switchPage('schedule')">
-                <i class="fa-solid fa-table-list"></i> جدول اليوم الكامل (Full Schedule)
-            </div>
-            <div class="nav-tab" onclick="switchPage('sheet1')">
-                <i class="fa-solid fa-file-excel text-success"></i> جدول Google Sheet الرئيسي
-            </div>
-            <div class="nav-tab" onclick="switchPage('sheet2')">
-                <i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي
-            </div>
-            <div class="nav-tab" onclick="switchPage('roster')">
-                <i class="fa-solid fa-users-gear"></i> كافة الكادر والتفاصيل
-            </div>
-        </div>
-
         <!-- ================= PAGE 1: HOME DASHBOARD ================= -->
         <div id="page-home" class="page-content active-page">
-            <!-- Dynamic Slot Targets Bar -->
             <div class="targets-panel">
                 <div class="now-box">
                     <span>🎯 المطلوب تواجدهم الآن بـ Ameyo</span>
@@ -388,68 +443,53 @@
 
             <!-- KPI Minimal Clean Metrics -->
             <div class="metrics-grid">
-                <div class="metric-card">
+                <div class="metric-card" onclick="switchPage('roster')" style="cursor:pointer;">
                     <span>إجمالي الموظفين</span>
                     <h2 id="totalCount">23</h2>
                 </div>
-                <div class="metric-card" style="border-color: var(--primary);">
+                <div class="metric-card" onclick="switchPage('schedule')" style="border-color: var(--primary); cursor:pointer;">
                     <span>عدد موظفين اليوم</span>
                     <h2 id="workingCount" style="color:var(--primary)">13</h2>
                 </div>
-                <div class="metric-card" style="border-color: var(--success);">
+                <div class="metric-card" onclick="switchPage('ready')" style="border-color: var(--success); cursor:pointer;">
                     <span style="color:var(--success)">Ready 🟢</span>
                     <h2 id="readyCount" style="color:var(--success)">0</h2>
                 </div>
-                <div class="metric-card" style="border-color: var(--warning);">
+                <div class="metric-card" onclick="switchPage('lunch')" style="border-color: var(--warning); cursor:pointer;">
                     <span style="color:var(--warning)">Lunch 🍱</span>
                     <h2 id="lunchCount" style="color:var(--warning)">0</h2>
                 </div>
-                <div class="metric-card" style="border-color: var(--purple);">
+                <div class="metric-card" onclick="switchPage('break')" style="border-color: var(--purple); cursor:pointer;">
                     <span style="color:var(--purple)">Break ☕</span>
                     <h2 id="breakAmeyoCount" style="color:var(--purple)">0</h2>
                 </div>
-                <div class="metric-card" style="border-color: var(--danger);">
+                <div class="metric-card" onclick="switchPage('notready')" style="border-color: var(--danger); cursor:pointer;">
                     <span style="color:var(--danger)">غير متصل 🔴</span>
                     <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" onclick="switchPage('off')" style="cursor:pointer;">
                     <span>Day OFF</span>
                     <h2 id="offCount" style="color:var(--text-muted)">10</h2>
                 </div>
             </div>
 
-            <!-- Dashboard Overview Split Layout -->
-            <div style="display:grid; grid-template-columns: 2.2fr 1fr; gap:1.5rem;">
-                <!-- Quick Preview Table -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-bolt text-warning"></i> نظرة سريعة على المداومين الآن</h3>
-                        <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">فتح الجدول الكامل <i class="fa-solid fa-arrow-left"></i></button>
-                    </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>اسم الموظف</th>
-                                    <th>شفت الجدول</th>
-                                    <th>فترة الدوام المحسوبة</th>
-                                    <th>حالة Ameyo</th>
-                                </tr>
-                            </thead>
-                            <tbody id="homePreviewBody">
-                                <!-- Injected by JS -->
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-bolt text-warning"></i> نظرة سريعة على الكادر المداوم اليوم</h3>
+                    <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">فتح الجدول الكامل <i class="fa-solid fa-arrow-left"></i></button>
                 </div>
-
-                <!-- Ameyo Sync Box Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo</h3>
-                    </div>
-                    <textarea id="ameyoInput" rows="12"></textarea>
-                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم الموظف</th>
+                                <th>شفت الجدول</th>
+                                <th>فترة الدوام المحسوبة</th>
+                                <th>حالة Ameyo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="homePreviewBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -460,7 +500,6 @@
                 <div class="card-header">
                     <h3><i class="fa-solid fa-calendar-day text-primary"></i> جدول دوام الشفت اليومي الكامل (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
                     
-                    <!-- Search, Filter & Interactive Sorting Toolbar -->
                     <div class="actions">
                         <div class="sort-toolbar">
                             <label for="sortBySelect"><i class="fa-solid fa-arrow-down-short-wide"></i> الترتيب حسب:</label>
@@ -491,23 +530,118 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th onclick="setSortBy('name')" id="th-name">اسم الموظف <i class="fa-solid fa-sort sort-icon"></i></th>
-                                <th onclick="setSortBy('shift')" id="th-shift">شفت الجدول <i class="fa-solid fa-sort sort-icon"></i></th>
+                                <th onclick="setSortBy('name')">اسم الموظف <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="setSortBy('shift')">شفت الجدول <i class="fa-solid fa-sort"></i></th>
                                 <th>فترة الدوام المحسوبة</th>
-                                <th onclick="setSortBy('status')" id="th-status">حالة التواجد (Ameyo) <i class="fa-solid fa-sort sort-icon"></i></th>
-                                <th onclick="setSortBy('breaks')" id="th-breaks">تسجيل الاستراحات (3 Max) <i class="fa-solid fa-sort sort-icon"></i></th>
+                                <th onclick="setSortBy('status')">حالة التواجد (Ameyo) <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="setSortBy('breaks')">تسجيل الاستراحات (3 Max) <i class="fa-solid fa-sort"></i></th>
                                 <th>سجل التوقيتات الزمني</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
-                            <!-- Injected by JS -->
-                        </tbody>
+                        <tbody id="tableBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= PAGE 3: EMBEDDED GOOGLE SHEET 1 ================= -->
+        <!-- ================= PAGE 3: AMEYO LIVE SYNC PAGE ================= -->
+        <div id="page-ameyo" class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-signal text-success"></i> مطابقة وتحديث نشاط Ameyo المباشر</h3>
+                </div>
+                <textarea id="ameyoInput" rows="16"></textarea>
+                <button class="btn btn-primary" style="width:100%; padding:0.8rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
+            </div>
+        </div>
+
+        <!-- ================= DEDICATED STATUS PAGES ================= -->
+        <!-- Ready Page -->
+        <div id="page-ready" class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-circle-check text-success"></i> قائمة الموظفين المتواجدين الآن (Ready 🟢)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                        </thead>
+                        <tbody id="readyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lunch Page -->
+        <div id="page-lunch" class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-utensils text-warning"></i> قائمة الموظفين في استراحة غداء (Lunch 🍱)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                        </thead>
+                        <tbody id="lunchBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Break Page -->
+        <div id="page-break" class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-mug-hot text-purple"></i> قائمة الموظفين في استراحة قصيرة (Break ☕)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                        </thead>
+                        <tbody id="breakBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Not Ready Page -->
+        <div id="page-notready" class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-circle-xmark text-danger"></i> قائمة المداومين غير المتصلين (غير متصل 🔴)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                        </thead>
+                        <tbody id="notreadyBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day OFF Page -->
+        <div id="page-off" class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-umbrella-beach text-muted"></i> قائمة الموظفين غير المطلوبين للشفت اليوم (Day OFF)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>الحالة</th></tr>
+                        </thead>
+                        <tbody id="offBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMBEDDED GOOGLE SHEETS PAGES -->
         <div id="page-sheet1" class="page-content">
             <div class="card">
                 <div class="card-header">
@@ -522,7 +656,6 @@
             </div>
         </div>
 
-        <!-- ================= PAGE 4: EMBEDDED GOOGLE SHEET 2 ================= -->
         <div id="page-sheet2" class="page-content">
             <div class="card">
                 <div class="card-header">
@@ -537,7 +670,7 @@
             </div>
         </div>
 
-        <!-- ================= PAGE 5: STAFF ROSTER & DETAILS ================= -->
+        <!-- STAFF ROSTER & DETAILS PAGE -->
         <div id="page-roster" class="page-content">
             <div class="card">
                 <div class="card-header">
@@ -556,14 +689,12 @@
                                 <th>إجمالي عدد البريكات</th>
                             </tr>
                         </thead>
-                        <tbody id="rosterBody">
-                            <!-- Injected by JS -->
-                        </tbody>
+                        <tbody id="rosterBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
         // Exact 23 Employees of Evening / IN from Google Sheet
@@ -593,12 +724,24 @@
             { id: 23, name: "OthmanFouad", status: "H 6:30-2:30" }
         ];
 
-        // Direct Google Sheet CSV Endpoint with exact gid 1335140115
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
 
-        // Current Sort State
         let currentSort = 'default';
         let sortAsc = true;
+
+        const pageTitles = {
+            'home': '<i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)',
+            'schedule': '<i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل',
+            'ameyo': '<i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo المباشر',
+            'ready': '<i class="fa-solid fa-circle-check text-success"></i>(Ready 🟢)',
+            'lunch': '<i class="fa-solid fa-utensils text-warning"></i>  (Lunch 🍱)',
+            'break': '<i class="fa-solid fa-mug-hot text-purple"></i> (Break ☕)',
+            'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i>  غير المتصلين 🔴',
+            'off': '<i class="fa-solid fa-umbrella-beach text-muted"></i>  (Day OFF)',
+            'sheet1': '<i class="fa-solid fa-file-excel text-success"></i> Attendance ',
+            'sheet2': '<i class="fa-solid fa-file-excel text-cyan"></i> Change Shift',
+            'roster': '<i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل'
+        };
 
         function setSortBy(sortKey) {
             if (currentSort === sortKey) {
@@ -611,21 +754,24 @@
             render();
         }
 
-        // Multi-page Tab Switcher
         function switchPage(pageId) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
 
             const targetPage = document.getElementById(`page-${pageId}`);
             if (targetPage) targetPage.classList.add('active-page');
 
-            const activeTab = Array.from(document.querySelectorAll('.nav-tab')).find(t => t.getAttribute('onclick').includes(pageId));
-            if (activeTab) activeTab.classList.add('active');
+            const activeMenuItem = Array.from(document.querySelectorAll('.menu-item')).find(m => m.getAttribute('onclick').includes(pageId));
+            if (activeMenuItem) activeMenuItem.classList.add('active');
+
+            if (pageTitles[pageId]) {
+                document.getElementById('currentPageTitle').innerHTML = pageTitles[pageId];
+            }
 
             if (pageId === 'roster') renderRoster();
+            else renderStatusPages();
         }
 
-        // Custom Logo Persistence
         const savedLogo = localStorage.getItem('cc_custom_logo');
         if (savedLogo) {
             document.getElementById('logoImage').src = savedLogo;
@@ -648,7 +794,6 @@
             }
         }
 
-        // State & Persistence
         let employees = JSON.parse(localStorage.getItem('evening_in_employees')) || initialEveningEmployees.map(e => ({
             ...e,
             ameyoCategory: (e.status === 'OFF' || e.status === 'Vacation') ? 'OFF' : 'Not Ready',
@@ -656,15 +801,9 @@
             breaks: []
         }));
 
-        function clean(str) {
-            return (str || '').toLowerCase().replace(/[\s\._\-]/g, '');
-        }
+        function clean(str) { return (str || '').toLowerCase().replace(/[\s\._\-]/g, ''); }
+        function save() { localStorage.setItem('evening_in_employees', JSON.stringify(employees)); }
 
-        function save() {
-            localStorage.setItem('evening_in_employees', JSON.stringify(employees));
-        }
-
-        // Determine working window for an employee shift
         function getShiftHours(status) {
             const st = (status || '').toUpperCase();
             if (st === 'OFF' || st === 'VACATION') return { isWorking: false, label: 'عطلة' };
@@ -672,11 +811,9 @@
             if (st.includes('6:30-2:30')) return { isWorking: true, slot1: false, slot2: true, slot3: true, label: '6:30 PM - 2:30 AM' };
             if (st.includes('12:30-8:30')) return { isWorking: true, slot1: true, slot2: true, slot3: false, label: '12:30 PM - 8:30 PM' };
 
-            // Default shift if no time written (4:30 PM to 12:30 AM)
             return { isWorking: true, slot1: true, slot2: true, slot3: true, label: '4:30 PM - 12:30 AM' };
         }
 
-        // Render Function
         function render() {
             const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
             const filterVal = document.getElementById('filterStatus').value;
@@ -705,20 +842,14 @@
                 }
             });
 
-            // Target 1: Slot (4:30 PM - 6:30 PM) = Scheduled minus 3
             const target1 = Math.max(0, slot1Scheduled - 3);
-
-            // Target 2: Slot (6:30 PM - 8:30 PM) = Scheduled minus 3
             const target2 = Math.max(0, slot2Scheduled - 3);
-
-            // Target 3: Slot (8:30 PM - 12:30 AM) = Target 2 minus 1
             const target3 = Math.max(0, target2 - 1);
 
             document.getElementById('targetSlot1').innerText = `${target1}`;
             document.getElementById('targetSlot2').innerText = `${target2}`;
             document.getElementById('targetSlot3').innerText = `${target3}`;
 
-            // Determine Current Time Slot & Highlight Active Card
             const now = new Date();
             const currentHourDecimal = now.getHours() + (now.getMinutes() / 60);
 
@@ -757,7 +888,14 @@
             document.getElementById('notReadyCount').innerText = notReadyC;
             document.getElementById('offCount').innerText = offC;
 
-            // Filter logic
+            // Update Sidebar Badges
+            document.getElementById('sideWorkingBadge').innerText = workingC;
+            document.getElementById('sideReadyBadge').innerText = readyC;
+            document.getElementById('sideLunchBadge').innerText = lunchC;
+            document.getElementById('sideBreakBadge').innerText = breakAmeyoC;
+            document.getElementById('sideNotReadyBadge').innerText = notReadyC;
+            document.getElementById('sideOffBadge').innerText = offC;
+
             let filtered = employees.filter(e => {
                 const matchSearch = e.name.toLowerCase().includes(searchVal) || e.status.toLowerCase().includes(searchVal);
                 const isOff = e.status === 'OFF' || e.status === 'Vacation';
@@ -773,7 +911,6 @@
                 return matchSearch && matchFilter;
             });
 
-            // Sorting logic
             if (currentSort !== 'default') {
                 filtered.sort((a, b) => {
                     let valA = '', valB = '';
@@ -798,7 +935,6 @@
                 const tr = document.createElement('tr');
                 const shiftInfo = getShiftHours(emp.status);
 
-                // Ameyo Badge Display
                 let ameyoBadge = `<span class="badge badge-off">Day OFF</span>`;
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     if (emp.ameyoCategory === 'Ready') {
@@ -812,7 +948,6 @@
                     }
                 }
 
-                // Home Preview Tr
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const homeTr = document.createElement('tr');
                     homeTr.innerHTML = `
@@ -824,7 +959,6 @@
                     homeBody.appendChild(homeTr);
                 }
 
-                // Break Actions
                 let breakBtns = '';
                 if (emp.status === 'OFF' || emp.status === 'Vacation') {
                     breakBtns = `<span style="color:var(--text-muted); font-size:0.8rem;">غير مطلوب اليوم</span>`;
@@ -839,7 +973,6 @@
                     }
                 }
 
-                // Break History Log Timestamps
                 let historyLog = emp.breaks.map(b => {
                     return `<span class="badge ${b.active ? 'badge-break' : 'badge-shift'}">${b.time}</span>`;
                 }).join(' ') || '-';
@@ -856,9 +989,44 @@
 
                 tbody.appendChild(tr);
             });
+
+            renderStatusPages();
         }
 
-        // Render Roster Tab
+        function renderStatusPages() {
+            const readyBody = document.getElementById('readyBody');
+            const lunchBody = document.getElementById('lunchBody');
+            const breakBody = document.getElementById('breakBody');
+            const notreadyBody = document.getElementById('notreadyBody');
+            const offBody = document.getElementById('offBody');
+
+            if (!readyBody) return;
+
+            readyBody.innerHTML = ''; lunchBody.innerHTML = ''; breakBody.innerHTML = '';
+            notreadyBody.innerHTML = ''; offBody.innerHTML = '';
+
+            let rI = 1, lI = 1, bI = 1, nrI = 1, offI = 1;
+
+            employees.forEach(emp => {
+                const shiftInfo = getShiftHours(emp.status);
+                const isOff = emp.status === 'OFF' || emp.status === 'Vacation';
+
+                if (isOff) {
+                    offBody.innerHTML += `<tr><td>${offI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off">Day OFF</span></td></tr>`;
+                } else {
+                    if (emp.ameyoCategory === 'Ready') {
+                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready">Ready 🟢</span></td></tr>`;
+                    } else if (emp.ameyoCategory === 'Lunch') {
+                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch">Lunch 🍱</span></td></tr>`;
+                    } else if (emp.ameyoCategory === 'Break') {
+                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break">Break ☕</span></td></tr>`;
+                    } else {
+                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready">غير متصل 🔴</span></td></tr>`;
+                    }
+                }
+            });
+        }
+
         function renderRoster() {
             const rosterBody = document.getElementById('rosterBody');
             const searchVal = (document.getElementById('rosterSearch')?.value || '').toLowerCase();
@@ -881,7 +1049,6 @@
             });
         }
 
-        // Toggle Manual Ameyo Status
         function toggleState(id) {
             const emp = employees.find(e => e.id === id);
             if (emp) {
@@ -892,7 +1059,6 @@
             }
         }
 
-        // Start Break with Exact Timestamp
         function startBreak(id) {
             const emp = employees.find(e => e.id === id);
             if (!emp || emp.breaks.length >= 3) return;
@@ -903,7 +1069,6 @@
             render();
         }
 
-        // End Active Break
         function endBreak(id) {
             const emp = employees.find(e => e.id === id);
             if (!emp) return;
@@ -913,7 +1078,6 @@
             render();
         }
 
-        // Reset All Breaks
         function resetAllBreaks() {
             if (confirm('هل تريد تصفير جميع استراحات السجل اليوم؟')) {
                 employees.forEach(e => e.breaks = []);
@@ -922,7 +1086,6 @@
             }
         }
 
-        // Advanced Ameyo Multi-line Block Parser
         function updateAmeyoList() {
             const rawText = document.getElementById('ameyoInput').value;
             if (!rawText || rawText.trim().length === 0) {
@@ -972,7 +1135,6 @@
             alert('تم تحليل حالات الموظفين والأنشطة بنجاح!');
         }
 
-        // Fetch Live Google Sheet Data for Evening / IN with Dynamic Day Detection
         function fetchLiveGoogleSheet() {
             const syncText = document.getElementById('syncText');
             if (syncText) syncText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-warning"></i> Evening / IN • جاري التزامن...';
@@ -1002,7 +1164,7 @@
 
             document.getElementById('todayDateLabel').innerText = `${dayNum}/${monthNum}`;
 
-            let todayColIndex = 28; // Default column for 25/7 in July sheet
+            let todayColIndex = 28;
 
             for (let i = 0; i < Math.min(15, lines.length); i++) {
                 const rowCols = lines[i].split(',').map(c => c.trim());
@@ -1052,7 +1214,6 @@
             }
         }
 
-        // Auto Fetch on load
         fetchLiveGoogleSheet();
         render();
     </script>
