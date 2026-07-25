@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة متابعة Evening / IN | Shift & Break Tracker</title>
+    <title>مركز متابعة الشفتات والأنشطة | Shift & Break Tracker</title>
     <!-- Google Fonts: Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -28,7 +28,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background: var(--bg-body); color: var(--text-main); padding: 1.5rem; }
 
-        .container { max-width: 1500px; margin: 0 auto; }
+        .container { max-width: 1550px; margin: 0 auto; }
 
         header {
             display: flex;
@@ -80,7 +80,7 @@
 
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -93,7 +93,7 @@
         .metric-card span { font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
         .metric-card h2 { font-size: 1.8rem; font-weight: 800; }
 
-        .grid-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 1.5rem; }
+        .grid-layout { display: grid; grid-template-columns: 3.2fr 1fr; gap: 1.5rem; }
         @media (max-width: 1024px) { .grid-layout { grid-template-columns: 1fr; } }
 
         .card {
@@ -119,9 +119,9 @@
         tr:hover { background: var(--bg-hover); }
 
         .badge {
-            padding: 0.25rem 0.6rem;
+            padding: 0.25rem 0.65rem;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.76rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
@@ -149,11 +149,11 @@
         }
 
         .notice {
-            background: rgba(16, 185, 129, 0.1);
-            border-right: 4px solid var(--success);
+            background: rgba(59, 130, 246, 0.08);
+            border-right: 4px solid var(--primary);
             padding: 0.8rem 1rem;
             border-radius: 6px;
-            font-size: 0.82rem;
+            font-size: 0.83rem;
             margin-bottom: 1.2rem;
         }
     </style>
@@ -166,55 +166,55 @@
             <div class="logo">
                 <i class="fa-solid fa-headset"></i>
                 <div>
-                    <h1>متابعة شفتات الموظفين (Evening / IN)</h1>
-                    <small style="color:var(--text-muted)" id="syncText">جاري المزامنة التلقائية لـ Evening / IN...</small>
+                    <h1>مركز متابعة الشفتات والأنشطة (Evening / IN)</h1>
+                    <small style="color:var(--text-muted)" id="syncText">تزامن تلقائي مع Google Sheet...</small>
                 </div>
             </div>
 
             <div class="actions">
                 <input type="text" id="searchInput" class="input-text" placeholder="بحث باسم الموظف..." oninput="render()">
                 <select id="filterStatus" class="input-text" onchange="render()">
-                    <option value="all">كل الموظفين (23)</option>
-                    <option value="working">المداومين فقط (اليوم)</option>
-                    <option value="Ready">جاهز (Ready 🟢)</option>
-                    <option value="Lunch">غداء (Lunch 🍱)</option>
-                    <option value="Break">استراحة (Break ☕)</option>
-                    <option value="Not Ready">غير جاهز/غير متصل (المداومين فقط 🔴)</option>
-                    <option value="OFF">عطلات (Day OFF)</option>
+                    <option value="all">كافة الكادر (23 موظف)</option>
+                    <option value="working">عدد موظفين اليوم (13 موظف)</option>
+                    <option value="Ready">Ready 🟢 (المتواجدون)</option>
+                    <option value="Lunch">Lunch 🍱 (استراحة غداء)</option>
+                    <option value="Break">Break ☕ (استراحة قصيرة)</option>
+                    <option value="Not Ready">غير متصل / غائب 🔴 (المداومون غير المتصلين)</option>
+                    <option value="OFF">Day OFF (غير المطلوبين للشفت اليوم)</option>
                 </select>
-                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث من كوكل شيت</button>
-                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير البريكات</button>
+                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث الجدول</button>
+                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير السجل الزمني</button>
             </div>
         </header>
 
-        <!-- KPI Metrics (Separated Cleanly) -->
+        <!-- KPI Metrics (Exact User Requested Wording) -->
         <div class="metrics-grid">
             <div class="metric-card">
-                <span>إجمالي القسم</span>
+                <span>إجمالي الموظفين</span>
                 <h2 id="totalCount">23</h2>
             </div>
             <div class="metric-card" style="border-color: var(--primary);">
-                <span>المداومين اليوم</span>
+                <span>عدد موظفين اليوم</span>
                 <h2 id="workingCount" style="color:var(--primary)">13</h2>
             </div>
             <div class="metric-card" style="border-color: var(--success);">
-                <span>جاهز بـ Ameyo</span>
+                <span>(Ready 🟢) الموظفون المتواجدون</span>
                 <h2 id="readyCount" style="color:var(--success)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--warning);">
-                <span>غداء بـ Ameyo</span>
+                <span>(Lunch 🍱) استراحة غداء</span>
                 <h2 id="lunchCount" style="color:var(--warning)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--purple);">
-                <span>بريك بـ Ameyo</span>
+                <span>(Break ☕) استراحة قصيرة</span>
                 <h2 id="breakAmeyoCount" style="color:var(--purple)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--danger);">
-                <span>غير متصل بالمداومين</span>
+                <span>غير متصل / غائب 🔴</span>
                 <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
             </div>
             <div class="metric-card">
-                <span>عطلات (Day OFF)</span>
+                <span>(Day OFF) غير المطلوبين اليوم</span>
                 <h2 id="offCount" style="color:var(--text-muted)">10</h2>
             </div>
         </div>
@@ -224,12 +224,12 @@
             <!-- Left: Employee Table -->
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-calendar-day"></i> جدول دوام اليوم تلقائياً (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
-                    <small style="color:var(--text-muted)">تحديث يومي أوتوماتيكي لعمود اليوم من Google Sheet</small>
+                    <h3><i class="fa-solid fa-calendar-day"></i> جدول دوام الشفت اليومي (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
+                    <small style="color:var(--text-muted)">يمكنك الضغط على الحالة لتعديلها يدوياً عند الحاجة</small>
                 </div>
                 
                 <div class="notice">
-                    ✅ <strong>قراءات منفصلة ودقيقة:</strong> تم فصل الغداء 🍱 والاستراحة ☕ وغير المتصل 🔴 ليكون لكل حالة عداد مخصص، وتحديد تصفية "غير جاهز" للمداومين فقط بدون تداخل العطلات!
+                    ✨ <strong>نظام المطابقة الذكي:</strong> يتم تحديث الشفت تلقائياً من Google Sheet لليوم الحالي، وتوزيع حالات Ameyo بدقة بين <code>(Ready 🟢)</code> و <code>(Lunch 🍱)</code> و <code>(Break ☕)</code> و <code>غير متصل / غائب 🔴</code>.
                 </div>
 
                 <div class="table-responsive">
@@ -238,10 +238,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>اسم الموظف</th>
-                                <th>شفت اليوم (Google Sheet)</th>
-                                <th>حالة Ameyo (السيستم)</th>
-                                <th>تسجيل الاستراحات بالموقع (3 Max)</th>
-                                <th>سجل التوقيتات</th>
+                                <th>شفت الجدول (Google Sheet)</th>
+                                <th>حالة التواجد (Ameyo System)</th>
+                                <th>تسجيل الاستراحات (3 كحد أقصى)</th>
+                                <th>سجل التوقيتات الزمني</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
@@ -256,13 +256,13 @@
                 <!-- Ameyo Sync Card -->
                 <div class="card" style="margin-bottom: 1.5rem;">
                     <div class="card-header">
-                        <h3><i class="fa-solid fa-signal text-success"></i> مطابقة نص Ameyo المباشر</h3>
+                        <h3><i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo</h3>
                     </div>
                     <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.8rem;">
-                        انسخ النص المنسوخ من Ameyo المباشر وضعه هنا واضغط تحديث:
+                        انسخ النص المنسوخ من شاشة Ameyo المباشرة واضغط تحليل:
                     </p>
                     <textarea id="ameyoInput" rows="12" placeholder="قم بباست (Paste) النص المنسوخ من Ameyo هنا..."></textarea>
-                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل وقراءة حالات Ameyo الان</button>
+                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
                 </div>
             </div>
         </div>
@@ -302,9 +302,8 @@
         // State & Persistence
         let employees = JSON.parse(localStorage.getItem('evening_in_employees')) || initialEveningEmployees.map(e => ({
             ...e,
-            ameyoState: (e.status === 'OFF' || e.status === 'Vacation') ? 'OFF' : 'Not Ready',
             ameyoCategory: (e.status === 'OFF' || e.status === 'Vacation') ? 'OFF' : 'Not Ready',
-            ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'Not Ready',
+            ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'غير متصل / غائب 🔴',
             breaks: []
         }));
 
@@ -316,7 +315,7 @@
             localStorage.setItem('evening_in_employees', JSON.stringify(employees));
         }
 
-        // Render Function with Separated Counts & Clean Filters
+        // Render Function with Exact Wording & Clean Filters
         function render() {
             const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
             const filterVal = document.getElementById('filterStatus').value;
@@ -356,7 +355,7 @@
                 else if (filterVal === 'Ready') matchFilter = (!isOff && e.ameyoCategory === 'Ready');
                 else if (filterVal === 'Lunch') matchFilter = (!isOff && e.ameyoCategory === 'Lunch');
                 else if (filterVal === 'Break') matchFilter = (!isOff && e.ameyoCategory === 'Break');
-                else if (filterVal === 'Not Ready') matchFilter = (!isOff && e.ameyoCategory !== 'Ready'); // Working & Not Ready (Excludes OFF!)
+                else if (filterVal === 'Not Ready') matchFilter = (!isOff && e.ameyoCategory !== 'Ready');
                 else if (filterVal === 'OFF') matchFilter = isOff;
 
                 return matchSearch && matchFilter;
@@ -375,14 +374,14 @@
                     } else if (emp.ameyoCategory === 'Break') {
                         ameyoBadge = `<span class="badge badge-break" onclick="toggleState(${emp.id})"><i class="fa-solid fa-mug-hot"></i> ${emp.ameyoDetail || 'Break ☕'}</span>`;
                     } else {
-                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-xmark"></i> ${emp.ameyoDetail || 'Not Ready 🔴'}</span>`;
+                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-xmark"></i> ${emp.ameyoDetail || 'غير متصل / غائب 🔴'}</span>`;
                     }
                 }
 
                 // Break Actions
                 let breakBtns = '';
                 if (emp.status === 'OFF' || emp.status === 'Vacation') {
-                    breakBtns = `<span style="color:var(--text-muted); font-size:0.8rem;">غير مداوم</span>`;
+                    breakBtns = `<span style="color:var(--text-muted); font-size:0.8rem;">غير مطلوب اليوم</span>`;
                 } else {
                     const activeB = emp.breaks.find(b => b.active);
                     if (activeB) {
@@ -446,14 +445,14 @@
 
         // Reset All Breaks
         function resetAllBreaks() {
-            if (confirm('هل تريد تصفير جميع الاستراحات اليوم للجميع؟')) {
+            if (confirm('هل تريد تصفير جميع استراحات السجل اليوم؟')) {
                 employees.forEach(e => e.breaks = []);
                 save();
                 render();
             }
         }
 
-        // Advanced Ameyo Multi-line Block Parser with Explicit Separated Categories
+        // Advanced Ameyo Multi-line Block Parser
         function updateAmeyoList() {
             const rawText = document.getElementById('ameyoInput').value;
             if (!rawText || rawText.trim().length === 0) {
@@ -489,24 +488,24 @@
                             emp.ameyoDetail = 'Ready 🟢';
                         } else {
                             emp.ameyoCategory = 'Not Ready';
-                            emp.ameyoDetail = 'Not Ready 🔴';
+                            emp.ameyoDetail = 'غير متصل / غائب 🔴';
                         }
                     } else {
                         emp.ameyoCategory = 'Not Ready';
-                        emp.ameyoDetail = 'غير متصل 🔴';
+                        emp.ameyoDetail = 'غير متصل / غائب 🔴';
                     }
                 }
             });
 
             save();
             render();
-            alert('تم تحليل نص Ameyo وتوزيع الحالات بين Ready و Lunch و Break و Not Ready بنجاح!');
+            alert('تم تحليل حالات الموظفين والأنشطة بنجاح!');
         }
 
         // Fetch Live Google Sheet Data for Evening / IN with Dynamic Day Detection
         function fetchLiveGoogleSheet() {
             const syncText = document.getElementById('syncText');
-            if (syncText) syncText.innerText = "جاري المزامنة التلقائية لـ Evening / IN...";
+            if (syncText) syncText.innerText = "جاري التزامن التلقائي لـ Evening / IN...";
 
             fetch(GOOGLE_SHEET_CSV_URL)
                 .then(r => r.text())
@@ -562,7 +561,7 @@
                         const existingEmp = employees.find(e => clean(e.name) === clean(name));
                         const breaks = existingEmp ? existingEmp.breaks : [];
                         const ameyoCategory = existingEmp ? existingEmp.ameyoCategory : (shiftToday === 'OFF' ? 'OFF' : 'Not Ready');
-                        const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'Not Ready');
+                        const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'غير متصل / غائب 🔴');
 
                         eveningRows.push({
                             id: eveningRows.length + 1,
