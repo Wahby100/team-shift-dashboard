@@ -29,8 +29,9 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background: var(--bg-body); color: var(--text-main); padding: 1.5rem; }
 
-        .container { max-width: 1650px; margin: 0 auto; }
+        .container { max-width: 1700px; margin: 0 auto; }
 
+        /* Top Header */
         header {
             display: flex;
             justify-content: space-between;
@@ -39,7 +40,7 @@
             padding: 1.2rem 1.8rem;
             border-radius: var(--radius);
             border: 1px solid var(--border);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             flex-wrap: wrap;
             gap: 1rem;
         }
@@ -69,6 +70,31 @@
             color: #ffffff;
         }
         .logo-title small { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; }
+
+        /* Modern Navigation Tabs Bar */
+        .nav-tabs {
+            display: flex;
+            gap: 0.6rem;
+            background: var(--bg-card);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+        .nav-tab {
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.2s ease;
+        }
+        .nav-tab:hover { background: var(--bg-hover); color: var(--text-main); }
+        .nav-tab.active { background: var(--primary); color: white; }
 
         .actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
 
@@ -105,7 +131,7 @@
         /* General Metrics Grid */
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
@@ -167,14 +193,12 @@
         .slot-card-title { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
         .slot-card-val { font-size: 1.6rem; font-weight: 800; color: var(--text-main); }
 
-        .grid-layout { display: grid; grid-template-columns: 3.2fr 1fr; gap: 1.5rem; }
-        @media (max-width: 1024px) { .grid-layout { grid-template-columns: 1fr; } }
-
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 1.3rem;
+            margin-bottom: 1.5rem;
         }
         .card-header {
             display: flex;
@@ -221,6 +245,10 @@
             outline: none;
             margin-bottom: 0.8rem;
         }
+
+        /* Page View Switcher */
+        .page-content { display: none; }
+        .page-content.active-page { display: block; }
     </style>
 </head>
 <body>
@@ -242,85 +270,138 @@
             </div>
 
             <div class="actions">
-                <input type="text" id="searchInput" class="input-text" placeholder="بحث باسم الموظف..." oninput="render()">
-                <select id="filterStatus" class="input-text" onchange="render()">
-                    <option value="all">كافة الكادر (23 موظف)</option>
-                    <option value="working">عدد موظفين اليوم (13 موظف)</option>
-                    <option value="Ready">Ready 🟢</option>
-                    <option value="Lunch">Lunch 🍱</option>
-                    <option value="Break">Break ☕</option>
-                    <option value="Not Ready">غير متصل 🔴</option>
-                    <option value="OFF">Day OFF</option>
-                </select>
                 <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث الجدول</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير السجل الزمني</button>
             </div>
         </header>
 
-        <!-- Dynamic Slot Targets Bar -->
-        <div class="targets-panel">
-            <div class="now-box">
-                <span>🎯 المطلوب تواجدهم الآن بـ Ameyo</span>
-                <h2 id="expectedAmeyoNow">0</h2>
-                <small id="currentSlotLabel">الفترة الحالية</small>
+        <!-- Navigation Tabs Bar -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchPage('home')">
+                <i class="fa-solid fa-house"></i> الصفحة الرئيسية (Dashboard)
             </div>
-            
-            <div class="slots-grid">
-                <div class="slot-card" id="slotCard1">
-                    <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--primary)"></i> 4:30 PM - 6:30 PM</div>
-                    <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+            <div class="nav-tab" onclick="switchPage('schedule')">
+                <i class="fa-solid fa-table-list"></i> جدول اليوم الكامل (Full Schedule)
+            </div>
+            <div class="nav-tab" onclick="switchPage('roster')">
+                <i class="fa-solid fa-users-gear"></i> كافة الكادر والتفاصيل (Staff Roster)
+            </div>
+        </div>
+
+        <!-- ================= PAGE 1: HOME DASHBOARD ================= -->
+        <div id="page-home" class="page-content active-page">
+            <!-- Dynamic Slot Targets Bar -->
+            <div class="targets-panel">
+                <div class="now-box">
+                    <span>🎯 المطلوب تواجدهم الآن بـ Ameyo</span>
+                    <h2 id="expectedAmeyoNow">0</h2>
+                    <small id="currentSlotLabel">الفترة الحالية</small>
+                </div>
+                
+                <div class="slots-grid">
+                    <div class="slot-card" id="slotCard1">
+                        <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--primary)"></i> 4:30 PM - 6:30 PM</div>
+                        <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+                    </div>
+
+                    <div class="slot-card" id="slotCard2">
+                        <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--warning)"></i> 6:30 PM - 8:30 PM</div>
+                        <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+                    </div>
+
+                    <div class="slot-card" id="slotCard3">
+                        <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> 8:30 PM - 12:30 AM</div>
+                        <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Minimal Clean Metrics -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span>إجمالي الموظفين</span>
+                    <h2 id="totalCount">23</h2>
+                </div>
+                <div class="metric-card" style="border-color: var(--primary);">
+                    <span>عدد موظفين اليوم</span>
+                    <h2 id="workingCount" style="color:var(--primary)">13</h2>
+                </div>
+                <div class="metric-card" style="border-color: var(--success);">
+                    <span style="color:var(--success)">Ready 🟢</span>
+                    <h2 id="readyCount" style="color:var(--success)">0</h2>
+                </div>
+                <div class="metric-card" style="border-color: var(--warning);">
+                    <span style="color:var(--warning)">Lunch 🍱</span>
+                    <h2 id="lunchCount" style="color:var(--warning)">0</h2>
+                </div>
+                <div class="metric-card" style="border-color: var(--purple);">
+                    <span style="color:var(--purple)">Break ☕</span>
+                    <h2 id="breakAmeyoCount" style="color:var(--purple)">0</h2>
+                </div>
+                <div class="metric-card" style="border-color: var(--danger);">
+                    <span style="color:var(--danger)">غير متصل 🔴</span>
+                    <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
+                </div>
+                <div class="metric-card">
+                    <span>Day OFF</span>
+                    <h2 id="offCount" style="color:var(--text-muted)">10</h2>
+                </div>
+            </div>
+
+            <!-- Dashboard Overview Split Layout -->
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem;">
+                <!-- Quick Preview Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-bolt"></i> نظرة سريعة على المداومين الآن</h3>
+                        <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">فتح الجدول الكامل <i class="fa-solid fa-arrow-left"></i></button>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>اسم الموظف</th>
+                                    <th>شفت الجدول</th>
+                                    <th>فترة الدوام المحسوبة</th>
+                                    <th>حالة Ameyo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="homePreviewBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <div class="slot-card" id="slotCard2">
-                    <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--warning)"></i> 6:30 PM - 8:30 PM</div>
-                    <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
-                </div>
-
-                <div class="slot-card" id="slotCard3">
-                    <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> 8:30 PM - 12:30 AM</div>
-                    <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+                <!-- Ameyo Sync Box Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo</h3>
+                    </div>
+                    <textarea id="ameyoInput" rows="12"></textarea>
+                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
                 </div>
             </div>
         </div>
 
-        <!-- KPI Minimal Clean Metrics -->
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <span>إجمالي الموظفين</span>
-                <h2 id="totalCount">23</h2>
-            </div>
-            <div class="metric-card" style="border-color: var(--primary);">
-                <span>عدد موظفين اليوم</span>
-                <h2 id="workingCount" style="color:var(--primary)">13</h2>
-            </div>
-            <div class="metric-card" style="border-color: var(--success);">
-                <span style="color:var(--success)">Ready 🟢</span>
-                <h2 id="readyCount" style="color:var(--success)">0</h2>
-            </div>
-            <div class="metric-card" style="border-color: var(--warning);">
-                <span style="color:var(--warning)">Lunch 🍱</span>
-                <h2 id="lunchCount" style="color:var(--warning)">0</h2>
-            </div>
-            <div class="metric-card" style="border-color: var(--purple);">
-                <span style="color:var(--purple)">Break ☕</span>
-                <h2 id="breakAmeyoCount" style="color:var(--purple)">0</h2>
-            </div>
-            <div class="metric-card" style="border-color: var(--danger);">
-                <span style="color:var(--danger)">غير متصل 🔴</span>
-                <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
-            </div>
-            <div class="metric-card">
-                <span>Day OFF</span>
-                <h2 id="offCount" style="color:var(--text-muted)">10</h2>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="grid-layout">
-            <!-- Left: Employee Table -->
+        <!-- ================= PAGE 2: FULL SCHEDULE TABLE ================= -->
+        <div id="page-schedule" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-calendar-day"></i> جدول دوام الشفت اليومي (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
+                    <h3><i class="fa-solid fa-calendar-day"></i> جدول دوام الشفت اليومي الكامل (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
+                    
+                    <div class="actions">
+                        <input type="text" id="searchInput" class="input-text" placeholder="بحث باسم الموظف..." oninput="render()">
+                        <select id="filterStatus" class="input-text" onchange="render()">
+                            <option value="all">كافة الكادر (23 موظف)</option>
+                            <option value="working">عدد موظفين اليوم (13 موظف)</option>
+                            <option value="Ready">Ready 🟢</option>
+                            <option value="Lunch">Lunch 🍱</option>
+                            <option value="Break">Break ☕</option>
+                            <option value="Not Ready">غير متصل 🔴</option>
+                            <option value="OFF">Day OFF</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -342,16 +423,31 @@
                     </table>
                 </div>
             </div>
+        </div>
 
-            <!-- Right: Ameyo Quick Sync Box -->
-            <div>
-                <!-- Ameyo Sync Card -->
-                <div class="card" style="margin-bottom: 1.5rem;">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo</h3>
-                    </div>
-                    <textarea id="ameyoInput" rows="14"></textarea>
-                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
+        <!-- ================= PAGE 3: STAFF ROSTER & DETAILS ================= -->
+        <div id="page-roster" class="page-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-users-gear"></i> القائمة الكاملة لكافة كادر Evening / IN</h3>
+                    <input type="text" id="rosterSearch" class="input-text" placeholder="تصفية الكادر..." oninput="renderRoster()">
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الموظف</th>
+                                <th>شفت اليوم</th>
+                                <th>الحالة بالحساب الأوتوماتيكي</th>
+                                <th>سجل الاستراحات المسجلة</th>
+                                <th>إجمالي عدد البريكات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rosterBody">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -387,6 +483,20 @@
 
         // Direct Google Sheet CSV Endpoint with exact gid 1335140115
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
+
+        // Multi-page Tab Switcher
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) targetPage.classList.add('active-page');
+
+            const activeTab = Array.from(document.querySelectorAll('.nav-tab')).find(t => t.getAttribute('onclick').includes(pageId));
+            if (activeTab) activeTab.classList.add('active');
+
+            if (pageId === 'roster') renderRoster();
+        }
 
         // Custom Logo Persistence
         const savedLogo = localStorage.getItem('cc_custom_logo');
@@ -445,7 +555,9 @@
             const filterVal = document.getElementById('filterStatus').value;
 
             const tbody = document.getElementById('tableBody');
+            const homeBody = document.getElementById('homePreviewBody');
             tbody.innerHTML = '';
+            homeBody.innerHTML = '';
 
             let readyC = 0, lunchC = 0, breakAmeyoC = 0, notReadyC = 0, offC = 0, workingC = 0;
             let slot1Scheduled = 0, slot2Scheduled = 0;
@@ -551,6 +663,18 @@
                     }
                 }
 
+                // Home Preview Tr
+                if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
+                    const homeTr = document.createElement('tr');
+                    homeTr.innerHTML = `
+                        <td><strong>${emp.name}</strong></td>
+                        <td><span class="badge badge-shift">${emp.status}</span></td>
+                        <td><span style="color:var(--text-muted); font-size:0.82rem;">${shiftInfo.label}</span></td>
+                        <td>${ameyoBadge}</td>
+                    `;
+                    homeBody.appendChild(homeTr);
+                }
+
                 // Break Actions
                 let breakBtns = '';
                 if (emp.status === 'OFF' || emp.status === 'Vacation') {
@@ -582,6 +706,29 @@
                 `;
 
                 tbody.appendChild(tr);
+            });
+        }
+
+        // Render Roster Tab
+        function renderRoster() {
+            const rosterBody = document.getElementById('rosterBody');
+            const searchVal = (document.getElementById('rosterSearch')?.value || '').toLowerCase();
+            rosterBody.innerHTML = '';
+
+            employees.filter(e => e.name.toLowerCase().includes(searchVal)).forEach((emp, index) => {
+                const tr = document.createElement('tr');
+                const shiftInfo = getShiftHours(emp.status);
+                let historyLog = emp.breaks.map(b => `<span class="badge badge-shift">${b.time}</span>`).join(' ') || '-';
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${emp.name}</strong></td>
+                    <td><span class="badge badge-shift">${emp.status}</span> (${shiftInfo.label})</td>
+                    <td>${emp.ameyoDetail || 'Day OFF'}</td>
+                    <td>${historyLog}</td>
+                    <td><strong>${emp.breaks.length} / 3</strong></td>
+                `;
+                rosterBody.appendChild(tr);
             });
         }
 
