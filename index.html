@@ -492,15 +492,15 @@
 
             if (currentHourDecimal >= 16.5 && currentHourDecimal < 18.5) {
                 expectedNow = target1;
-                slotLabelText = 'فترة (4:30 PM - 6:30 PM)';
+                slotLabelText = '4:30 PM - 6:30 PM';
                 document.getElementById('slotCard1').classList.add('active-slot');
             } else if (currentHourDecimal >= 18.5 && currentHourDecimal < 20.5) {
                 expectedNow = target2;
-                slotLabelText = 'فترة (6:30 PM - 8:30 PM)';
+                slotLabelText = '6:30 PM - 8:30 PM';
                 document.getElementById('slotCard2').classList.add('active-slot');
             } else if (currentHourDecimal >= 20.5 && currentHourDecimal <= 24.5) {
                 expectedNow = target3;
-                slotLabelText = 'فترة (8:30 PM - 12:30 AM)';
+                slotLabelText = '8:30 PM - 12:30 AM';
                 document.getElementById('slotCard3').classList.add('active-slot');
             } else {
                 expectedNow = target3;
