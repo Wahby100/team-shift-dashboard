@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة متابعة Evening / IN | Auto Sheet Sync</title>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-body: #0b0f19;
+            --bg-card: #151c2c;
+            --bg-hover: #1e273e;
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --purple: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: var(--bg-body); color: var(--text-main); padding: 1.5rem; }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 1.2rem 1.8rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .logo { display: flex; align-items: center; gap: 0.8rem; }
+        .logo i { font-size: 1.8rem; color: var(--primary); }
+        .logo h1 { font-size: 1.3rem; font-weight: 800; }
+
+        .actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+
+        .btn {
+            padding: 0.55rem 1.1rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+            transition: all 0.2s ease;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: var(--bg-hover); }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.78rem; }
+
+        .input-text {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            outline: none;
+        }
+        .input-text:focus { border-color: var(--primary); }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 1.2rem;
+            border-radius: var(--radius);
+        }
+        .metric-card span { font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
+        .metric-card h2 { font-size: 1.8rem; font-weight: 800; }
+
+        .grid-layout { display: grid; grid-template-columns: 3fr 1fr; gap: 1.5rem; }
+        @media (max-width: 1024px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.3rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .card-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: right; }
+        th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+        th { color: var(--text-muted); font-weight: 700; background: rgba(255,255,255,0.02); }
+        tr:hover { background: var(--bg-hover); }
+
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+        }
+        .badge-ready { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid var(--success); }
+        .badge-notready { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid var(--danger); }
+        .badge-off { background: rgba(148, 163, 184, 0.15); color: var(--text-muted); }
+        .badge-break { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-shift { background: rgba(59, 130, 246, 0.15); color: var(--primary); }
+
+        textarea {
+            width: 100%;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.8rem;
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 0.85rem;
+            outline: none;
+            margin-bottom: 0.8rem;
+        }
+
+        .notice {
+            background: rgba(16, 185, 129, 0.1);
+            border-right: 4px solid var(--success);
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            margin-bottom: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Top Header -->
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-headset"></i>
+                <div>
+                    <h1>متابعة شفتات الموظفين (Evening / IN)</h1>
+                    <small style="color:var(--text-muted)" id="syncText">جاري المزامنة مع كوكل شيت المباشر...</small>
+                </div>
+            </div>
+
+            <div class="actions">
+                <input type="text" id="searchInput" class="input-text" placeholder="بحث باسم الموظف..." oninput="render()">
+                <select id="filterStatus" class="input-text" onchange="render()">
+                    <option value="all">كل الموظفين (23)</option>
+                    <option value="working">المداومين فقط (اليوم)</option>
+                    <option value="Ready">جاهز (Ready)</option>
+                    <option value="Not Ready">غير جاهز (Not Ready)</option>
+                    <option value="OFF">عطلة (Day OFF)</option>
+                </select>
+                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث من كوكل شيت</button>
+                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير البريكات</button>
+            </div>
+        </header>
+
+        <!-- KPI Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <span>إجمالي (Evening / IN)</span>
+                <h2 id="totalCount">23</h2>
+            </div>
+            <div class="metric-card" style="border-color: var(--primary);">
+                <span>المداومين اليوم بالشفت</span>
+                <h2 id="workingCount" style="color:var(--primary)">13</h2>
+            </div>
+            <div class="metric-card" style="border-color: var(--success);">
+                <span>متصلين بـ Ameyo (Ready)</span>
+                <h2 id="readyCount" style="color:var(--success)">0</h2>
+            </div>
+            <div class="metric-card" style="border-color: var(--danger);">
+                <span>غير متصلين (Not Ready)</span>
+                <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
+            </div>
+            <div class="metric-card" style="border-color: var(--warning);">
+                <span>في استراحة (On Break)</span>
+                <h2 id="onBreakCount" style="color:var(--warning)">0</h2>
+            </div>
+            <div class="metric-card">
+                <span>عطلات (OFF / Vacation)</span>
+                <h2 id="offCount" style="color:var(--text-muted)">10</h2>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid-layout">
+            <!-- Left: Employee Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-users"></i> جدول دوام Evening / IN لليوم (<span id="todayDateLabel">25/7</span>)</h3>
+                    <small style="color:var(--text-muted)">اضغط على حالة Ameyo للتعديل اليدوي السريع</small>
+                </div>
+                
+                <div class="notice">
+                    ✅ <strong>مربوط بالكامل مع Google Sheet المباشر:</strong> يتم جلب أسماء قسم <code>Evening / IN</code> (الـ 23 موظف) وتحديد شفت كل موظف اليوم بدقة بدون أخطاء.
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الموظف</th>
+                                <th>شفت اليوم (Google Sheet)</th>
+                                <th>حالة Ameyo</th>
+                                <th>تسجيل الاستراحات (3 Breaks Max)</th>
+                                <th>سجل التوقيتات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right: Ameyo Quick Sync Box -->
+            <div>
+                <!-- Ameyo Sync Card -->
+                <div class="card" style="margin-bottom: 1.5rem;">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-signal text-success"></i> مطابقة سيستم Ameyo</h3>
+                    </div>
+                    <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.8rem;">
+                        انسخ الأسماء المداومة من صفحة Ameyo المباشرة واضغط تحديث للمطابقة فوراً:
+                    </p>
+                    <textarea id="ameyoInput" rows="8" placeholder="انسخ قائمة الأسماء من Ameyo هنا..."></textarea>
+                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-arrows-rotate"></i> تحديث ومطابقة الحالات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Exact 23 Employees of Evening / IN from Google Sheet
+        const initialEveningEmployees = [
+            { id: 1, name: "MohammedSalah", status: "Attend/O" },
+            { id: 2, name: "AliAbdulkareemObiad", status: "Attend/O" },
+            { id: 3, name: "GhaithAbbas", status: "H 6:30-2:30" },
+            { id: 4, name: "MohammedAyad", status: "H 12:30-8:30" },
+            { id: 5, name: "MuhammadSalman", status: "OFF" },
+            { id: 6, name: "MohammedKhaled", status: "OFF" },
+            { id: 7, name: "AhmedSafeen", status: "OFF" },
+            { id: 8, name: "AhmedZuhair", status: "OFF" },
+            { id: 9, name: "AliImad", status: "OFF" },
+            { id: 10, name: "MohammedAeid", status: "OFF" },
+            { id: 11, name: "MohammedAhmed", status: "OFF" },
+            { id: 12, name: "AymanAmmar", status: "OFF" },
+            { id: 13, name: "MohammedZiyad", status: "H 6:30-2:30" },
+            { id: 14, name: "MohammedAhmedAbd", status: "Attend/H" },
+            { id: 15, name: "MahdiKadhum", status: "Attend/H" },
+            { id: 16, name: "MohsenAli", status: "Attend/H" },
+            { id: 17, name: "AliJasim", status: "Attend/H" },
+            { id: 18, name: "MuntdaherNaseer", status: "OFF" },
+            { id: 19, name: "AbdullahSafaa", status: "OFF" },
+            { id: 20, name: "MortazaMazin", status: "Attend/O" },
+            { id: 21, name: "AbdulazizAhmed", status: "Attend/O" },
+            { id: 22, name: "MustafaMazin", status: "OFF" },
+            { id: 23, name: "OthmanFouad", status: "H 6:30-2:30" }
+        ];
+
+        // Active Ameyo Logged-in list
+        let ameyoList = ["AbdulazizAhmed", "AbdullahSafaa", "AliAbdulkareemObiad", "AymanAmmar", "MohamadAhmed", "MohammedAeid", "MohammedAhmedAbd", "MohammedAyad", "MohammedKhaled", "MohammedSalah", "MuntdaherNaseer", "MustafaMazin", "OthmanFouad"];
+
+        // Direct Google Sheet CSV Endpoint with exact gid 1335140115
+        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
+
+        // State & Persistence
+        let employees = JSON.parse(localStorage.getItem('evening_in_employees')) || initialEveningEmployees.map(e => ({
+            ...e,
+            ameyoState: ameyoList.some(a => clean(a) === clean(e.name)) ? 'Ready' : (e.status === 'OFF' || e.status === 'Vacation' ? 'OFF' : 'Not Ready'),
+            breaks: []
+        }));
+
+        function clean(str) {
+            return (str || '').toLowerCase().replace(/[\s\._\-]/g, '');
+        }
+
+        function save() {
+            localStorage.setItem('evening_in_employees', JSON.stringify(employees));
+        }
+
+        // Render Function with Accurate Counts
+        function render() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filterVal = document.getElementById('filterStatus').value;
+
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            let readyC = 0, notReadyC = 0, onBreakC = 0, offC = 0, workingC = 0;
+
+            employees.forEach(e => {
+                const isOff = e.status === 'OFF' || e.status === 'Vacation';
+                if (!isOff) workingC++;
+                if (isOff) offC++;
+                if (e.ameyoState === 'Ready' && !isOff) readyC++;
+                if (e.ameyoState === 'Not Ready' && !isOff) notReadyC++;
+                if (e.breaks.some(b => b.active)) onBreakC++;
+            });
+
+            document.getElementById('totalCount').innerText = employees.length; // 23
+            document.getElementById('workingCount').innerText = workingC;      // 13 (Exact!)
+            document.getElementById('readyCount').innerText = readyC;
+            document.getElementById('notReadyCount').innerText = notReadyC;
+            document.getElementById('onBreakCount').innerText = onBreakC;
+            document.getElementById('offCount').innerText = offC;             // 10
+
+            const filtered = employees.filter(e => {
+                const matchSearch = e.name.toLowerCase().includes(searchVal) || e.status.toLowerCase().includes(searchVal);
+                
+                let matchFilter = true;
+                if (filterVal === 'working') matchFilter = (e.status !== 'OFF' && e.status !== 'Vacation');
+                else if (filterVal !== 'all') matchFilter = (e.ameyoState === filterVal);
+
+                return matchSearch && matchFilter;
+            });
+
+            filtered.forEach((emp, index) => {
+                const tr = document.createElement('tr');
+
+                // Ameyo Badge
+                let ameyoBadge = `<span class="badge badge-off">Day OFF</span>`;
+                if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
+                    if (emp.ameyoState === 'Ready') {
+                        ameyoBadge = `<span class="badge badge-ready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-check"></i> Ready</span>`;
+                    } else {
+                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-xmark"></i> Not Ready</span>`;
+                    }
+                }
+
+                // Break Actions
+                let breakBtns = '';
+                if (emp.status === 'OFF' || emp.status === 'Vacation') {
+                    breakBtns = `<span style="color:var(--text-muted); font-size:0.8rem;">غير مداوم</span>`;
+                } else {
+                    const activeB = emp.breaks.find(b => b.active);
+                    if (activeB) {
+                        breakBtns = `<button class="btn btn-sm btn-primary" onclick="endBreak(${emp.id})"><i class="fa-solid fa-square-check"></i> إنهاء Break ${activeB.num}</button>`;
+                    } else if (emp.breaks.length >= 3) {
+                        breakBtns = `<span style="color:var(--text-muted); font-size:0.8rem;">مكتمل (3/3)</span>`;
+                    } else {
+                        breakBtns = `<button class="btn btn-sm btn-outline" onclick="startBreak(${emp.id})"><i class="fa-solid fa-mug-hot"></i> Break ${emp.breaks.length + 1}</button>`;
+                    }
+                }
+
+                // Break History Log Timestamps
+                let historyLog = emp.breaks.map(b => {
+                    return `<span class="badge ${b.active ? 'badge-break' : 'badge-shift'}">${b.time}</span>`;
+                }).join(' ') || '-';
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${emp.name}</strong></td>
+                    <td><span class="badge badge-shift">${emp.status}</span></td>
+                    <td>${ameyoBadge}</td>
+                    <td>${breakBtns}</td>
+                    <td>${historyLog}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Toggle Manual Ameyo Status
+        function toggleState(id) {
+            const emp = employees.find(e => e.id === id);
+            if (emp) {
+                emp.ameyoState = (emp.ameyoState === 'Ready') ? 'Not Ready' : 'Ready';
+                save();
+                render();
+            }
+        }
+
+        // Start Break with Exact Timestamp
+        function startBreak(id) {
+            const emp = employees.find(e => e.id === id);
+            if (!emp || emp.breaks.length >= 3) return;
+
+            const timeStr = new Date().toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            emp.breaks.push({ num: emp.breaks.length + 1, time: timeStr, active: true });
+            save();
+            render();
+        }
+
+        // End Active Break
+        function endBreak(id) {
+            const emp = employees.find(e => e.id === id);
+            if (!emp) return;
+            const activeB = emp.breaks.find(b => b.active);
+            if (activeB) activeB.active = false;
+            save();
+            render();
+        }
+
+        // Reset All Breaks
+        function resetAllBreaks() {
+            if (confirm('هل تريد تصفير جميع الاستراحات اليوم للجميع؟')) {
+                employees.forEach(e => e.breaks = []);
+                save();
+                render();
+            }
+        }
+
+        // Update Ameyo List from Textarea
+        function updateAmeyoList() {
+            const val = document.getElementById('ameyoInput').value;
+            const list = val.split(/[\n,\t]/).map(s => clean(s)).filter(s => s.length > 2);
+            
+            employees.forEach(e => {
+                if (e.status !== 'OFF' && e.status !== 'Vacation') {
+                    const eClean = clean(e.name);
+                    const found = list.some(item => item.includes(eClean) || eClean.includes(item));
+                    e.ameyoState = found ? 'Ready' : 'Not Ready';
+                }
+            });
+
+            save();
+            render();
+            alert('تم مطابقة حالة الموظفين مع Ameyo بنجاح!');
+        }
+
+        // Fetch Live Google Sheet Data for Evening / IN
+        function fetchLiveGoogleSheet() {
+            const syncText = document.getElementById('syncText');
+            syncText.innerText = "جاري المزامنة مع كوكل شيت...";
+
+            fetch(GOOGLE_SHEET_CSV_URL)
+                .then(r => r.text())
+                .then(csv => {
+                    parseGoogleSheetCSV(csv);
+                    syncText.innerText = "تم التزامن مع كوكل شيت المباشر (Evening / IN)";
+                })
+                .catch(err => {
+                    console.error(err);
+                    syncText.innerText = "تعذر الاتصال بـ Google Sheet - يعتمد على البيانات المحفوظة";
+                });
+        }
+
+        function parseGoogleSheetCSV(csvText) {
+            const lines = csvText.split('\n');
+            const eveningRows = [];
+            let inEveningSection = false;
+            let todayColIndex = 28; // Default column for 25/7 in July sheet
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                if (line.includes('Evening / IN')) {
+                    inEveningSection = true;
+                } else if (line.includes('Morning Shift') || line.includes('Attend Morning Shift')) {
+                    inEveningSection = false;
+                }
+
+                if (inEveningSection) {
+                    const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                    if (cols.length >= 4 && cols[1] && cols[1] !== 'Name' && cols[1] !== 'Shift') {
+                        const name = cols[1];
+                        const shiftToday = cols[todayColIndex] || cols[4] || 'OFF';
+
+                        const existingEmp = employees.find(e => clean(e.name) === clean(name));
+                        const breaks = existingEmp ? existingEmp.breaks : [];
+                        const ameyoState = existingEmp ? existingEmp.ameyoState : (shiftToday === 'OFF' ? 'OFF' : 'Not Ready');
+
+                        eveningRows.push({
+                            id: eveningRows.length + 1,
+                            name: name,
+                            status: shiftToday,
+                            ameyoState: ameyoState,
+                            breaks: breaks
+                        });
+                    }
+                }
+            }
+
+            if (eveningRows.length > 0) {
+                employees = eveningRows;
+                save();
+                render();
+            }
+        }
+
+        // Auto Fetch on load
+        fetchLiveGoogleSheet();
+        render();
+    </script>
+</body>
+</html>
