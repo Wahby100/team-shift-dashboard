@@ -131,16 +131,18 @@
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 0.9rem;
+            padding: 1rem;
             transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .slot-card.active-slot {
             border-color: var(--primary);
             background: rgba(59, 130, 246, 0.08);
         }
-        .slot-card-title { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
-        .slot-card-val { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
-        .slot-card-sub { font-size: 0.74rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .slot-card-title { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+        .slot-card-val { font-size: 1.6rem; font-weight: 800; color: var(--text-main); }
 
         .grid-layout { display: grid; grid-template-columns: 3.2fr 1fr; gap: 1.5rem; }
         @media (max-width: 1024px) { .grid-layout { grid-template-columns: 1fr; } }
@@ -236,7 +238,7 @@
             </div>
         </header>
 
-        <!-- Dynamic Slot Targets Bar (Modern Integrated Banner) -->
+        <!-- Dynamic Slot Targets Bar -->
         <div class="targets-panel">
             <div class="now-box">
                 <span>🎯 المطلوب تواجدهم الآن بـ Ameyo</span>
@@ -247,20 +249,17 @@
             <div class="slots-grid">
                 <div class="slot-card" id="slotCard1">
                     <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--primary)"></i> 4:30 PM - 6:30 PM</div>
-                    <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
-                    <div class="slot-card-sub">قاعدة (الشفت - 3)</div>
+                    <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
                 </div>
 
                 <div class="slot-card" id="slotCard2">
                     <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--warning)"></i> 6:30 PM - 8:30 PM</div>
-                    <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
-                    <div class="slot-card-sub">قاعدة (الشفت - 3)</div>
+                    <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
                 </div>
 
                 <div class="slot-card" id="slotCard3">
                     <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> 8:30 PM - 12:30 AM</div>
-                    <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
-                    <div class="slot-card-sub">العدد السابق ناقص 1 (مغادرة شفت)</div>
+                    <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
                 </div>
             </div>
         </div>
@@ -303,12 +302,12 @@
             <div class="card">
                 <div class="card-header">
                     <h3><i class="fa-solid fa-calendar-day"></i> جدول دوام الشفت اليومي (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
-                    <small style="color:var(--text-muted)">الموظف بدون وقت مكتوب يعتبر دوامه الافتراضي (4:30 إلى 12:30)</small>
+                    <small style="color:var(--text-muted)">الموظف بدون وقت مكتوب يعتبر دوامه الافتراضي (4:30 PM إلى 12:30 AM)</small>
                 </div>
                 
                 <div class="notice">
                     📐 <strong>حساب التواجد المستهدف بالسيستم:</strong> 
-                    تُحسب الفترات أوتوماتيكياً: (4:30-6:30) ناقص 3، (6:30-8:30) ناقص 3، و (8:30-12:30) ناقص 1 إضافي بسبب انتهاء شفت الموظف المغادر.
+                    تُحسب الفترات أوتوماتيكياً حسب الدوامات المسجلة بجدول كوكل شيت لكل فترة زمنية.
                 </div>
 
                 <div class="table-responsive">
@@ -400,14 +399,14 @@
             const st = (status || '').toUpperCase();
             if (st === 'OFF' || st === 'VACATION') return { isWorking: false, label: 'عطلة' };
 
-            if (st.includes('6:30-2:30')) return { isWorking: true, slot1: false, slot2: true, slot3: true, label: '6:30 م - 2:30 ص' };
-            if (st.includes('12:30-8:30')) return { isWorking: true, slot1: true, slot2: true, slot3: false, label: '12:30 م - 8:30 م' };
+            if (st.includes('6:30-2:30')) return { isWorking: true, slot1: false, slot2: true, slot3: true, label: '6:30 PM - 2:30 AM' };
+            if (st.includes('12:30-8:30')) return { isWorking: true, slot1: true, slot2: true, slot3: false, label: '12:30 PM - 8:30 PM' };
 
             // Default shift if no time written (4:30 PM to 12:30 AM)
-            return { isWorking: true, slot1: true, slot2: true, slot3: true, label: '4:30 م - 12:30 ص' };
+            return { isWorking: true, slot1: true, slot2: true, slot3: true, label: '4:30 PM - 12:30 AM' };
         }
 
-        // Render Function with 3 Slot Targets (4:30-6:30, 6:30-8:30, 8:30-12:30)
+        // Render Function with Cleaned Slot Targets & Exact PM/AM Formatting
         function render() {
             const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
             const filterVal = document.getElementById('filterStatus').value;
@@ -434,13 +433,13 @@
                 }
             });
 
-            // Target 1: Slot (4:30 - 6:30) = Scheduled minus 3
+            // Target 1: Slot (4:30 PM - 6:30 PM) = Scheduled minus 3
             const target1 = Math.max(0, slot1Scheduled - 3);
 
-            // Target 2: Slot (6:30 - 8:30) = Scheduled minus 3
+            // Target 2: Slot (6:30 PM - 8:30 PM) = Scheduled minus 3
             const target2 = Math.max(0, slot2Scheduled - 3);
 
-            // Target 3: Slot (8:30 - 12:30) = Target 2 minus 1
+            // Target 3: Slot (8:30 PM - 12:30 AM) = Target 2 minus 1
             const target3 = Math.max(0, target2 - 1);
 
             document.getElementById('targetSlot1').innerText = `${target1}`;
