@@ -148,8 +148,8 @@
         }
 
         .notice {
-            background: rgba(16, 185, 129, 0.1);
-            border-right: 4px solid var(--success);
+            background: rgba(245, 158, 11, 0.1);
+            border-right: 4px solid var(--warning);
             padding: 0.8rem 1rem;
             border-radius: 6px;
             font-size: 0.82rem;
@@ -176,7 +176,7 @@
                     <option value="all">كل الموظفين (23)</option>
                     <option value="working">المداومين فقط (اليوم)</option>
                     <option value="Ready">جاهز (Ready)</option>
-                    <option value="Not Ready">غير جاهز (Not Ready)</option>
+                    <option value="Not Ready">غير جاهز / بريك (Not Ready)</option>
                     <option value="OFF">عطلة (Day OFF)</option>
                 </select>
                 <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث من كوكل شيت</button>
@@ -199,11 +199,11 @@
                 <h2 id="readyCount" style="color:var(--success)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--danger);">
-                <span>غير متصلين (Not Ready)</span>
+                <span>غير متصلين / بريك بـ Ameyo</span>
                 <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
             </div>
             <div class="metric-card" style="border-color: var(--warning);">
-                <span>في استراحة (On Break)</span>
+                <span>في استراحة بالموقع (On Break)</span>
                 <h2 id="onBreakCount" style="color:var(--warning)">0</h2>
             </div>
             <div class="metric-card">
@@ -222,7 +222,7 @@
                 </div>
                 
                 <div class="notice">
-                    ✅ <strong>مربوط بالكامل مع Google Sheet المباشر:</strong> يتم جلب أسماء قسم <code>Evening / IN</code> (الـ 23 موظف) وتحديد شفت كل موظف اليوم بدقة.
+                    💡 <strong>فحص حالات Break / Lunch الذكي:</strong> النظام يتعرف على الموظفين الذين في استراحة أو غداء (Break / Lunch / Aux / Paused) بداخل Ameyo ويحولهم تلقائياً إلى <code>Not Ready (غير جاهز / بريك)</code>!
                 </div>
 
                 <div class="table-responsive">
@@ -252,10 +252,10 @@
                         <h3><i class="fa-solid fa-signal text-success"></i> مطابقة سيستم Ameyo</h3>
                     </div>
                     <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.8rem;">
-                        انسخ الأسماء المداومة من صفحة Ameyo المباشرة واضغط تحديث للمطابقة فوراً:
+                        انسخ جدول Ameyo كاملاً (مع الحالات والبريكات) واضغط تحديث للمطابقة الذكية:
                     </p>
-                    <textarea id="ameyoInput" rows="8" placeholder="انسخ قائمة الأسماء من Ameyo هنا..."></textarea>
-                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-arrows-rotate"></i> تحديث ومطابقة الحالات</button>
+                    <textarea id="ameyoInput" rows="10" placeholder="انسخ جدول أو نص Ameyo هنا (يشمل الأسماء وحالات البريك والـ Lunch)..."></textarea>
+                    <button class="btn btn-primary" style="width:100%" onclick="updateAmeyoList()"><i class="fa-solid fa-arrows-rotate"></i> تحديث ومطابقة الحالات والبريكات</button>
                 </div>
             </div>
         </div>
@@ -290,7 +290,10 @@
         ];
 
         // Active Ameyo Logged-in list
-        let ameyoList = ["AbdulazizAhmed", "AbdullahSafaa", "AliAbdulkareemObiad", "AymanAmmar", "MohamadAhmed", "MohammedAeid", "MohammedAhmedAbd", "MohammedAyad", "MohammedKhaled", "MohammedSalah", "MuntdaherNaseer", "MustafaMazin", "OthmanFouad"];
+        let ameyoRawText = "";
+
+        // Keywords that mean the agent is NOT READY (on Break, Lunch, Aux, Paused, Away, Busy)
+        const breakKeywords = ["break", "lunch", "tea", "aux", "pause", "paused", "not ready", "notready", "away", "busy", "logoff", "logout", "offline", "استراحة", "غداء"];
 
         // Direct Google Sheet CSV Endpoint with exact gid 1335140115
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
@@ -298,7 +301,7 @@
         // State & Persistence
         let employees = JSON.parse(localStorage.getItem('evening_in_employees')) || initialEveningEmployees.map(e => ({
             ...e,
-            ameyoState: ameyoList.some(a => clean(a) === clean(e.name)) ? 'Ready' : (e.status === 'OFF' || e.status === 'Vacation' ? 'OFF' : 'Not Ready'),
+            ameyoState: (e.status === 'OFF' || e.status === 'Vacation') ? 'OFF' : 'Not Ready',
             breaks: []
         }));
 
@@ -330,7 +333,7 @@
             });
 
             document.getElementById('totalCount').innerText = employees.length; // 23
-            document.getElementById('workingCount').innerText = workingC;      // 13 (Exact!)
+            document.getElementById('workingCount').innerText = workingC;      // 13
             document.getElementById('readyCount').innerText = readyC;
             document.getElementById('notReadyCount').innerText = notReadyC;
             document.getElementById('onBreakCount').innerText = onBreakC;
@@ -355,7 +358,7 @@
                     if (emp.ameyoState === 'Ready') {
                         ameyoBadge = `<span class="badge badge-ready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-check"></i> Ready</span>`;
                     } else {
-                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-xmark"></i> Not Ready</span>`;
+                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><i class="fa-solid fa-xmark"></i> Not Ready / Break</span>`;
                     }
                 }
 
@@ -432,22 +435,43 @@
             }
         }
 
-        // Update Ameyo List from Textarea
+        // Intelligent Ameyo List & Break Status Parser
         function updateAmeyoList() {
-            const val = document.getElementById('ameyoInput').value;
-            const list = val.split(/[\n,\t]/).map(s => clean(s)).filter(s => s.length > 2);
-            
+            const rawText = document.getElementById('ameyoInput').value;
+            if (!rawText || rawText.trim().length === 0) {
+                alert('يرجى لصق النص أو الجدول المنسوخ من Ameyo');
+                return;
+            }
+
+            const lines = rawText.split('\n');
+
             employees.forEach(e => {
                 if (e.status !== 'OFF' && e.status !== 'Vacation') {
-                    const eClean = clean(e.name);
-                    const found = list.some(item => item.includes(eClean) || eClean.includes(item));
-                    e.ameyoState = found ? 'Ready' : 'Not Ready';
+                    const cleanEmpName = clean(e.name);
+
+                    // Find matching line for employee
+                    const matchingLine = lines.find(line => clean(line).includes(cleanEmpName));
+
+                    if (matchingLine) {
+                        const lineLower = matchingLine.toLowerCase();
+
+                        // Check if the line mentions Break, Lunch, Aux, Paused, or Not Ready
+                        const isBreakOrLunch = breakKeywords.some(kw => lineLower.includes(kw));
+
+                        if (isBreakOrLunch) {
+                            e.ameyoState = 'Not Ready'; // Set to Not Ready if on Break / Lunch
+                        } else {
+                            e.ameyoState = 'Ready';     // Set to Ready if active/online
+                        }
+                    } else {
+                        e.ameyoState = 'Not Ready';     // Not found in Ameyo at all
+                    }
                 }
             });
 
             save();
             render();
-            alert('تم مطابقة حالة الموظفين مع Ameyo بنجاح!');
+            alert('تم مطابقة حالات التواجد والبريكات من Ameyo بنجاح!');
         }
 
         // Fetch Live Google Sheet Data for Evening / IN
