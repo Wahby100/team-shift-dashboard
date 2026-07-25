@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة متابعة Evening / IN | Shift & Break Tracker</title>
+    <title>لوحة متابعة Evening / IN | Dynamic Shift Tracker</title>
     <!-- Google Fonts: Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -149,8 +149,8 @@
         }
 
         .notice {
-            background: rgba(59, 130, 246, 0.1);
-            border-right: 4px solid var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+            border-right: 4px solid var(--success);
             padding: 0.8rem 1rem;
             border-radius: 6px;
             font-size: 0.82rem;
@@ -167,7 +167,7 @@
                 <i class="fa-solid fa-headset"></i>
                 <div>
                     <h1>متابعة شفتات الموظفين (Evening / IN)</h1>
-                    <small style="color:var(--text-muted)" id="syncText">مربوط مباشرة مع Google Sheet...</small>
+                    <small style="color:var(--text-muted)" id="syncText">جاري التزامن التلقائي مع كوكل شيت...</small>
                 </div>
             </div>
 
@@ -218,12 +218,12 @@
             <!-- Left: Employee Table -->
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-users"></i> جدول دوام Evening / IN لليوم</h3>
-                    <small style="color:var(--text-muted)">اضغط على حالة Ameyo للتعديل اليدوي السريع</small>
+                    <h3><i class="fa-solid fa-calendar-day"></i> جدول دوام اليوم تلقائياً (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
+                    <small style="color:var(--text-muted)">تحديث يومي أوتوماتيكي لعمود اليوم من Google Sheet</small>
                 </div>
                 
                 <div class="notice">
-                    🎯 <strong>تحليل Ameyo المباشر الدقيق:</strong> النظام يقرأ النص المنسوخ من Ameyo بدقة متناهية، فيميز من هو <code>Available 🟢</code> ومن هو في غداء <code>Lunch 🍱</code> أو استراحة <code>Break ☕</code> أو غير متصل!
+                    🔄 <strong>تزامن أوتوماتيكي يوم بيومه:</strong> النظام يتعرف على تاريخ اليوم تلقائياً، ويجلب شفت كل موظف من العمود الخاص بتاريخ اليوم بداخل شيت كوكل بدون الحاجة لأي تعديل يدوياً!
                 </div>
 
                 <div class="table-responsive">
@@ -293,6 +293,9 @@
         // Direct Google Sheet CSV Endpoint with exact gid 1335140115
         const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
 
+        // Keywords that mean the agent is NOT READY (on Break, Lunch, Aux, Paused, Away, Busy)
+        const breakKeywords = ["break", "lunch", "tea", "aux", "pause", "paused", "not ready", "notready", "away", "busy", "logoff", "logout", "offline", "استراحة", "غداء"];
+
         // State & Persistence
         let employees = JSON.parse(localStorage.getItem('evening_in_employees')) || initialEveningEmployees.map(e => ({
             ...e,
@@ -328,12 +331,12 @@
                 if (e.breaks.some(b => b.active)) onBreakC++;
             });
 
-            document.getElementById('totalCount').innerText = employees.length; // 23
-            document.getElementById('workingCount').innerText = workingC;      // 13
+            document.getElementById('totalCount').innerText = employees.length;
+            document.getElementById('workingCount').innerText = workingC;
             document.getElementById('readyCount').innerText = readyC;
             document.getElementById('notReadyCount').innerText = notReadyC;
             document.getElementById('onBreakCount').innerText = onBreakC;
-            document.getElementById('offCount').innerText = offC;             // 10
+            document.getElementById('offCount').innerText = offC;
 
             const filtered = employees.filter(e => {
                 const matchSearch = e.name.toLowerCase().includes(searchVal) || e.status.toLowerCase().includes(searchVal);
@@ -450,7 +453,6 @@
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const cleanEmpName = clean(emp.name);
 
-                    // Find line index where employee name appears
                     let foundIndex = -1;
                     for (let idx = 0; idx < lines.length; idx++) {
                         if (clean(lines[idx]) === cleanEmpName || clean(lines[idx]).includes(cleanEmpName)) {
@@ -460,7 +462,6 @@
                     }
 
                     if (foundIndex !== -1) {
-                        // Inspect the next 5 lines following the employee name
                         const nextLines = lines.slice(foundIndex, foundIndex + 6).join(' ').toLowerCase();
 
                         if (nextLines.includes('lunch')) {
@@ -491,20 +492,20 @@
             alert('تم تحليل نص Ameyo بنجاح والمطابقة الدقيقة للحالات والبريكات والغداء!');
         }
 
-        // Fetch Live Google Sheet Data for Evening / IN
+        // Fetch Live Google Sheet Data for Evening / IN with Dynamic Day Detection
         function fetchLiveGoogleSheet() {
             const syncText = document.getElementById('syncText');
-            if (syncText) syncText.innerText = "جاري المزامنة مع كوكل شيت...";
+            if (syncText) syncText.innerText = "جاري المزامنة التلقائية لـ Evening / IN...";
 
             fetch(GOOGLE_SHEET_CSV_URL)
                 .then(r => r.text())
                 .then(csv => {
                     parseGoogleSheetCSV(csv);
-                    if (syncText) syncText.innerText = "مربوط مباشرة مع Google Sheet (Evening / IN)";
+                    if (syncText) syncText.innerText = "مربوط أوتوماتيكياً مع Google Sheet (مُزامن)";
                 })
                 .catch(err => {
                     console.error(err);
-                    if (syncText) syncText.innerText = "يعتمد على البيانات المحفوظة";
+                    if (syncText) syncText.innerText = "يعتمد على البيانات المحفوظة محلياً";
                 });
         }
 
@@ -512,7 +513,26 @@
             const lines = csvText.split('\n');
             const eveningRows = [];
             let inEveningSection = false;
+
+            const now = new Date();
+            const dayNum = now.getDate();
+            const monthNum = now.getMonth() + 1;
+            const todayStr1 = `${dayNum}/${monthNum}`;
+            const todayStr2 = `${String(dayNum).padStart(2, '0')}/${monthNum}`;
+
+            document.getElementById('todayDateLabel').innerText = `${dayNum}/${monthNum}`;
+
             let todayColIndex = 28; // Default column for 25/7 in July sheet
+
+            for (let i = 0; i < Math.min(15, lines.length); i++) {
+                const rowCols = lines[i].split(',').map(c => c.trim());
+                for (let c = 0; c < rowCols.length; c++) {
+                    if (rowCols[c] === todayStr1 || rowCols[c] === todayStr2 || rowCols[c].startsWith(`${dayNum}/`)) {
+                        todayColIndex = c;
+                        break;
+                    }
+                }
+            }
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
