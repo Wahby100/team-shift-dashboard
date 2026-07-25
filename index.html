@@ -1317,15 +1317,15 @@
             const now = new Date();
             const dayNum = now.getDate();
 
-            // Match date cell starting with today's day number (e.g. 25/5, 25/7, 25/07/2026)
-            const dayRegex = new RegExp(`^0?${dayNum}[/-]`);
-
-            let currentMatchingDate = false;
-
             // Reset isSwapped status for all employees before applying fresh swaps
             employees.forEach(e => {
                 e.isSwapped = false;
             });
+
+            let currentMatchingDate = false;
+
+            // Match date cell starting with today's day number (e.g. 25/7, 25/07, 25/5)
+            const dayRegex = new RegExp(`^0?${dayNum}[/-]`);
 
             for (let i = 0; i < lines.length; i++) {
                 const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
@@ -1344,7 +1344,7 @@
                     const emp1Name = cols[2];
                     const emp1Shift = cols[3];
 
-                    if (emp1Name && emp1Name.length > 1 && emp1Shift && emp1Shift.length > 0) {
+                    if (emp1Name && emp1Name.length > 2 && emp1Shift && emp1Shift.length > 0) {
                         const targetEmp1 = employees.find(e => clean(e.name) === clean(emp1Name));
                         if (targetEmp1) {
                             targetEmp1.status = emp1Shift;
@@ -1364,7 +1364,7 @@
                         const emp2Name = cols[4];
                         const emp2Shift = cols[5];
 
-                        if (emp2Name && emp2Name.length > 1 && emp2Shift && emp2Shift.length > 0) {
+                        if (emp2Name && emp2Name.length > 2 && emp2Shift && emp2Shift.length > 0) {
                             const targetEmp2 = employees.find(e => clean(e.name) === clean(emp2Name));
                             if (targetEmp2) {
                                 targetEmp2.status = emp2Shift;
