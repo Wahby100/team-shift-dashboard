@@ -1318,18 +1318,17 @@
             const dayNum = now.getDate();
             const monthNum = now.getMonth() + 1;
 
+            // Strict regex enforcing BOTH Day and Month (e.g. 25/7, 25/07, 25/7/2026, 25/07/2026)
+            const todayRegex = new RegExp(`^0?${dayNum}[/-]0?${monthNum}(?:[/-]|$)`);
+
             let currentMatchingDate = false;
 
             for (let i = 0; i < lines.length; i++) {
                 const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-                const dateCell = cols[0] || '';
+                const dateCell = cols[0] ? cols[0].trim().replace(/\s/g, '') : '';
 
                 if (dateCell.length > 0) {
-                    const cleanDate = dateCell.replace(/\s/g, '');
-                    // Match date cell starting with today's day number (e.g. "25/" or "25/07" or "25/7")
-                    const startsWithToday = cleanDate.startsWith(`${dayNum}/`) || cleanDate.startsWith(`${String(dayNum).padStart(2, '0')}/`);
-                    
-                    if (startsWithToday) {
+                    if (todayRegex.test(dateCell)) {
                         currentMatchingDate = true;
                     } else {
                         currentMatchingDate = false;
