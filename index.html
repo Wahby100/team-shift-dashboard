@@ -20,15 +20,16 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --purple: #8b5cf6;
+            --cyan: #06b6d4;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --radius: 12px;
+            --radius: 14px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         body { background: var(--bg-body); color: var(--text-main); padding: 1.5rem; }
 
-        .container { max-width: 1600px; margin: 0 auto; }
+        .container { max-width: 1650px; margin: 0 auto; }
 
         header {
             display: flex;
@@ -78,6 +79,7 @@
         }
         .input-text:focus { border-color: var(--primary); }
 
+        /* General Metrics Grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -93,14 +95,52 @@
         .metric-card span { font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 0.3rem; }
         .metric-card h2 { font-size: 1.8rem; font-weight: 800; }
 
-        .slot-box {
-            background: rgba(59, 130, 246, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            border-radius: 8px;
-            padding: 0.6rem 0.9rem;
-            margin-top: 0.5rem;
-            font-size: 0.82rem;
+        /* Styled Targets Bar */
+        .targets-panel {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: grid;
+            grid-template-columns: 1.2fr 3fr;
+            gap: 1.5rem;
+            align-items: center;
         }
+        @media (max-width: 900px) { .targets-panel { grid-template-columns: 1fr; } }
+
+        .now-box {
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .now-box span { font-size: 0.85rem; color: var(--purple); font-weight: 700; display: block; }
+        .now-box h2 { font-size: 2.2rem; font-weight: 800; color: #a78bfa; margin: 0.2rem 0; }
+        .now-box small { font-size: 0.78rem; color: var(--text-muted); }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 768px) { .slots-grid { grid-template-columns: 1fr; } }
+
+        .slot-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .slot-card.active-slot {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.08);
+        }
+        .slot-card-title { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
+        .slot-card-val { font-size: 1.4rem; font-weight: 800; color: var(--text-main); }
+        .slot-card-sub { font-size: 0.74rem; color: var(--text-muted); margin-top: 0.2rem; }
 
         .grid-layout { display: grid; grid-template-columns: 3.2fr 1fr; gap: 1.5rem; }
         @media (max-width: 1024px) { .grid-layout { grid-template-columns: 1fr; } }
@@ -196,7 +236,36 @@
             </div>
         </header>
 
-        <!-- KPI Metrics (Including Scheduled Minus 3 Calculation) -->
+        <!-- Dynamic Slot Targets Bar (Modern Integrated Banner) -->
+        <div class="targets-panel">
+            <div class="now-box">
+                <span>🎯 المطلوب تواجدهم الآن بـ Ameyo</span>
+                <h2 id="expectedAmeyoNow">0</h2>
+                <small id="currentSlotLabel">الفترة الحالية</small>
+            </div>
+            
+            <div class="slots-grid">
+                <div class="slot-card" id="slotCard1">
+                    <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--primary)"></i> 4:30 PM - 6:30 PM</div>
+                    <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
+                    <div class="slot-card-sub">قاعدة (الشفت - 3)</div>
+                </div>
+
+                <div class="slot-card" id="slotCard2">
+                    <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--warning)"></i> 6:30 PM - 8:30 PM</div>
+                    <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
+                    <div class="slot-card-sub">قاعدة (الشفت - 3)</div>
+                </div>
+
+                <div class="slot-card" id="slotCard3">
+                    <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> 8:30 PM - 12:30 AM</div>
+                    <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
+                    <div class="slot-card-sub">العدد السابق ناقص 1 (مغادرة شفت)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI General Metrics -->
         <div class="metrics-grid">
             <div class="metric-card">
                 <span>إجمالي الموظفين</span>
@@ -206,20 +275,6 @@
                 <span>عدد موظفين اليوم</span>
                 <h2 id="workingCount" style="color:var(--primary)">13</h2>
             </div>
-            
-            <!-- Expected Target Card (Minus 3 Rule) -->
-            <div class="metric-card" style="border-color: var(--purple); grid-column: span 2;">
-                <span style="color:var(--purple); font-weight:700;">🎯 المطلوب تواجدهم بـ Ameyo الآن (المقترح - 3)</span>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.3rem;">
-                    <h2 id="expectedAmeyoNow" style="color:var(--purple)">0</h2>
-                    <small id="currentSlotLabel" style="color:var(--text-muted)">الفترة الحالية</small>
-                </div>
-                <div class="slot-box">
-                    <div>🕒 <strong>من 4:30 إلى 6:30:</strong> المطلوب <span id="targetSlot1" style="color:var(--warning); font-weight:700;">0</span> موظفين</div>
-                    <div>🕒 <strong>من 6:30 إلى 12:30:</strong> المطلوب <span id="targetSlot2" style="color:var(--warning); font-weight:700;">0</span> موظفين</div>
-                </div>
-            </div>
-
             <div class="metric-card" style="border-color: var(--success);">
                 <span>(Ready 🟢) المتواجدون الفعليين</span>
                 <h2 id="readyCount" style="color:var(--success)">0</h2>
@@ -252,7 +307,8 @@
                 </div>
                 
                 <div class="notice">
-                    📐 <strong>قاعدة التواجد المستهدف (قاعدة - 3):</strong> النظام يحسب الموظفين المطلوقين بكل فترة زمنية (من 4:30 إلى 6:30 ومن 6:30 إلى 12:30)، ويخصم 3 تلقائياً لحساب الاستراحات وتغطية الشفت.
+                    📐 <strong>حساب التواجد المستهدف بالسيستم:</strong> 
+                    تُحسب الفترات أوتوماتيكياً: (4:30-6:30) ناقص 3، (6:30-8:30) ناقص 3، و (8:30-12:30) ناقص 1 إضافي بسبب انتهاء شفت الموظف المغادر.
                 </div>
 
                 <div class="table-responsive">
@@ -344,14 +400,14 @@
             const st = (status || '').toUpperCase();
             if (st === 'OFF' || st === 'VACATION') return { isWorking: false, label: 'عطلة' };
 
-            if (st.includes('6:30-2:30')) return { isWorking: true, start: 18.5, end: 26.5, slot1: false, slot2: true, label: '6:30 م - 2:30 ص' };
-            if (st.includes('12:30-8:30')) return { isWorking: true, start: 12.5, end: 20.5, slot1: true, slot2: true, label: '12:30 م - 8:30 م' };
+            if (st.includes('6:30-2:30')) return { isWorking: true, slot1: false, slot2: true, slot3: true, label: '6:30 م - 2:30 ص' };
+            if (st.includes('12:30-8:30')) return { isWorking: true, slot1: true, slot2: true, slot3: false, label: '12:30 م - 8:30 م' };
 
             // Default shift if no time written (4:30 PM to 12:30 AM)
-            return { isWorking: true, start: 16.5, end: 24.5, slot1: true, slot2: true, label: '4:30 م - 12:30 ص' };
+            return { isWorking: true, slot1: true, slot2: true, slot3: true, label: '4:30 م - 12:30 ص' };
         }
 
-        // Render Function with Slot-based Target Calculation (Minus 3)
+        // Render Function with 3 Slot Targets (4:30-6:30, 6:30-8:30, 8:30-12:30)
         function render() {
             const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
             const filterVal = document.getElementById('filterStatus').value;
@@ -378,29 +434,45 @@
                 }
             });
 
-            // Target counts with -3 rule
+            // Target 1: Slot (4:30 - 6:30) = Scheduled minus 3
             const target1 = Math.max(0, slot1Scheduled - 3);
+
+            // Target 2: Slot (6:30 - 8:30) = Scheduled minus 3
             const target2 = Math.max(0, slot2Scheduled - 3);
 
-            document.getElementById('targetSlot1').innerText = `${target1} (من أصل ${slot1Scheduled})`;
-            document.getElementById('targetSlot2').innerText = `${target2} (من أصل ${slot2Scheduled})`;
+            // Target 3: Slot (8:30 - 12:30) = Target 2 minus 1
+            const target3 = Math.max(0, target2 - 1);
 
-            // Determine Current Time Slot
+            document.getElementById('targetSlot1').innerText = `${target1}`;
+            document.getElementById('targetSlot2').innerText = `${target2}`;
+            document.getElementById('targetSlot3').innerText = `${target3}`;
+
+            // Determine Current Time Slot & Highlight Active Card
             const now = new Date();
             const currentHourDecimal = now.getHours() + (now.getMinutes() / 60);
 
             let expectedNow = 0;
             let slotLabelText = '';
 
+            document.getElementById('slotCard1').classList.remove('active-slot');
+            document.getElementById('slotCard2').classList.remove('active-slot');
+            document.getElementById('slotCard3').classList.remove('active-slot');
+
             if (currentHourDecimal >= 16.5 && currentHourDecimal < 18.5) {
                 expectedNow = target1;
-                slotLabelText = 'الفترة الحالية (4:30 - 6:30)';
-            } else if (currentHourDecimal >= 18.5 && currentHourDecimal <= 24.5) {
+                slotLabelText = 'فترة (4:30 PM - 6:30 PM)';
+                document.getElementById('slotCard1').classList.add('active-slot');
+            } else if (currentHourDecimal >= 18.5 && currentHourDecimal < 20.5) {
                 expectedNow = target2;
-                slotLabelText = 'الفترة الحالية (6:30 - 12:30)';
+                slotLabelText = 'فترة (6:30 PM - 8:30 PM)';
+                document.getElementById('slotCard2').classList.add('active-slot');
+            } else if (currentHourDecimal >= 20.5 && currentHourDecimal <= 24.5) {
+                expectedNow = target3;
+                slotLabelText = 'فترة (8:30 PM - 12:30 AM)';
+                document.getElementById('slotCard3').classList.add('active-slot');
             } else {
-                expectedNow = target2;
-                slotLabelText = 'خارج الشفت الأساسي';
+                expectedNow = target3;
+                slotLabelText = 'خارج وقت الشفت الأساسي';
             }
 
             document.getElementById('expectedAmeyoNow').innerText = expectedNow;
