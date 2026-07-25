@@ -366,6 +366,14 @@
             color: var(--primary);
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
+        .badge-swap {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            font-size: 0.72rem;
+            padding: 0.15rem 0.5rem;
+            margin-right: 0.4rem;
+        }
 
         textarea {
             width: 100%;
@@ -417,7 +425,7 @@
         <div class="sidebar-menu">
             <div class="menu-category">الرئيسية والإحصائيات</div>
             <div class="menu-item active" onclick="switchPage('home')">
-                <div><i class="fa-solid fa-chart-pie text-primary"></i> لوحة التحكم الرئيسيّة</div>
+                <div><i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)</div>
             </div>
             <div class="menu-item" onclick="switchPage('schedule')">
                 <div><i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل</div>
@@ -454,7 +462,7 @@
                 <div><i class="fa-solid fa-file-excel text-success"></i> Google Sheet الرئيسي</div>
             </div>
             <div class="menu-item" onclick="switchPage('sheet2')">
-                <div><i class="fa-solid fa-file-excel text-cyan"></i> Google Sheet الثانوي</div>
+                <div><i class="fa-solid fa-file-excel text-cyan"></i> Google Sheet الثانوي (تبديلات)</div>
             </div>
 
             <div class="menu-category">السجل والدليل</div>
@@ -475,7 +483,7 @@
             </div>
 
             <div class="actions">
-                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث البيانات</button>
+                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث البيانات والتبديلات</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير السجل الزمني</button>
             </div>
         </header>
@@ -725,7 +733,7 @@
         <div id="page-sheet2" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي</h3>
+                    <h3><i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي (تبديل الشفتات)</h3>
                     <a href="https://docs.google.com/spreadsheets/d/1uF3KjEbuuQH8yG5v97pcmakK76ZnCIYMOQELsKWiSEg/edit?gid=642239778#gid=642239778" target="_blank" class="btn btn-sm btn-outline">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح في نافذة مستقلة
                     </a>
@@ -790,7 +798,8 @@
             { id: 23, name: "OthmanFouad", status: "H 6:30-2:30" }
         ];
 
-        const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
+        const GOOGLE_SHEET_MAIN_CSV = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
+        const GOOGLE_SHEET_SWAPS_CSV = "https://docs.google.com/spreadsheets/d/1uF3KjEbuuQH8yG5v97pcmakK76ZnCIYMOQELsKWiSEg/export?format=csv&gid=642239778";
 
         let currentSort = 'default';
         let sortAsc = true;
@@ -805,7 +814,7 @@
             'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i> المداومين غير المتصلين (Not Ready)',
             'off': '<i class="fa-solid fa-calendar-xmark text-muted"></i> غير المطلوبين اليوم (Day OFF)',
             'sheet1': '<i class="fa-solid fa-file-excel text-success"></i> جدول Google Sheet الرئيسي',
-            'sheet2': '<i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي',
+            'sheet2': '<i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي (تبديل الشفتات)',
             'roster': '<i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل'
         };
 
@@ -864,6 +873,7 @@
             ...e,
             ameyoCategory: (e.status === 'OFF' || e.status === 'Vacation') ? 'OFF' : 'Not Ready',
             ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'غير متصل',
+            isSwapped: false,
             breaks: []
         }));
 
@@ -874,8 +884,8 @@
             const st = (status || '').toUpperCase();
             if (st === 'OFF' || st === 'VACATION') return { isWorking: false, label: 'عطلة رسمية' };
 
-            if (st.includes('6:30-2:30')) return { isWorking: true, slot1: false, slot2: true, slot3: true, label: '6:30 PM - 2:30 AM' };
-            if (st.includes('12:30-8:30')) return { isWorking: true, slot1: true, slot2: true, slot3: false, label: '12:30 PM - 8:30 PM' };
+            if (st.includes('6:30-2:30') || st.includes('6:30 - 2:30')) return { isWorking: true, slot1: false, slot2: true, slot3: true, label: '6:30 PM - 2:30 AM' };
+            if (st.includes('12:30-8:30') || st.includes('12:30 - 8:30')) return { isWorking: true, slot1: true, slot2: true, slot3: false, label: '12:30 PM - 8:30 PM' };
 
             return { isWorking: true, slot1: true, slot2: true, slot3: true, label: '4:30 PM - 12:30 AM' };
         }
@@ -954,7 +964,6 @@
             document.getElementById('notReadyCount').innerText = notReadyC;
             document.getElementById('offCount').innerText = offC;
 
-            // Update Sidebar Badges
             document.getElementById('sideWorkingBadge').innerText = workingC;
             document.getElementById('sideReadyBadge').innerText = readyC;
             document.getElementById('sideLunchBadge').innerText = lunchC;
@@ -1014,10 +1023,12 @@
                     }
                 }
 
+                const swapTag = emp.isSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-arrow-rotate-left"></i> تبديل</span>` : '';
+
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const homeTr = document.createElement('tr');
                     homeTr.innerHTML = `
-                        <td><strong>${emp.name}</strong></td>
+                        <td><strong>${emp.name}</strong> ${swapTag}</td>
                         <td><span class="badge badge-shift">${emp.status}</span></td>
                         <td><span style="color:var(--text-muted); font-size:0.85rem;">${shiftInfo.label}</span></td>
                         <td>${ameyoBadge}</td>
@@ -1045,7 +1056,7 @@
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><strong>${emp.name}</strong></td>
+                    <td><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span></td>
                     <td><span style="color:var(--text-muted); font-size:0.85rem;">${shiftInfo.label}</span></td>
                     <td>${ameyoBadge}</td>
@@ -1076,18 +1087,19 @@
             employees.forEach(emp => {
                 const shiftInfo = getShiftHours(emp.status);
                 const isOff = emp.status === 'OFF' || emp.status === 'Vacation';
+                const swapTag = emp.isSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-arrow-rotate-left"></i> تبديل</span>` : '';
 
                 if (isOff) {
-                    offBody.innerHTML += `<tr><td>${offI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><i class="fa-solid fa-calendar-xmark"></i> Day OFF</span></td></tr>`;
+                    offBody.innerHTML += `<tr><td>${offI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><i class="fa-solid fa-calendar-xmark"></i> Day OFF</span></td></tr>`;
                 } else {
                     if (emp.ameyoCategory === 'Ready') {
-                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><i class="fa-solid fa-circle-check"></i> Ready</span></td></tr>`;
+                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><i class="fa-solid fa-circle-check"></i> Ready</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Lunch') {
-                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><i class="fa-solid fa-utensils"></i> Lunch</span></td></tr>`;
+                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><i class="fa-solid fa-utensils"></i> Lunch</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Break') {
-                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><i class="fa-solid fa-mug-hot"></i> Break</span></td></tr>`;
+                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><i class="fa-solid fa-mug-hot"></i> Break</span></td></tr>`;
                     } else {
-                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><i class="fa-solid fa-circle-xmark"></i> غير متصل</span></td></tr>`;
+                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><i class="fa-solid fa-circle-xmark"></i> غير متصل</span></td></tr>`;
                     }
                 }
             });
@@ -1102,10 +1114,11 @@
                 const tr = document.createElement('tr');
                 const shiftInfo = getShiftHours(emp.status);
                 let historyLog = emp.breaks.map(b => `<span class="badge badge-shift">${b.time}</span>`).join(' ') || '-';
+                const swapTag = emp.isSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-arrow-rotate-left"></i> تبديل</span>` : '';
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><strong>${emp.name}</strong></td>
+                    <td><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span> (${shiftInfo.label})</td>
                     <td>${emp.ameyoDetail || 'Day OFF'}</td>
                     <td>${historyLog}</td>
@@ -1201,15 +1214,17 @@
             alert('تم تحليل حالات الموظفين والأنشطة بنجاح!');
         }
 
+        // Fetch Live Main Google Sheet Data
         function fetchLiveGoogleSheet() {
             const syncText = document.getElementById('syncText');
             if (syncText) syncText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-warning"></i> Evening / IN • جاري التزامن...';
 
-            fetch(GOOGLE_SHEET_CSV_URL)
+            fetch(GOOGLE_SHEET_MAIN_CSV)
                 .then(r => r.text())
                 .then(csv => {
                     parseGoogleSheetCSV(csv);
-                    if (syncText) syncText.innerHTML = '<i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync';
+                    // Next, fetch & apply Shift Swaps automatically
+                    fetchLiveSwapsSheet();
                 })
                 .catch(err => {
                     console.error(err);
@@ -1267,6 +1282,7 @@
                             status: shiftToday,
                             ameyoCategory: ameyoCategory,
                             ameyoDetail: ameyoDetail,
+                            isSwapped: false,
                             breaks: breaks
                         });
                     }
@@ -1278,6 +1294,90 @@
                 save();
                 render();
             }
+        }
+
+        // Fetch Live Shift Swaps Google Sheet & Override Today's Shifts Automatically
+        function fetchLiveSwapsSheet() {
+            const syncText = document.getElementById('syncText');
+
+            fetch(GOOGLE_SHEET_SWAPS_CSV)
+                .then(r => r.text())
+                .then(csv => {
+                    parseSwapsCSV(csv);
+                    if (syncText) syncText.innerHTML = '<i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet & Swaps Live Sync';
+                })
+                .catch(err => {
+                    console.error("Swaps fetch error:", err);
+                    if (syncText) syncText.innerHTML = '<i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync';
+                });
+        }
+
+        function parseSwapsCSV(csvText) {
+            const lines = csvText.split('\n');
+            const now = new Date();
+            const dayNum = now.getDate();
+            const monthNum = now.getMonth() + 1;
+            const todayDateTag1 = `${dayNum}/${monthNum}`;
+            const todayDateTag2 = `${String(dayNum).padStart(2, '0')}/${monthNum}`;
+
+            let currentMatchingDate = false;
+
+            for (let i = 0; i < lines.length; i++) {
+                const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                const dateCell = cols[0] || '';
+
+                if (dateCell.length > 0) {
+                    if (dateCell === todayDateTag1 || dateCell === todayDateTag2 || dateCell.startsWith(`${dayNum}/`)) {
+                        currentMatchingDate = true;
+                    } else {
+                        currentMatchingDate = false;
+                    }
+                }
+
+                if (currentMatchingDate && cols.length >= 6) {
+                    const emp1Name = cols[2];
+                    const emp1Shift = cols[3];
+                    const emp2Name = cols[4];
+                    const emp2Shift = cols[5];
+
+                    if (emp1Name && emp1Shift) {
+                        const targetEmp1 = employees.find(e => clean(e.name) === clean(emp1Name));
+                        if (targetEmp1) {
+                            targetEmp1.status = emp1Shift;
+                            targetEmp1.isSwapped = true;
+                            if (emp1Shift === 'OFF' || emp1Shift.toLowerCase().includes('off')) {
+                                targetEmp1.ameyoCategory = 'OFF';
+                                targetEmp1.ameyoDetail = 'Day OFF';
+                            } else {
+                                if (targetEmp1.ameyoCategory === 'OFF') {
+                                    targetEmp1.ameyoCategory = 'Not Ready';
+                                    targetEmp1.ameyoDetail = 'غير متصل';
+                                }
+                            }
+                        }
+                    }
+
+                    if (emp2Name && emp2Shift) {
+                        const targetEmp2 = employees.find(e => clean(e.name) === clean(emp2Name));
+                        if (targetEmp2) {
+                            targetEmp2.status = emp2Shift;
+                            targetEmp2.isSwapped = true;
+                            if (emp2Shift === 'OFF' || emp2Shift.toLowerCase().includes('off')) {
+                                targetEmp2.ameyoCategory = 'OFF';
+                                targetEmp2.ameyoDetail = 'Day OFF';
+                            } else {
+                                if (targetEmp2.ameyoCategory === 'OFF') {
+                                    targetEmp2.ameyoCategory = 'Not Ready';
+                                    targetEmp2.ameyoDetail = 'غير متصل';
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            save();
+            render();
         }
 
         fetchLiveGoogleSheet();
