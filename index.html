@@ -484,32 +484,32 @@
                 <div><i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)</div>
             </div>
             <div class="menu-item" onclick="switchPage('schedule')">
-                <div><i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل</div>
+                <div><i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم </div>
                 <span class="menu-badge" id="sideWorkingBadge">13</span>
             </div>
             <div class="menu-item" onclick="switchPage('ameyo')">
                 <div><i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo</div>
             </div>
 
-            <div class="menu-category">حالات الكادر اليوم</div>
+            <div class="menu-category">Status</div>
             <div class="menu-item" onclick="switchPage('ready')">
-                <div><i class="fa-solid fa-circle-check text-success"></i> متواجد (Ready)</div>
+                <div><i class="fa-solid fa-circle-check text-success"></i> (Ready)</div>
                 <span class="menu-badge" id="sideReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('lunch')">
-                <div><i class="fa-solid fa-utensils text-warning"></i> استراحة غداء (Lunch)</div>
+                <div><i class="fa-solid fa-utensils text-warning"></i> (Lunch)</div>
                 <span class="menu-badge" id="sideLunchBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('break')">
-                <div><i class="fa-solid fa-mug-hot text-purple"></i> استراحة قصيرة (Break)</div>
+                <div><i class="fa-solid fa-mug-hot text-purple"></i>  (Break)</div>
                 <span class="menu-badge" id="sideBreakBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('notready')">
-                <div><i class="fa-solid fa-circle-xmark text-danger"></i> غير متصل (Not Ready)</div>
+                <div><i class="fa-solid fa-circle-xmark text-danger"></i> (Not Ready)</div>
                 <span class="menu-badge" id="sideNotReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('off')">
-                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> عطلة (Day OFF)</div>
+                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> (Day OFF)</div>
                 <span class="menu-badge" id="sideOffBadge">10</span>
             </div>
 
@@ -523,7 +523,7 @@
 
             <div class="menu-category">السجل والدليل</div>
             <div class="menu-item" onclick="switchPage('roster')">
-                <div><i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل</div>
+                <div><i class="fa-solid fa-users-gear text-purple"></i> دليل التيم والتفاصيل</div>
                 <span class="menu-badge">23</span>
             </div>
         </div>
@@ -534,7 +534,7 @@
         <!-- Top Header Bar -->
         <header class="top-header">
             <div class="page-header-title">
-                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)</h2>
+                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> (Dashboard)</h2>
                 <small id="syncText"><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</small>
             </div>
 
@@ -549,7 +549,7 @@
         <div id="page-home" class="page-content active-page">
             <div class="targets-panel">
                 <div class="now-box">
-                    <span><i class="fa-solid fa-bullseye"></i> التواجد المستهدف بـ Ameyo الآن</span>
+                    <span><i class="fa-solid fa-bullseye"></i> التواجد بـ Ameyo الآن</span>
                     <h2 id="expectedAmeyoNow">0</h2>
                     <small id="currentSlotLabel">الفترة الحالية</small>
                 </div>
@@ -606,7 +606,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-bolt text-warning"></i> نظرة سريعة على المداومين الآن</h3>
+                    <h3><i class="fa-solid fa-bolt text-warning"></i> نظرة سريعة على التيم الان</h3>
                     <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">فتح الجدول الكامل <i class="fa-solid fa-arrow-left"></i></button>
                 </div>
                 <div class="table-responsive">
@@ -615,7 +615,7 @@
                             <tr>
                                 <th>اسم الموظف</th>
                                 <th>شفت الجدول</th>
-                                <th>فترة الدوام المحسوبة</th>
+                                <th>فترة الدوام </th>
                                 <th>حالة Ameyo</th>
                             </tr>
                         </thead>
@@ -662,8 +662,8 @@
                             <tr>
                                 <th>#</th>
                                 <th onclick="setSortBy('name')">اسم الموظف <i class="fa-solid fa-sort"></i></th>
-                                <th onclick="setSortBy('shift')">شفت الجدول <i class="fa-solid fa-sort"></i></th>
-                                <th>فترة الدوام المحسوبة</th>
+                                <th onclick="setSortBy('shift')"> الجدول <i class="fa-solid fa-sort"></i></th>
+                                <th>فترة الدوام </th>
                                 <th onclick="setSortBy('status')">حالة التواجد (Ameyo) <i class="fa-solid fa-sort"></i></th>
                                 <th onclick="setSortBy('breaks')">تسجيل الاستراحات (3 Max) <i class="fa-solid fa-sort"></i></th>
                                 <th>سجل التوقيتات الزمني</th>
@@ -708,7 +708,7 @@
         <div id="page-lunch" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-utensils text-warning"></i> قائمة الموظفين في استراحة غداء (Lunch)</h3>
+                    <h3><i class="fa-solid fa-utensils text-warning"></i> (Lunch)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -725,7 +725,7 @@
         <div id="page-break" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-mug-hot text-purple"></i> قائمة الموظفين في استراحة قصيرة (Break)</h3>
+                    <h3><i class="fa-solid fa-mug-hot text-purple"></i>  (Break)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -742,7 +742,7 @@
         <div id="page-notready" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-circle-xmark text-danger"></i> قائمة المداومين غير المتصلين (Not Ready)</h3>
+                    <h3><i class="fa-solid fa-circle-xmark text-danger"></i> (Not Ready)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -759,7 +759,7 @@
         <div id="page-off" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-calendar-xmark text-muted"></i> قائمة الموظفين غير المطلوبين اليوم (Day OFF)</h3>
+                    <h3><i class="fa-solid fa-calendar-xmark text-muted"></i> (Day OFF)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -805,8 +805,8 @@
         <div id="page-roster" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-users-gear text-purple"></i> القائمة الكاملة لكافة كادر Evening / IN</h3>
-                    <input type="text" id="rosterSearch" class="input-text" placeholder="تصفية الكادر..." oninput="renderRoster()">
+                    <h3><i class="fa-solid fa-users-gear text-purple"></i> القائمة الكاملة لكافة التيم Evening / IN</h3>
+                    <input type="text" id="rosterSearch" class="input-text" placeholder="تصفية التيم" oninput="renderRoster()">
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -892,14 +892,14 @@
             'home': '<i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)',
             'schedule': '<i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل',
             'ameyo': '<i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo المباشر',
-            'ready': '<i class="fa-solid fa-circle-check text-success"></i> الكادر المتواجد (Ready)',
-            'lunch': '<i class="fa-solid fa-utensils text-warning"></i> استراحات الغداء (Lunch)',
-            'break': '<i class="fa-solid fa-mug-hot text-purple"></i> الاستراحات القصيرة (Break)',
-            'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i> المداومين غير المتصلين (Not Ready)',
-            'off': '<i class="fa-solid fa-calendar-xmark text-muted"></i> غير المطلوبين اليوم (Day OFF)',
+            'ready': '<i class="fa-solid fa-circle-check text-success"></i> التيم المتواجد (Ready)',
+            'lunch': '<i class="fa-solid fa-utensils text-warning"></i> (Lunch)',
+            'break': '<i class="fa-solid fa-mug-hot text-purple"></i> (Break)',
+            'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i>  (Not Ready)',
+            'off': '<i class="fa-solid fa-calendar-xmark text-muted"></i>  (Day OFF)',
             'sheet1': '<i class="fa-solid fa-file-excel text-success"></i> جدول Google Sheet الرئيسي',
             'sheet2': '<i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي (تبديلات)',
-            'roster': '<i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل'
+            'roster': '<i class="fa-solid fa-users-gear text-purple"></i> دليل التيم والتفاصيل'
         };
 
         function setSortBy(sortKey) {
