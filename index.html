@@ -367,34 +367,70 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        textarea {
-            width: 100%;
-            background: rgba(11, 15, 25, 0.8);
-            border: 1px solid var(--border);
-            color: var(--text-main);
+        /* Manual Swap Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
             padding: 1rem;
-            border-radius: 10px;
-            resize: vertical;
-            font-size: 0.88rem;
-            outline: none;
-            margin-bottom: 0.9rem;
-            transition: border-color 0.2s ease;
         }
-        textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
-
-        .sheet-frame-container {
+        .modal-overlay.active { display: flex; }
+        
+        .modal-card {
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border-glow);
+            border-radius: 18px;
             width: 100%;
-            height: 82vh;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            background: #ffffff;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            max-width: 520px;
+            padding: 1.8rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .sheet-frame-container iframe { width: 100%; height: 100%; border: none; }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
 
-        .page-content { display: none; }
-        .page-content.active-page { display: block; }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-header h3 { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; color: #fff; }
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .modal-close:hover { color: var(--danger); }
+
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .form-group select, .form-group input { width: 100%; }
+
+        .btn-warning { background: var(--warning); color: #000; font-weight: 800; box-shadow: 0 4px 14px var(--warning-glow); }
+        .btn-warning:hover { background: #d97706; color: #fff; }
+
+        .badge-swap {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            font-size: 0.72rem;
+            padding: 0.15rem 0.5rem;
+            margin-right: 0.4rem;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -475,6 +511,7 @@
             </div>
 
             <div class="actions">
+                <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> تبديل شفت يدوي</button>
                 <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث البيانات والجدول</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير السجل الزمني</button>
             </div>
@@ -762,6 +799,34 @@
         </div>
     </main>
 
+    <!-- Manual Shift Swap Modal -->
+    <div id="swapModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-arrow-rotate-left text-warning"></i> تبديل الشفتات بين موظفين اثنين</h3>
+                <button class="modal-close" onclick="closeSwapModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="form-group">
+                <label for="swapEmp1Select"><i class="fa-solid fa-user-check text-primary"></i> الموظف الأول:</label>
+                <select id="swapEmp1Select" class="input-text"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="swapEmp2Select"><i class="fa-solid fa-user-gear text-warning"></i> الموظف الثاني (البديل):</label>
+                <select id="swapEmp2Select" class="input-text"></select>
+            </div>
+
+            <div class="actions" style="margin-top: 1.5rem; justify-content: space-between;">
+                <button class="btn btn-outline btn-sm" onclick="clearAllManualSwaps()"><i class="fa-solid fa-rotate-left"></i> تصفير التبديلات اليوم</button>
+                <div style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-outline" onclick="closeSwapModal()">إلغاء</button>
+                    <button class="btn btn-warning" onclick="applyManualSwap()"><i class="fa-solid fa-arrow-rotate-left"></i> تبديل الشفتين بينهما</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Exact 23 Employees of Evening / IN from Google Sheet
         const initialEveningEmployees = [
@@ -866,6 +931,113 @@
             ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'غير متصل',
             breaks: []
         }));
+
+        // Helper to get today's YYYY-MM-DD key for daily reset
+        function getTodayDateKey() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function getManualSwapsStore() {
+            try {
+                const data = JSON.parse(localStorage.getItem('manual_swaps_store'));
+                if (data && data.date === getTodayDateKey()) {
+                    return data.swaps || {};
+                }
+            } catch (err) {}
+            return {};
+        }
+
+        function saveManualSwap(empName, newShift) {
+            const currentSwaps = getManualSwapsStore();
+            currentSwaps[empName] = newShift;
+            localStorage.setItem('manual_swaps_store', JSON.stringify({
+                date: getTodayDateKey(),
+                swaps: currentSwaps
+            }));
+        }
+
+        function openSwapModal() {
+            const select1 = document.getElementById('swapEmp1Select');
+            const select2 = document.getElementById('swapEmp2Select');
+            select1.innerHTML = '';
+            select2.innerHTML = '';
+
+            employees.forEach(emp => {
+                const opt1 = document.createElement('option');
+                opt1.value = emp.name;
+                opt1.innerText = `${emp.name} (${emp.status})`;
+                select1.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = emp.name;
+                opt2.innerText = `${emp.name} (${emp.status})`;
+                select2.appendChild(opt2);
+            });
+
+            if (select2.options.length > 1) {
+                select2.selectedIndex = 1;
+            }
+
+            document.getElementById('swapModal').classList.add('active');
+        }
+
+        function closeSwapModal() {
+            document.getElementById('swapModal').classList.remove('active');
+        }
+
+        function applyManualSwap() {
+            const name1 = document.getElementById('swapEmp1Select').value;
+            const name2 = document.getElementById('swapEmp2Select').value;
+
+            if (!name1 || !name2) {
+                alert('يرجى اختيار الموظفين الاثنين للتبديل');
+                return;
+            }
+            if (name1 === name2) {
+                alert('يرجى اختيار موظفين مختلفين للتبديل بينهما!');
+                return;
+            }
+
+            const emp1 = employees.find(e => e.name === name1);
+            const emp2 = employees.find(e => e.name === name2);
+
+            if (emp1 && emp2) {
+                const shift1 = emp1.status;
+                const shift2 = emp2.status;
+
+                emp1.status = shift2;
+                emp2.status = shift1;
+
+                emp1.isManualSwapped = true;
+                emp2.isManualSwapped = true;
+
+                [emp1, emp2].forEach(emp => {
+                    if (emp.status.toLowerCase().includes('off') || emp.status === 'Vacation') {
+                        emp.ameyoCategory = 'OFF';
+                        emp.ameyoDetail = (emp.status === 'Vacation') ? 'إجازة' : 'Day OFF';
+                    } else if (emp.ameyoCategory === 'OFF') {
+                        emp.ameyoCategory = 'Not Ready';
+                        emp.ameyoDetail = 'غير متصل';
+                    }
+                });
+
+                saveManualSwap(emp1.name, emp1.status);
+                saveManualSwap(emp2.name, emp2.status);
+                save();
+                render();
+                closeSwapModal();
+            }
+        }
+
+        function clearAllManualSwaps() {
+            if (confirm('هل تريد تصفير وإلغاء كافة التبديلات اليدوية اليوم؟')) {
+                localStorage.removeItem('manual_swaps_store');
+                employees.forEach(e => e.isManualSwapped = false);
+                fetchLiveGoogleSheet();
+                closeSwapModal();
+            }
+        }
 
         function clean(str) { return (str || '').toLowerCase().replace(/[\s\._\-]/g, ''); }
         function save() { localStorage.setItem('evening_in_employees', JSON.stringify(employees)); }
@@ -1013,10 +1185,12 @@
                     }
                 }
 
+                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> تبديل يدوي</span>` : '';
+
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const homeTr = document.createElement('tr');
                     homeTr.innerHTML = `
-                        <td><strong>${emp.name}</strong></td>
+                        <td><strong>${emp.name}</strong> ${swapTag}</td>
                         <td><span class="badge badge-shift">${emp.status}</span></td>
                         <td><span style="color:var(--text-muted); font-size:0.85rem;">${shiftInfo.label}</span></td>
                         <td>${ameyoBadge}</td>
@@ -1044,7 +1218,7 @@
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><strong>${emp.name}</strong></td>
+                    <td><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span></td>
                     <td><span style="color:var(--text-muted); font-size:0.85rem;">${shiftInfo.label}</span></td>
                     <td>${ameyoBadge}</td>
@@ -1075,18 +1249,19 @@
             employees.forEach(emp => {
                 const shiftInfo = getShiftHours(emp.status);
                 const isOff = emp.status === 'OFF' || emp.status === 'Vacation';
+                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> تبديل يدوي</span>` : '';
 
                 if (isOff) {
-                    offBody.innerHTML += `<tr><td>${offI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><i class="fa-solid fa-calendar-xmark"></i> Day OFF</span></td></tr>`;
+                    offBody.innerHTML += `<tr><td>${offI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><i class="fa-solid fa-calendar-xmark"></i> Day OFF</span></td></tr>`;
                 } else {
                     if (emp.ameyoCategory === 'Ready') {
-                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><i class="fa-solid fa-circle-check"></i> Ready</span></td></tr>`;
+                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><i class="fa-solid fa-circle-check"></i> Ready</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Lunch') {
-                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><i class="fa-solid fa-utensils"></i> Lunch</span></td></tr>`;
+                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><i class="fa-solid fa-utensils"></i> Lunch</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Break') {
-                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><i class="fa-solid fa-mug-hot"></i> Break</span></td></tr>`;
+                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><i class="fa-solid fa-mug-hot"></i> Break</span></td></tr>`;
                     } else {
-                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><strong>${emp.name}</strong></td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><i class="fa-solid fa-circle-xmark"></i> غير متصل</span></td></tr>`;
+                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><i class="fa-solid fa-circle-xmark"></i> غير متصل</span></td></tr>`;
                     }
                 }
             });
@@ -1101,10 +1276,11 @@
                 const tr = document.createElement('tr');
                 const shiftInfo = getShiftHours(emp.status);
                 let historyLog = emp.breaks.map(b => `<span class="badge badge-shift">${b.time}</span>`).join(' ') || '-';
+                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> تبديل يدوي</span>` : '';
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><strong>${emp.name}</strong></td>
+                    <td><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span> (${shiftInfo.label})</td>
                     <td>${emp.ameyoDetail || 'Day OFF'}</td>
                     <td>${historyLog}</td>
@@ -1242,6 +1418,8 @@
                 }
             }
 
+            const manualSwaps = getManualSwapsStore();
+
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
                 if (line.includes('Evening / IN')) {
@@ -1254,7 +1432,13 @@
                     const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
                     if (cols.length >= 4 && cols[1] && cols[1] !== 'Name' && cols[1] !== 'Shift') {
                         const name = cols[1];
-                        const shiftToday = cols[todayColIndex] || cols[4] || 'OFF';
+                        let shiftToday = cols[todayColIndex] || cols[4] || 'OFF';
+                        let isManualSwapped = false;
+
+                        if (manualSwaps[name]) {
+                            shiftToday = manualSwaps[name];
+                            isManualSwapped = true;
+                        }
 
                         const existingEmp = employees.find(e => clean(e.name) === clean(name));
                         const breaks = existingEmp ? existingEmp.breaks : [];
@@ -1265,6 +1449,7 @@
                             id: eveningRows.length + 1,
                             name: name,
                             status: shiftToday,
+                            isManualSwapped: isManualSwapped,
                             ameyoCategory: ameyoCategory,
                             ameyoDetail: ameyoDetail,
                             breaks: breaks
