@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CC MANAGEMENT SHIFT</title>
+    <title>CC MANAGEMENT | SHIFT DASHBOARD</title>
     <!-- Google Fonts: Cairo & Montserrat -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-body: #0b0f19;
-            --bg-card: rgba(18, 26, 43, 0.8);
-            --bg-sidebar: #0e1524;
-            --bg-hover: rgba(30, 44, 71, 0.7);
-            --border: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(59, 130, 246, 0.25);
+            --bg-body: #080c14;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-sidebar: #0b1120;
+            --bg-hover: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.07);
+            --border-glow: rgba(59, 130, 246, 0.3);
             
             --primary: #3b82f6;
             --primary-glow: rgba(59, 130, 246, 0.25);
@@ -32,8 +32,8 @@
             
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --sidebar-width: 280px;
-            --radius: 14px;
+            --sidebar-width: 255px;
+            --radius: 16px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
@@ -42,51 +42,52 @@
             background: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.06), transparent 50%);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.05), transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.04), transparent 45%);
             background-attachment: fixed;
+            overflow-x: hidden;
         }
 
-        .container { max-width: 1750px; margin: 0 auto; }
-
-        /* Corporate Fixed Sidebar */
+        /* Fixed Sidebar */
         aside.sidebar {
             width: var(--sidebar-width);
             background: var(--bg-sidebar);
             border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 1.5rem 1.1rem;
+            padding: 1.4rem 1rem;
             position: fixed;
             top: 0;
             right: 0;
             height: 100vh;
             z-index: 1000;
             overflow-y: auto;
-            box-shadow: -8px 0 25px rgba(0,0,0,0.4);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         }
 
         .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 1.1rem;
-            padding: 0.5rem 0.5rem 1.4rem 0.5rem;
-            margin-bottom: 1.2rem;
+            gap: 1rem;
+            padding: 0.4rem 0.4rem 1.2rem 0.4rem;
+            margin-bottom: 1rem;
             border-bottom: 1px solid var(--border);
         }
         .sidebar-brand .logo-avatar {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             cursor: pointer;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
             transition: transform 0.2s ease;
         }
         .sidebar-brand .logo-avatar:hover { transform: scale(1.05); }
@@ -94,28 +95,29 @@
 
         .brand-text h2 {
             font-family: 'Montserrat', 'Cairo', sans-serif;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 900;
             letter-spacing: 0.5px;
             color: #ffffff;
             line-height: 1.2;
         }
-        .brand-text small { color: var(--text-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; }
+        .brand-text small { color: var(--text-muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; }
 
-        .sidebar-menu { display: flex; flex-direction: column; gap: 0.35rem; }
+        .sidebar-menu { display: flex; flex-direction: column; gap: 0.3rem; }
         .menu-category {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            margin: 1.2rem 0.8rem 0.4rem 0.8rem;
+            margin: 1.1rem 0.6rem 0.4rem 0.6rem;
+            opacity: 0.8;
         }
         .menu-item {
-            padding: 0.75rem 1rem;
+            padding: 0.7rem 0.9rem;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             cursor: pointer;
             display: flex;
@@ -125,7 +127,7 @@
             text-decoration: none;
             border: 1px solid transparent;
         }
-        .menu-item div { display: flex; align-items: center; gap: 0.75rem; }
+        .menu-item div { display: flex; align-items: center; gap: 0.7rem; }
         .menu-item:hover {
             background: var(--bg-hover);
             color: var(--text-main);
@@ -133,11 +135,11 @@
         .menu-item.active {
             background: var(--primary);
             color: white;
-            box-shadow: 0 4px 14px var(--primary-glow);
+            box-shadow: 0 4px 15px var(--primary-glow);
         }
         .menu-badge {
-            font-size: 0.75rem;
-            padding: 0.18rem 0.6rem;
+            font-size: 0.72rem;
+            padding: 0.15rem 0.55rem;
             border-radius: 20px;
             background: rgba(255,255,255,0.08);
             font-weight: 800;
@@ -147,7 +149,7 @@
         /* Main Content Area */
         main.main-content {
             margin-right: var(--sidebar-width);
-            padding: 1.8rem 2.2rem;
+            padding: 1.6rem 2rem;
             min-height: 100vh;
             width: calc(100% - var(--sidebar-width));
         }
@@ -158,30 +160,40 @@
             justify-content: space-between;
             align-items: center;
             background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            padding: 1.1rem 1.8rem;
+            backdrop-filter: blur(16px);
+            padding: 1rem 1.6rem;
             border-radius: var(--radius);
             border: 1px solid var(--border);
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
             gap: 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
         }
-        .page-header-title h2 { font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; gap: 0.65rem; }
-        .page-header-title small { color: var(--text-muted); font-size: 0.82rem; font-weight: 600; margin-top: 0.2rem; display: block; }
+        .page-header-title h2 { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 0.65rem; }
+        .page-header-title small { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; margin-top: 0.2rem; display: flex; align-items: center; gap: 0.5rem; }
 
-        .actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+        .live-clock-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.7rem;
+            border-radius: 8px;
+            font-family: 'Montserrat', 'Cairo', sans-serif;
+            color: #60a5fa;
+            font-weight: 700;
+        }
+
+        .actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
 
         .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 9px;
+            padding: 0.55rem 1.1rem;
+            border-radius: 10px;
             border: 1px solid transparent;
             font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 0.55rem;
-            font-size: 0.88rem;
+            gap: 0.5rem;
+            font-size: 0.85rem;
             transition: all 0.2s ease;
             text-decoration: none;
         }
@@ -191,123 +203,135 @@
         .btn-success { background: var(--success); color: white; }
         .btn-success:hover { background: #059669; }
 
+        .btn-warning { background: var(--warning); color: #000; font-weight: 800; box-shadow: 0 4px 14px var(--warning-glow); }
+        .btn-warning:hover { background: #d97706; color: #fff; }
+
         .btn-outline {
             background: rgba(255, 255, 255, 0.03);
             border-color: var(--border);
             color: var(--text-main);
         }
         .btn-outline:hover { background: var(--bg-hover); border-color: rgba(255,255,255,0.18); }
-        .btn-sm { padding: 0.38rem 0.8rem; font-size: 0.8rem; }
+        .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.78rem; }
 
         .input-text {
-            background: rgba(11, 15, 25, 0.8);
+            background: rgba(8, 12, 20, 0.9);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 0.6rem 1rem;
-            border-radius: 9px;
-            font-size: 0.88rem;
+            padding: 0.55rem 0.96rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
             outline: none;
             transition: all 0.2s ease;
         }
         .input-text:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
-        /* KPI Cards Grid */
-        .metrics-grid {
+        /* Unified KPI Metrics Strip */
+        .kpi-strip {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-            gap: 1.2rem;
-            margin-bottom: 1.8rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
-        .metric-card {
+        .kpi-box {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border);
-            padding: 1.3rem;
+            padding: 1.1rem 1.2rem;
             border-radius: var(--radius);
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .metric-card:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.15); }
-        .metric-card span { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.4rem; }
-        .metric-card h2 { font-size: 2rem; font-weight: 900; font-family: 'Montserrat', 'Cairo', sans-serif; }
+        .kpi-box:hover { transform: translateY(-3px); border-color: rgba(255, 255, 255, 0.15); }
+        .kpi-box span { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
+        .kpi-box h2 { font-size: 1.9rem; font-weight: 900; font-family: 'Montserrat', sans-serif; line-height: 1.1; }
 
-        /* Target Panel */
+        .kpi-box.accent-blue { border-top: 3px solid var(--primary); }
+        .kpi-box.accent-green { border-top: 3px solid var(--success); }
+        .kpi-box.accent-warning { border-top: 3px solid var(--warning); }
+        .kpi-box.accent-purple { border-top: 3px solid var(--purple); }
+        .kpi-box.accent-red { border-top: 3px solid var(--danger); }
+
+        /* Target Requirement Panel */
         .targets-panel {
-            background: linear-gradient(135deg, rgba(18, 26, 43, 0.95), rgba(11, 15, 25, 0.98));
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(8, 12, 20, 0.98));
             border: 1px solid rgba(59, 130, 246, 0.25);
             border-radius: var(--radius);
-            padding: 1.3rem 1.7rem;
-            margin-bottom: 1.8rem;
+            padding: 1.2rem 1.6rem;
+            margin-bottom: 1.5rem;
             display: grid;
             grid-template-columns: 1.2fr 3fr;
-            gap: 1.6rem;
+            gap: 1.5rem;
             align-items: center;
-            box-shadow: 0 6px 25px rgba(0,0,0,0.25);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.3);
         }
         @media (max-width: 900px) { .targets-panel { grid-template-columns: 1fr; } }
 
         .now-box {
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.25);
             border-radius: 14px;
-            padding: 1.1rem;
+            padding: 1rem;
             text-align: center;
         }
-        .now-box span { font-size: 0.88rem; color: #c4b5fd; font-weight: 800; display: block; }
-        .now-box h2 { font-size: 2.4rem; font-weight: 900; color: #ddd6fe; margin: 0.2rem 0; font-family: 'Montserrat', sans-serif; }
-        .now-box small { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        .now-box span { font-size: 0.82rem; color: #c4b5fd; font-weight: 800; display: block; }
+        .now-box h2 { font-size: 2.3rem; font-weight: 900; color: #ddd6fe; margin: 0.2rem 0; font-family: 'Montserrat', sans-serif; }
+        .now-box small { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
 
-        .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
         @media (max-width: 768px) { .slots-grid { grid-template-columns: 1fr; } }
 
         .slot-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 0.9rem;
             transition: all 0.2s ease;
         }
         .slot-card.active-slot {
             border-color: var(--primary);
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(59, 130, 246, 0.12);
             box-shadow: 0 0 15px var(--primary-glow);
         }
-        .slot-card-title { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
-        .slot-card-val { font-size: 1.7rem; font-weight: 900; color: var(--text-main); font-family: 'Montserrat', sans-serif; }
+        .slot-card-title { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem; }
+        .slot-card-val { font-size: 1.6rem; font-weight: 900; color: var(--text-main); font-family: 'Montserrat', sans-serif; }
 
+        /* Master Card Container */
         .card {
             background: var(--bg-card);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 1.8rem;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            padding: 1.4rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
         }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.2rem;
-            padding-bottom: 0.9rem;
+            padding-bottom: 0.85rem;
             border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
             gap: 1rem;
         }
-        .card-header h3 { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
+        .card-header h3 { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 0.55rem; }
 
         .sort-toolbar {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 0.75rem;
             background: rgba(255, 255, 255, 0.02);
-            padding: 0.4rem 0.8rem;
+            padding: 0.35rem 0.75rem;
             border-radius: 9px;
             border: 1px solid var(--border);
         }
 
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; text-align: right; }
-        th, td { padding: 0.95rem 1.1rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+        th, td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.86rem; }
         th {
             color: var(--text-muted);
             font-weight: 800;
@@ -321,15 +345,15 @@
         tr { transition: background 0.15s ease; }
         tr:hover { background: var(--bg-hover); }
 
-        /* Professional Corporate Badges */
+        /* Soft Pastel Badges */
         .badge {
-            padding: 0.32rem 0.8rem;
+            padding: 0.3rem 0.75rem;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 0.45rem;
+            gap: 0.4rem;
             cursor: pointer;
             transition: transform 0.15s ease;
         }
@@ -358,7 +382,7 @@
         .badge-off {
             background: rgba(148, 163, 184, 0.1);
             color: var(--text-muted);
-            border: 1px solid rgba(148, 163, 184, 0.25);
+            border: 1px solid rgba(148, 163, 184, 0.22);
         }
         .badge-shift {
             background: rgba(59, 130, 246, 0.12);
@@ -366,12 +390,22 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
-        /* Manual Swap Modal */
+        .badge-swap {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            font-size: 0.72rem;
+            padding: 0.15rem 0.5rem;
+            margin-right: 0.4rem;
+            border-radius: 6px;
+        }
+
+        /* Modal Dialog */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 15, 25, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(10px);
             z-index: 2000;
             display: none;
             align-items: center;
@@ -385,10 +419,10 @@
             border: 1px solid var(--border-glow);
             border-radius: 18px;
             width: 100%;
-            max-width: 520px;
-            padding: 1.8rem;
+            max-width: 500px;
+            padding: 1.6rem;
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: modalFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
         @keyframes modalFadeIn {
             from { opacity: 0; transform: scale(0.95) translateY(10px); }
@@ -399,11 +433,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-bottom: 1rem;
-            margin-bottom: 1.2rem;
+            padding-bottom: 0.9rem;
+            margin-bottom: 1.1rem;
             border-bottom: 1px solid var(--border);
         }
-        .modal-header h3 { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; color: #fff; }
+        .modal-header h3 { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 0.55rem; color: #fff; }
         .modal-close {
             background: transparent;
             border: none;
@@ -414,41 +448,28 @@
         }
         .modal-close:hover { color: var(--danger); }
 
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.45rem; }
         .form-group select, .form-group input { width: 100%; }
-
-        .btn-warning { background: var(--warning); color: #000; font-weight: 800; box-shadow: 0 4px 14px var(--warning-glow); }
-        .btn-warning:hover { background: #d97706; color: #fff; }
-
-        .badge-swap {
-            background: rgba(245, 158, 11, 0.18);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.45);
-            font-size: 0.72rem;
-            padding: 0.15rem 0.5rem;
-            margin-right: 0.4rem;
-            border-radius: 6px;
-        }
 
         textarea {
             width: 100%;
-            background: rgba(11, 15, 25, 0.8);
+            background: rgba(8, 12, 20, 0.9);
             border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 1rem;
+            padding: 0.9rem;
             border-radius: 10px;
             resize: vertical;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             outline: none;
-            margin-bottom: 0.9rem;
+            margin-bottom: 0.85rem;
             transition: border-color 0.2s ease;
         }
         textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
 
         .sheet-frame-container {
             width: 100%;
-            height: 82vh;
+            height: 80vh;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border);
@@ -463,10 +484,10 @@
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
+    <!-- Fixed Sidebar Navigation -->
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <div class="logo-avatar" title="اضغط لرفع اللوغو الخاص بك" onclick="document.getElementById('logoInput').click()">
+            <div class="logo-avatar" title="رفع اللوغو الخاص بك" onclick="document.getElementById('logoInput').click()">
                 <img id="logoImage" src="" style="display:none;" alt="CC Logo">
                 <i id="logoIcon" class="fa-solid fa-headset"></i>
             </div>
@@ -481,35 +502,35 @@
         <div class="sidebar-menu">
             <div class="menu-category">الرئيسية والإحصائيات</div>
             <div class="menu-item active" onclick="switchPage('home')">
-                <div><i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)</div>
+                <div><i class="fa-solid fa-chart-pie text-primary"></i> الرئيسية (Dashboard)</div>
             </div>
             <div class="menu-item" onclick="switchPage('schedule')">
-                <div><i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم </div>
+                <div><i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل</div>
                 <span class="menu-badge" id="sideWorkingBadge">13</span>
             </div>
             <div class="menu-item" onclick="switchPage('ameyo')">
-                <div><i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo</div>
+                <div><i class="fa-solid fa-signal text-success"></i> مطابقة Ameyo الحية</div>
             </div>
 
-            <div class="menu-category">Status</div>
+            <div class="menu-category">حالات الكادر اليوم</div>
             <div class="menu-item" onclick="switchPage('ready')">
-                <div><i class="fa-solid fa-circle-check text-success"></i> (Ready)</div>
+                <div><i class="fa-solid fa-circle-check text-success"></i> متواجد (Ready)</div>
                 <span class="menu-badge" id="sideReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('lunch')">
-                <div><i class="fa-solid fa-utensils text-warning"></i> (Lunch)</div>
+                <div><i class="fa-solid fa-utensils text-warning"></i> استراحة غداء (Lunch)</div>
                 <span class="menu-badge" id="sideLunchBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('break')">
-                <div><i class="fa-solid fa-mug-hot text-purple"></i>  (Break)</div>
+                <div><i class="fa-solid fa-mug-hot text-purple"></i> استراحة قصيرة (Break)</div>
                 <span class="menu-badge" id="sideBreakBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('notready')">
-                <div><i class="fa-solid fa-circle-xmark text-danger"></i> (Not Ready)</div>
+                <div><i class="fa-solid fa-circle-xmark text-danger"></i> غير متصل (Not Ready)</div>
                 <span class="menu-badge" id="sideNotReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('off')">
-                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> (Day OFF)</div>
+                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> عطلة (Day OFF)</div>
                 <span class="menu-badge" id="sideOffBadge">10</span>
             </div>
 
@@ -518,12 +539,12 @@
                 <div><i class="fa-solid fa-file-excel text-success"></i> Google Sheet الرئيسي</div>
             </div>
             <div class="menu-item" onclick="switchPage('sheet2')">
-                <div><i class="fa-solid fa-file-excel text-cyan"></i> Google Sheet الثانوي (تبديلات)</div>
+                <div><i class="fa-solid fa-file-excel text-cyan"></i> Google Sheet الثانوي</div>
             </div>
 
             <div class="menu-category">السجل والدليل</div>
             <div class="menu-item" onclick="switchPage('roster')">
-                <div><i class="fa-solid fa-users-gear text-purple"></i> دليل التيم والتفاصيل</div>
+                <div><i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل</div>
                 <span class="menu-badge">23</span>
             </div>
         </div>
@@ -534,22 +555,51 @@
         <!-- Top Header Bar -->
         <header class="top-header">
             <div class="page-header-title">
-                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> (Dashboard)</h2>
-                <small id="syncText"><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</small>
+                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)</h2>
+                <small id="syncText">
+                    <span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Sync</span>
+                    <span class="live-clock-badge" id="liveClockDisplay">--:--:--</span>
+                </small>
             </div>
 
             <div class="actions">
                 <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> تبديل شفت يدوي</button>
-                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث البيانات والجدول</button>
-                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير السجل الزمني</button>
+                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث الجدول</button>
+                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير البريكات</button>
             </div>
         </header>
 
         <!-- ================= PAGE 1: HOME DASHBOARD ================= -->
         <div id="page-home" class="page-content active-page">
+            
+            <!-- KPI Status Strip (5 Clean Cards) -->
+            <div class="kpi-strip">
+                <div class="kpi-box accent-blue" onclick="switchPage('roster')" style="cursor:pointer;">
+                    <span>إجمالي الكادر <i class="fa-solid fa-users text-primary"></i></span>
+                    <h2 id="totalCount">23</h2>
+                </div>
+                <div class="kpi-box accent-green" onclick="switchPage('schedule')" style="cursor:pointer;">
+                    <span>المداومين اليوم <i class="fa-solid fa-user-check text-success"></i></span>
+                    <h2 id="workingCount" style="color:var(--success)">13</h2>
+                </div>
+                <div class="kpi-box accent-green" onclick="switchPage('ready')" style="cursor:pointer;">
+                    <span>Ready متواجد <i class="fa-solid fa-circle-check text-success"></i></span>
+                    <h2 id="readyCount" style="color:var(--success)">0</h2>
+                </div>
+                <div class="kpi-box accent-warning" onclick="switchPage('lunch')" style="cursor:pointer;">
+                    <span>الاستراحات (Lunch/Break) <i class="fa-solid fa-utensils text-warning"></i></span>
+                    <h2 id="lunchBreakCombinedCount" style="color:var(--warning)">0</h2>
+                </div>
+                <div class="kpi-box accent-red" onclick="switchPage('notready')" style="cursor:pointer;">
+                    <span>غير متصل (Not Ready) <i class="fa-solid fa-circle-xmark text-danger"></i></span>
+                    <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
+                </div>
+            </div>
+
+            <!-- Target Requirement Panel -->
             <div class="targets-panel">
                 <div class="now-box">
-                    <span><i class="fa-solid fa-bullseye"></i> التواجد بـ Ameyo الآن</span>
+                    <span><i class="fa-solid fa-bullseye"></i> التواجد المستهدف بـ Ameyo الآن</span>
                     <h2 id="expectedAmeyoNow">0</h2>
                     <small id="currentSlotLabel">الفترة الحالية</small>
                 </div>
@@ -557,56 +607,25 @@
                 <div class="slots-grid">
                     <div class="slot-card" id="slotCard1">
                         <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--primary)"></i> 4:30 PM - 6:30 PM</div>
-                        <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+                        <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
                     </div>
 
                     <div class="slot-card" id="slotCard2">
                         <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--warning)"></i> 6:30 PM - 8:30 PM</div>
-                        <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+                        <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
                     </div>
 
                     <div class="slot-card" id="slotCard3">
                         <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> 8:30 PM - 12:30 AM</div>
-                        <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.8rem; color:var(--text-muted)">موظف</small></div>
+                        <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
                     </div>
                 </div>
             </div>
 
-            <!-- KPI Corporate Cards Grid -->
-            <div class="metrics-grid">
-                <div class="metric-card" onclick="switchPage('roster')" style="cursor:pointer;">
-                    <span><i class="fa-solid fa-users text-muted"></i> إجمالي الموظفين</span>
-                    <h2 id="totalCount">23</h2>
-                </div>
-                <div class="metric-card" onclick="switchPage('schedule')" style="border-color: var(--primary); cursor:pointer;">
-                    <span><i class="fa-solid fa-user-check text-primary"></i> عدد موظفين اليوم</span>
-                    <h2 id="workingCount" style="color:var(--primary)">13</h2>
-                </div>
-                <div class="metric-card" onclick="switchPage('ready')" style="border-color: var(--success); cursor:pointer;">
-                    <span style="color:var(--success)"><i class="fa-solid fa-circle-check text-success"></i> Ready</span>
-                    <h2 id="readyCount" style="color:var(--success)">0</h2>
-                </div>
-                <div class="metric-card" onclick="switchPage('lunch')" style="border-color: var(--warning); cursor:pointer;">
-                    <span style="color:var(--warning)"><i class="fa-solid fa-utensils text-warning"></i> Lunch</span>
-                    <h2 id="lunchCount" style="color:var(--warning)">0</h2>
-                </div>
-                <div class="metric-card" onclick="switchPage('break')" style="border-color: var(--purple); cursor:pointer;">
-                    <span style="color:var(--purple)"><i class="fa-solid fa-mug-hot text-purple"></i> Break</span>
-                    <h2 id="breakAmeyoCount" style="color:var(--purple)">0</h2>
-                </div>
-                <div class="metric-card" onclick="switchPage('notready')" style="border-color: var(--danger); cursor:pointer;">
-                    <span style="color:var(--danger)"><i class="fa-solid fa-circle-xmark text-danger"></i> غير متصل</span>
-                    <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
-                </div>
-                <div class="metric-card" onclick="switchPage('off')" style="cursor:pointer;">
-                    <span><i class="fa-solid fa-calendar-xmark text-muted"></i> Day OFF</span>
-                    <h2 id="offCount" style="color:var(--text-muted)">10</h2>
-                </div>
-            </div>
-
+            <!-- Quick Table Card -->
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-bolt text-warning"></i> نظرة سريعة على التيم الان</h3>
+                    <h3><i class="fa-solid fa-bolt text-warning"></i> نظرة سريعة على المداومين الآن</h3>
                     <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">فتح الجدول الكامل <i class="fa-solid fa-arrow-left"></i></button>
                 </div>
                 <div class="table-responsive">
@@ -615,7 +634,7 @@
                             <tr>
                                 <th>اسم الموظف</th>
                                 <th>شفت الجدول</th>
-                                <th>فترة الدوام </th>
+                                <th>فترة الدوام المحسوبة</th>
                                 <th>حالة Ameyo</th>
                             </tr>
                         </thead>
@@ -633,8 +652,8 @@
                     
                     <div class="actions">
                         <div class="sort-toolbar">
-                            <label for="sortBySelect"><i class="fa-solid fa-arrow-down-short-wide"></i> الترتيب حسب:</label>
-                            <select id="sortBySelect" class="input-text" style="padding:0.4rem 0.8rem; font-size:0.83rem;" onchange="setSortBy(this.value)">
+                            <label for="sortBySelect"><i class="fa-solid fa-arrow-down-short-wide"></i> الترتيب:</label>
+                            <select id="sortBySelect" class="input-text" style="padding:0.35rem 0.75rem; font-size:0.8rem;" onchange="setSortBy(this.value)">
                                 <option value="default">الافتراضي (حسب الجدول)</option>
                                 <option value="name">الاسم (أ - ي)</option>
                                 <option value="shift">نوع الشفت</option>
@@ -662,8 +681,8 @@
                             <tr>
                                 <th>#</th>
                                 <th onclick="setSortBy('name')">اسم الموظف <i class="fa-solid fa-sort"></i></th>
-                                <th onclick="setSortBy('shift')"> الجدول <i class="fa-solid fa-sort"></i></th>
-                                <th>فترة الدوام </th>
+                                <th onclick="setSortBy('shift')">شفت الجدول <i class="fa-solid fa-sort"></i></th>
+                                <th>فترة الدوام المحسوبة</th>
                                 <th onclick="setSortBy('status')">حالة التواجد (Ameyo) <i class="fa-solid fa-sort"></i></th>
                                 <th onclick="setSortBy('breaks')">تسجيل الاستراحات (3 Max) <i class="fa-solid fa-sort"></i></th>
                                 <th>سجل التوقيتات الزمني</th>
@@ -681,8 +700,8 @@
                 <div class="card-header">
                     <h3><i class="fa-solid fa-signal text-success"></i> مطابقة وتحديث نشاط Ameyo المباشر</h3>
                 </div>
-                <textarea id="ameyoInput" rows="16" placeholder="قم بلصق نص Ameyo المنسوخ هنا..."></textarea>
-                <button class="btn btn-primary" style="width:100%; padding:0.85rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
+                <textarea id="ameyoInput" rows="15" placeholder="قم بلصق نص Ameyo المنسوخ هنا..."></textarea>
+                <button class="btn btn-primary" style="width:100%; padding:0.8rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
             </div>
         </div>
 
@@ -708,7 +727,7 @@
         <div id="page-lunch" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-utensils text-warning"></i> (Lunch)</h3>
+                    <h3><i class="fa-solid fa-utensils text-warning"></i> قائمة الموظفين في استراحة غداء (Lunch)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -725,7 +744,7 @@
         <div id="page-break" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-mug-hot text-purple"></i>  (Break)</h3>
+                    <h3><i class="fa-solid fa-mug-hot text-purple"></i> قائمة الموظفين في استراحة قصيرة (Break)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -742,7 +761,7 @@
         <div id="page-notready" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-circle-xmark text-danger"></i> (Not Ready)</h3>
+                    <h3><i class="fa-solid fa-circle-xmark text-danger"></i> قائمة المداومين غير المتصلين (Not Ready)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -759,7 +778,7 @@
         <div id="page-off" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-calendar-xmark text-muted"></i> (Day OFF)</h3>
+                    <h3><i class="fa-solid fa-calendar-xmark text-muted"></i> قائمة الموظفين غير المطلوبين اليوم (Day OFF)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -805,8 +824,8 @@
         <div id="page-roster" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-users-gear text-purple"></i> القائمة الكاملة لكافة التيم Evening / IN</h3>
-                    <input type="text" id="rosterSearch" class="input-text" placeholder="تصفية التيم" oninput="renderRoster()">
+                    <h3><i class="fa-solid fa-users-gear text-purple"></i> القائمة الكاملة لكافة كادر Evening / IN</h3>
+                    <input type="text" id="rosterSearch" class="input-text" placeholder="تصفية الكادر..." oninput="renderRoster()">
                 </div>
                 <div class="table-responsive">
                     <table>
@@ -845,7 +864,7 @@
                 <select id="swapEmp2Select" class="input-text"></select>
             </div>
 
-            <div class="actions" style="margin-top: 1.5rem; justify-content: space-between;">
+            <div class="actions" style="margin-top: 1.4rem; justify-content: space-between;">
                 <button class="btn btn-outline btn-sm" onclick="clearAllManualSwaps()"><i class="fa-solid fa-rotate-left"></i> تصفير التبديلات اليوم</button>
                 <div style="display:flex; gap:0.5rem;">
                     <button class="btn btn-outline" onclick="closeSwapModal()">إلغاء</button>
@@ -892,15 +911,25 @@
             'home': '<i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)',
             'schedule': '<i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل',
             'ameyo': '<i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo المباشر',
-            'ready': '<i class="fa-solid fa-circle-check text-success"></i> التيم المتواجد (Ready)',
-            'lunch': '<i class="fa-solid fa-utensils text-warning"></i> (Lunch)',
-            'break': '<i class="fa-solid fa-mug-hot text-purple"></i> (Break)',
-            'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i>  (Not Ready)',
-            'off': '<i class="fa-solid fa-calendar-xmark text-muted"></i>  (Day OFF)',
+            'ready': '<i class="fa-solid fa-circle-check text-success"></i> الكادر المتواجد (Ready)',
+            'lunch': '<i class="fa-solid fa-utensils text-warning"></i> استراحات الغداء (Lunch)',
+            'break': '<i class="fa-solid fa-mug-hot text-purple"></i> الاستراحات القصيرة (Break)',
+            'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i> المداومين غير المتصلين (Not Ready)',
+            'off': '<i class="fa-solid fa-calendar-xmark text-muted"></i> غير المطلوبين اليوم (Day OFF)',
             'sheet1': '<i class="fa-solid fa-file-excel text-success"></i> جدول Google Sheet الرئيسي',
             'sheet2': '<i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي (تبديلات)',
-            'roster': '<i class="fa-solid fa-users-gear text-purple"></i> دليل التيم والتفاصيل'
+            'roster': '<i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل'
         };
+
+        // Live Clock updating every second
+        function updateLiveClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const clockEl = document.getElementById('liveClockDisplay');
+            if (clockEl) clockEl.innerText = timeStr;
+        }
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
 
         function setSortBy(sortKey) {
             if (currentSort === sortKey) {
@@ -1149,10 +1178,8 @@
             document.getElementById('totalCount').innerText = employees.length;
             document.getElementById('workingCount').innerText = workingC;
             document.getElementById('readyCount').innerText = readyC;
-            document.getElementById('lunchCount').innerText = lunchC;
-            document.getElementById('breakAmeyoCount').innerText = breakAmeyoC;
+            document.getElementById('lunchBreakCombinedCount').innerText = (lunchC + breakAmeyoC);
             document.getElementById('notReadyCount').innerText = notReadyC;
-            document.getElementById('offCount').innerText = offC;
 
             document.getElementById('sideWorkingBadge').innerText = workingC;
             document.getElementById('sideReadyBadge').innerText = readyC;
@@ -1220,7 +1247,7 @@
                     homeTr.innerHTML = `
                         <td><strong>${emp.name}</strong> ${swapTag}</td>
                         <td><span class="badge badge-shift">${emp.status}</span></td>
-                        <td><span style="color:var(--text-muted); font-size:0.85rem;">${shiftInfo.label}</span></td>
+                        <td><span style="color:var(--text-muted); font-size:0.82rem;">${shiftInfo.label}</span></td>
                         <td>${ameyoBadge}</td>
                     `;
                     homeBody.appendChild(homeTr);
@@ -1248,7 +1275,7 @@
                     <td>${index + 1}</td>
                     <td><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span></td>
-                    <td><span style="color:var(--text-muted); font-size:0.85rem;">${shiftInfo.label}</span></td>
+                    <td><span style="color:var(--text-muted); font-size:0.82rem;">${shiftInfo.label}</span></td>
                     <td>${ameyoBadge}</td>
                     <td>${breakBtns}</td>
                     <td>${historyLog}</td>
@@ -1407,17 +1434,17 @@
         // Fetch Live Main Google Sheet Data
         function fetchLiveGoogleSheet() {
             const syncText = document.getElementById('syncText');
-            if (syncText) syncText.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-warning"></i> Evening / IN • جاري التزامن...';
+            if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-spinner fa-spin text-warning"></i> Evening / IN • جاري التزامن...</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
 
             fetch(GOOGLE_SHEET_MAIN_CSV)
                 .then(r => r.text())
                 .then(csv => {
                     parseGoogleSheetCSV(csv);
-                    if (syncText) syncText.innerHTML = '<i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync';
+                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Sync</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
                 })
                 .catch(err => {
                     console.error(err);
-                    if (syncText) syncText.innerHTML = '<i class="fa-solid fa-database text-muted"></i> Evening / IN • بيانات محليّة';
+                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-database text-muted"></i> Evening / IN • بيانات محليّة</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
                 });
         }
 
