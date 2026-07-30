@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CC MANAGEMENT | ENTERPRISE DASHBOARD</title>
-    <!-- Google Fonts: Cairo, Montserrat, Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Inter, Montserrat, Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -32,11 +32,11 @@
             --text-muted: #64748b;
             --text-dim: #94a3b8;
             
-            --sidebar-width: 245px;
+            --sidebar-width: 250px;
             --radius: 12px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
         body {
             background: var(--bg-body);
@@ -46,17 +46,17 @@
             letter-spacing: -0.2px;
         }
 
-        /* Enterprise Fixed Sidebar */
+        /* Enterprise Fixed Sidebar (LTR - Left Side) */
         aside.sidebar {
             width: var(--sidebar-width);
             background: var(--bg-sidebar);
-            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             padding: 1.2rem 0.85rem;
             position: fixed;
             top: 0;
-            right: 0;
+            left: 0;
             height: 100vh;
             z-index: 1000;
             overflow-y: auto;
@@ -109,7 +109,7 @@
         .menu-item {
             padding: 0.6rem 0.8rem;
             border-radius: 8px;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 0.82rem;
             color: var(--text-dim);
             cursor: pointer;
@@ -117,7 +117,7 @@
             align-items: center;
             justify-content: space-between;
             transition: all 0.15s ease;
-            border-right: 3px solid transparent;
+            border-left: 3px solid transparent;
         }
         .menu-item div { display: flex; align-items: center; gap: 0.65rem; }
         .menu-item:hover {
@@ -127,7 +127,7 @@
         .menu-item.active {
             background: rgba(59, 130, 246, 0.08);
             color: var(--primary);
-            border-right-color: var(--primary);
+            border-left-color: var(--primary);
         }
         .menu-badge {
             font-size: 0.7rem;
@@ -139,9 +139,9 @@
         }
         .menu-item.active .menu-badge { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
 
-        /* Main Content Container */
+        /* Main Content Container (LTR) */
         main.main-content {
-            margin-right: var(--sidebar-width);
+            margin-left: var(--sidebar-width);
             padding: 1.4rem 1.8rem;
             min-height: 100vh;
             width: calc(100% - var(--sidebar-width));
@@ -180,7 +180,7 @@
             padding: 0.5rem 1rem;
             border-radius: 8px;
             border: 1px solid transparent;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -194,7 +194,7 @@
         .btn-success { background: var(--success); color: white; }
         .btn-success:hover { background: #059669; }
 
-        .btn-warning { background: var(--warning); color: #000; font-weight: 800; }
+        .btn-warning { background: var(--warning); color: #000; font-weight: 700; }
         .btn-warning:hover { background: #d97706; color: #fff; }
 
         .btn-outline {
@@ -217,7 +217,7 @@
         }
         .input-text:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
 
-        /* Crisp Linear KPI Grid */
+        /* Crisp KPI Grid */
         .kpi-strip {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -256,7 +256,7 @@
             padding: 0.9rem;
             text-align: center;
         }
-        .now-box span { font-size: 0.78rem; color: #c4b5fd; font-weight: 800; display: block; }
+        .now-box span { font-size: 0.78rem; color: #c4b5fd; font-weight: 700; display: block; }
         .now-box h2 { font-size: 2.1rem; font-weight: 900; color: #ddd6fe; margin: 0.15rem 0; font-family: 'Montserrat', sans-serif; }
         .now-box small { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
 
@@ -277,7 +277,7 @@
         .slot-card-title { font-size: 0.76rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.35rem; }
         .slot-card-val { font-size: 1.5rem; font-weight: 900; color: var(--text-main); font-family: 'Montserrat', sans-serif; }
 
-        /* Master Enterprise Data Grid Card */
+        /* Data Grid Container */
         .card {
             background: var(--bg-surface);
             border: 1px solid var(--border);
@@ -308,7 +308,7 @@
         }
 
         .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: right; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
         th, td { padding: 0.8rem 0.9rem; border-bottom: 1px solid var(--border-subtle); font-size: 0.84rem; }
         th {
             color: var(--text-muted);
@@ -316,7 +316,7 @@
             background: rgba(255,255,255,0.015);
             cursor: pointer;
             user-select: none;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -331,7 +331,7 @@
             height: 8px;
             border-radius: 50%;
             display: inline-block;
-            margin-left: 0.4rem;
+            margin-right: 0.4rem;
         }
         .dot-ready { background: var(--success); box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
         .dot-lunch { background: var(--warning); box-shadow: 0 0 8px rgba(245, 158, 11, 0.6); }
@@ -343,7 +343,7 @@
             padding: 0.25rem 0.65rem;
             border-radius: 6px;
             font-size: 0.76rem;
-            font-weight: 700;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
             cursor: pointer;
@@ -363,7 +363,7 @@
             border: 1px solid rgba(245, 158, 11, 0.4);
             font-size: 0.7rem;
             padding: 0.12rem 0.45rem;
-            margin-right: 0.35rem;
+            margin-left: 0.35rem;
             border-radius: 5px;
         }
 
@@ -380,7 +380,7 @@
             font-size: 0.72rem;
             font-weight: 800;
             font-family: 'Montserrat', sans-serif;
-            margin-left: 0.5rem;
+            margin-right: 0.5rem;
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
@@ -461,7 +461,7 @@
     <!-- Enterprise Fixed Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-brand">
-            <div class="logo-avatar" title="رفع اللوغو الخاص بك" onclick="document.getElementById('logoInput').click()">
+            <div class="logo-avatar" title="Upload Custom Logo" onclick="document.getElementById('logoInput').click()">
                 <img id="logoImage" src="" style="display:none;" alt="CC Logo">
                 <i id="logoIcon" class="fa-solid fa-headset"></i>
             </div>
@@ -474,51 +474,51 @@
         </div>
 
         <div class="sidebar-menu">
-            <div class="menu-category">الرئيسية والتحليل</div>
+            <div class="menu-category">Main Overview</div>
             <div class="menu-item active" onclick="switchPage('home')">
-                <div><i class="fa-solid fa-chart-pie text-primary"></i> الرئيسية (Dashboard)</div>
+                <div><i class="fa-solid fa-chart-pie text-primary"></i> Dashboard</div>
             </div>
             <div class="menu-item" onclick="switchPage('schedule')">
-                <div><i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل</div>
+                <div><i class="fa-solid fa-table-list text-cyan"></i> Full Schedule</div>
                 <span class="menu-badge" id="sideWorkingBadge">13</span>
             </div>
             <div class="menu-item" onclick="switchPage('ameyo')">
-                <div><i class="fa-solid fa-signal text-success"></i> مطابقة Ameyo الحية</div>
+                <div><i class="fa-solid fa-signal text-success"></i> Live Ameyo Sync</div>
             </div>
 
-            <div class="menu-category">حالات الكادر اليوم</div>
+            <div class="menu-category">Staff Status Today</div>
             <div class="menu-item" onclick="switchPage('ready')">
-                <div><i class="fa-solid fa-circle-check text-success"></i> متواجد (Ready)</div>
+                <div><i class="fa-solid fa-circle-check text-success"></i> Ready</div>
                 <span class="menu-badge" id="sideReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('lunch')">
-                <div><i class="fa-solid fa-utensils text-warning"></i> استراحة غداء (Lunch)</div>
+                <div><i class="fa-solid fa-utensils text-warning"></i> Lunch Break</div>
                 <span class="menu-badge" id="sideLunchBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('break')">
-                <div><i class="fa-solid fa-mug-hot text-purple"></i> استراحة قصيرة (Break)</div>
+                <div><i class="fa-solid fa-mug-hot text-purple"></i> Short Break</div>
                 <span class="menu-badge" id="sideBreakBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('notready')">
-                <div><i class="fa-solid fa-circle-xmark text-danger"></i> غير متصل (Not Ready)</div>
+                <div><i class="fa-solid fa-circle-xmark text-danger"></i> Offline / Not Ready</div>
                 <span class="menu-badge" id="sideNotReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('off')">
-                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> عطلة (Day OFF)</div>
+                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> Day OFF</div>
                 <span class="menu-badge" id="sideOffBadge">10</span>
             </div>
 
-            <div class="menu-category">الجداول المباشرة</div>
+            <div class="menu-category">Live Google Sheets</div>
             <div class="menu-item" onclick="switchPage('sheet1')">
-                <div><i class="fa-solid fa-file-excel text-success"></i> Google Sheet الرئيسي</div>
+                <div><i class="fa-solid fa-file-excel text-success"></i> Main Google Sheet</div>
             </div>
             <div class="menu-item" onclick="switchPage('sheet2')">
-                <div><i class="fa-solid fa-file-excel text-cyan"></i> Google Sheet الثانوي</div>
+                <div><i class="fa-solid fa-file-excel text-cyan"></i> Secondary Sheet</div>
             </div>
 
-            <div class="menu-category">السجل والدليل</div>
+            <div class="menu-category">Roster & Records</div>
             <div class="menu-item" onclick="switchPage('roster')">
-                <div><i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل</div>
+                <div><i class="fa-solid fa-users-gear text-purple"></i> Full Roster Details</div>
                 <span class="menu-badge">23</span>
             </div>
         </div>
@@ -529,17 +529,17 @@
         <!-- Command Top Bar -->
         <header class="top-header">
             <div class="page-header-title">
-                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)</h2>
+                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> Dashboard Overview</h2>
                 <small id="syncText">
-                    <span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Sync</span>
+                    <span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</span>
                     <span class="live-clock-badge" id="liveClockDisplay">--:--:--</span>
                 </small>
             </div>
 
             <div class="actions">
-                <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> تبديل شفت يدوي</button>
-                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> تحديث الجدول</button>
-                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> تصفير البريكات</button>
+                <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> Manual Shift Swap</button>
+                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> Refresh Schedule</button>
+                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> Reset Breaks</button>
             </div>
         </header>
 
@@ -549,23 +549,23 @@
             <!-- Crisp Enterprise KPI Grid -->
             <div class="kpi-strip">
                 <div class="kpi-box" onclick="switchPage('roster')" style="cursor:pointer;">
-                    <span>إجمالي الكادر <i class="fa-solid fa-users text-primary"></i></span>
+                    <span>Total Staff <i class="fa-solid fa-users text-primary"></i></span>
                     <h2 id="totalCount">23</h2>
                 </div>
                 <div class="kpi-box" onclick="switchPage('schedule')" style="cursor:pointer;">
-                    <span>المداومين اليوم <i class="fa-solid fa-user-check text-success"></i></span>
+                    <span>Scheduled Today <i class="fa-solid fa-user-check text-success"></i></span>
                     <h2 id="workingCount" style="color:var(--success)">13</h2>
                 </div>
                 <div class="kpi-box" onclick="switchPage('ready')" style="cursor:pointer;">
-                    <span>Ready متواجد <i class="fa-solid fa-circle-check text-success"></i></span>
+                    <span>Currently Ready <i class="fa-solid fa-circle-check text-success"></i></span>
                     <h2 id="readyCount" style="color:var(--success)">0</h2>
                 </div>
                 <div class="kpi-box" onclick="switchPage('lunch')" style="cursor:pointer;">
-                    <span>الاستراحات (Lunch/Break) <i class="fa-solid fa-utensils text-warning"></i></span>
+                    <span>On Break / Lunch <i class="fa-solid fa-utensils text-warning"></i></span>
                     <h2 id="lunchBreakCombinedCount" style="color:var(--warning)">0</h2>
                 </div>
                 <div class="kpi-box" onclick="switchPage('notready')" style="cursor:pointer;">
-                    <span>غير متصل (Not Ready) <i class="fa-solid fa-circle-xmark text-danger"></i></span>
+                    <span>Offline / Not Ready <i class="fa-solid fa-circle-xmark text-danger"></i></span>
                     <h2 id="notReadyCount" style="color:var(--danger)">0</h2>
                 </div>
             </div>
@@ -573,25 +573,25 @@
             <!-- Target Requirement Panel -->
             <div class="targets-panel">
                 <div class="now-box">
-                    <span><i class="fa-solid fa-bullseye"></i> التواجد المستهدف بـ Ameyo الآن</span>
+                    <span><i class="fa-solid fa-bullseye"></i> Current Target Ameyo Count</span>
                     <h2 id="expectedAmeyoNow">0</h2>
-                    <small id="currentSlotLabel">الفترة الحالية</small>
+                    <small id="currentSlotLabel">Active Time Slot</small>
                 </div>
                 
                 <div class="slots-grid">
                     <div class="slot-card" id="slotCard1">
                         <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--primary)"></i> 4:30 PM - 6:30 PM</div>
-                        <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
+                        <div class="slot-card-val"><span id="targetSlot1" style="color:var(--primary)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">Agents</small></div>
                     </div>
 
                     <div class="slot-card" id="slotCard2">
                         <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--warning)"></i> 6:30 PM - 8:30 PM</div>
-                        <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
+                        <div class="slot-card-val"><span id="targetSlot2" style="color:var(--warning)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">Agents</small></div>
                     </div>
 
                     <div class="slot-card" id="slotCard3">
                         <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> 8:30 PM - 12:30 AM</div>
-                        <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">موظف</small></div>
+                        <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">Agents</small></div>
                     </div>
                 </div>
             </div>
@@ -599,17 +599,17 @@
             <!-- Quick Table Card -->
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-bolt text-warning"></i> نظرة سريعة على المداومين الآن</h3>
-                    <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">فتح الجدول الكامل <i class="fa-solid fa-arrow-left"></i></button>
+                    <h3><i class="fa-solid fa-bolt text-warning"></i> Scheduled Agents Overview</h3>
+                    <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">Full Schedule <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
-                                <th>اسم الموظف</th>
-                                <th>شفت الجدول</th>
-                                <th>فترة الدوام المحسوبة</th>
-                                <th>حالة Ameyo</th>
+                                <th>Employee Name</th>
+                                <th>Assigned Shift</th>
+                                <th>Working Hours</th>
+                                <th>Ameyo Status</th>
                             </tr>
                         </thead>
                         <tbody id="homePreviewBody"></tbody>
@@ -622,28 +622,28 @@
         <div id="page-schedule" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-calendar-day text-primary"></i> جدول دوام الشفت اليومي الكامل (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
+                    <h3><i class="fa-solid fa-calendar-day text-primary"></i> Daily Master Schedule (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
                     
                     <div class="actions">
                         <div class="sort-toolbar">
-                            <label for="sortBySelect"><i class="fa-solid fa-arrow-down-short-wide"></i> الترتيب:</label>
+                            <label for="sortBySelect"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort By:</label>
                             <select id="sortBySelect" class="input-text" style="padding:0.35rem 0.75rem; font-size:0.8rem;" onchange="setSortBy(this.value)">
-                                <option value="default">الافتراضي (حسب الجدول)</option>
-                                <option value="name">الاسم (أ - ي)</option>
-                                <option value="shift">نوع الشفت</option>
-                                <option value="status">حالة Ameyo</option>
-                                <option value="breaks">عدد البريكات</option>
+                                <option value="default">Default Order</option>
+                                <option value="name">Name (A-Z)</option>
+                                <option value="shift">Shift Type</option>
+                                <option value="status">Ameyo Status</option>
+                                <option value="breaks">Breaks Count</option>
                             </select>
                         </div>
 
-                        <input type="text" id="searchInput" class="input-text" placeholder="بحث باسم الموظف..." oninput="render()">
+                        <input type="text" id="searchInput" class="input-text" placeholder="Search employee..." oninput="render()">
                         <select id="filterStatus" class="input-text" onchange="render()">
-                            <option value="all">كافة الكادر (23 موظف)</option>
-                            <option value="working">عدد موظفين اليوم (13 موظف)</option>
+                            <option value="all">All Staff (23)</option>
+                            <option value="working">Scheduled Today (13)</option>
                             <option value="Ready">Ready</option>
                             <option value="Lunch">Lunch</option>
                             <option value="Break">Break</option>
-                            <option value="Not Ready">غير متصل</option>
+                            <option value="Not Ready">Offline / Not Ready</option>
                             <option value="OFF">Day OFF</option>
                         </select>
                     </div>
@@ -654,12 +654,12 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th onclick="setSortBy('name')">اسم الموظف <i class="fa-solid fa-sort"></i></th>
-                                <th onclick="setSortBy('shift')">شفت الجدول <i class="fa-solid fa-sort"></i></th>
-                                <th>فترة الدوام المحسوبة</th>
-                                <th onclick="setSortBy('status')">حالة التواجد (Ameyo) <i class="fa-solid fa-sort"></i></th>
-                                <th onclick="setSortBy('breaks')">تسجيل الاستراحات (3 Max) <i class="fa-solid fa-sort"></i></th>
-                                <th>سجل التوقيتات الزمني</th>
+                                <th onclick="setSortBy('name')">Employee Name <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="setSortBy('shift')">Assigned Shift <i class="fa-solid fa-sort"></i></th>
+                                <th>Calculated Period</th>
+                                <th onclick="setSortBy('status')">Ameyo Live Status <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="setSortBy('breaks')">Break Logger (3 Max) <i class="fa-solid fa-sort"></i></th>
+                                <th>Time History Log</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody"></tbody>
@@ -672,10 +672,10 @@
         <div id="page-ameyo" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-signal text-success"></i> مطابقة وتحديث نشاط Ameyo المباشر</h3>
+                    <h3><i class="fa-solid fa-signal text-success"></i> Ameyo Live Activity Sync</h3>
                 </div>
-                <textarea id="ameyoInput" rows="15" placeholder="قم بلصق نص Ameyo المنسوخ هنا..."></textarea>
-                <button class="btn btn-primary" style="width:100%; padding:0.8rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> تحليل الحالات والأنشطة الان</button>
+                <textarea id="ameyoInput" rows="15" placeholder="Paste copied raw text from Ameyo here..."></textarea>
+                <button class="btn btn-primary" style="width:100%; padding:0.8rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> Parse & Match Statuses Now</button>
             </div>
         </div>
 
@@ -684,12 +684,12 @@
         <div id="page-ready" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-circle-check text-success"></i> قائمة الموظفين المتواجدين الان (Ready)</h3>
+                    <h3><i class="fa-solid fa-circle-check text-success"></i> Currently Ready Agents</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
-                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                            <tr><th>#</th><th>Employee Name</th><th>Shift</th><th>Hours</th><th>Status</th></tr>
                         </thead>
                         <tbody id="readyBody"></tbody>
                     </table>
@@ -701,12 +701,12 @@
         <div id="page-lunch" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-utensils text-warning"></i> قائمة الموظفين في استراحة غداء (Lunch)</h3>
+                    <h3><i class="fa-solid fa-utensils text-warning"></i> Agents On Lunch Break</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
-                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                            <tr><th>#</th><th>Employee Name</th><th>Shift</th><th>Hours</th><th>Status</th></tr>
                         </thead>
                         <tbody id="lunchBody"></tbody>
                     </table>
@@ -718,12 +718,12 @@
         <div id="page-break" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-mug-hot text-purple"></i> قائمة الموظفين في استراحة قصيرة (Break)</h3>
+                    <h3><i class="fa-solid fa-mug-hot text-purple"></i> Agents On Short Break</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
-                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                            <tr><th>#</th><th>Employee Name</th><th>Shift</th><th>Hours</th><th>Status</th></tr>
                         </thead>
                         <tbody id="breakBody"></tbody>
                     </table>
@@ -735,12 +735,12 @@
         <div id="page-notready" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-circle-xmark text-danger"></i> قائمة المداومين غير المتصلين (Not Ready)</h3>
+                    <h3><i class="fa-solid fa-circle-xmark text-danger"></i> Offline / Not Ready Agents</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
-                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>فترة الدوام</th><th>الحالة</th></tr>
+                            <tr><th>#</th><th>Employee Name</th><th>Shift</th><th>Hours</th><th>Status</th></tr>
                         </thead>
                         <tbody id="notreadyBody"></tbody>
                     </table>
@@ -752,12 +752,12 @@
         <div id="page-off" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-calendar-xmark text-muted"></i> قائمة الموظفين غير المطلوبين اليوم (Day OFF)</h3>
+                    <h3><i class="fa-solid fa-calendar-xmark text-muted"></i> Off Duty Agents (Day OFF)</h3>
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
-                            <tr><th>#</th><th>اسم الموظف</th><th>شفت اليوم</th><th>الحالة</th></tr>
+                            <tr><th>#</th><th>Employee Name</th><th>Shift</th><th>Status</th></tr>
                         </thead>
                         <tbody id="offBody"></tbody>
                     </table>
@@ -769,9 +769,9 @@
         <div id="page-sheet1" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-file-excel text-success"></i> جدول Google Sheet الرئيسي (Evening / IN)</h3>
+                    <h3><i class="fa-solid fa-file-excel text-success"></i> Main Google Sheet (Evening / IN)</h3>
                     <a href="https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/edit?gid=1335140115#gid=1335140115" target="_blank" class="btn btn-sm btn-outline">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح في نافذة مستقلة
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Open In New Tab
                     </a>
                 </div>
                 <div class="sheet-frame-container">
@@ -783,9 +783,9 @@
         <div id="page-sheet2" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي (تبديل الشفتات)</h3>
+                    <h3><i class="fa-solid fa-file-excel text-cyan"></i> Secondary Sheet (Shift Swaps)</h3>
                     <a href="https://docs.google.com/spreadsheets/d/1uF3KjEbuuQH8yG5v97pcmakK76ZnCIYMOQELsKWiSEg/edit?gid=642239778#gid=642239778" target="_blank" class="btn btn-sm btn-outline">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> فتح في نافذة مستقلة
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Open In New Tab
                     </a>
                 </div>
                 <div class="sheet-frame-container">
@@ -798,19 +798,19 @@
         <div id="page-roster" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-users-gear text-purple"></i> القائمة الكاملة لكافة كادر Evening / IN</h3>
-                    <input type="text" id="rosterSearch" class="input-text" placeholder="تصفية الكادر..." oninput="renderRoster()">
+                    <h3><i class="fa-solid fa-users-gear text-purple"></i> Full Evening / IN Roster Directory</h3>
+                    <input type="text" id="rosterSearch" class="input-text" placeholder="Filter roster..." oninput="renderRoster()">
                 </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>اسم الموظف</th>
-                                <th>شفت اليوم</th>
-                                <th>الحالة بالحساب الأوتوماتيكي</th>
-                                <th>سجل الاستراحات المسجلة</th>
-                                <th>إجمالي عدد البريكات</th>
+                                <th>Employee Name</th>
+                                <th>Assigned Shift</th>
+                                <th>Calculated Status</th>
+                                <th>Logged Breaks</th>
+                                <th>Total Breaks</th>
                             </tr>
                         </thead>
                         <tbody id="rosterBody"></tbody>
@@ -824,25 +824,25 @@
     <div id="swapModal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-arrow-rotate-left text-warning"></i> تبديل الشفتات بين موظفين اثنين</h3>
+                <h3><i class="fa-solid fa-arrow-rotate-left text-warning"></i> Swap Shifts Between Two Employees</h3>
                 <button class="modal-close" onclick="closeSwapModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
             <div class="form-group">
-                <label for="swapEmp1Select"><i class="fa-solid fa-user-check text-primary"></i> الموظف الأول:</label>
+                <label for="swapEmp1Select"><i class="fa-solid fa-user-check text-primary"></i> First Employee:</label>
                 <select id="swapEmp1Select" class="input-text"></select>
             </div>
 
             <div class="form-group">
-                <label for="swapEmp2Select"><i class="fa-solid fa-user-gear text-warning"></i> الموظف الثاني (البديل):</label>
+                <label for="swapEmp2Select"><i class="fa-solid fa-user-gear text-warning"></i> Second Employee (Substitute):</label>
                 <select id="swapEmp2Select" class="input-text"></select>
             </div>
 
             <div class="actions" style="margin-top: 1.4rem; justify-content: space-between;">
-                <button class="btn btn-outline btn-sm" onclick="clearAllManualSwaps()"><i class="fa-solid fa-rotate-left"></i> تصفير التبديلات اليوم</button>
+                <button class="btn btn-outline btn-sm" onclick="clearAllManualSwaps()"><i class="fa-solid fa-rotate-left"></i> Reset Today's Swaps</button>
                 <div style="display:flex; gap:0.5rem;">
-                    <button class="btn btn-outline" onclick="closeSwapModal()">إلغاء</button>
-                    <button class="btn btn-warning" onclick="applyManualSwap()"><i class="fa-solid fa-arrow-rotate-left"></i> تبديل الشفتين بينهما</button>
+                    <button class="btn btn-outline" onclick="closeSwapModal()">Cancel</button>
+                    <button class="btn btn-warning" onclick="applyManualSwap()"><i class="fa-solid fa-arrow-rotate-left"></i> Swap Their Shifts</button>
                 </div>
             </div>
         </div>
@@ -890,22 +890,22 @@
         let sortAsc = true;
 
         const pageTitles = {
-            'home': '<i class="fa-solid fa-chart-pie text-primary"></i> الصفحة الرئيسية (Dashboard)',
-            'schedule': '<i class="fa-solid fa-table-list text-cyan"></i> جدول اليوم الكامل',
-            'ameyo': '<i class="fa-solid fa-signal text-success"></i> مطابقة نشاط Ameyo المباشر',
-            'ready': '<i class="fa-solid fa-circle-check text-success"></i> الكادر المتواجد (Ready)',
-            'lunch': '<i class="fa-solid fa-utensils text-warning"></i> استراحات الغداء (Lunch)',
-            'break': '<i class="fa-solid fa-mug-hot text-purple"></i> الاستراحات القصيرة (Break)',
-            'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i> المداومين غير المتصلين (Not Ready)',
-            'off': '<i class="fa-solid fa-calendar-xmark text-muted"></i> غير المطلوبين اليوم (Day OFF)',
-            'sheet1': '<i class="fa-solid fa-file-excel text-success"></i> جدول Google Sheet الرئيسي',
-            'sheet2': '<i class="fa-solid fa-file-excel text-cyan"></i> جدول Google Sheet الثانوي (تبديلات)',
-            'roster': '<i class="fa-solid fa-users-gear text-purple"></i> دليل الكادر والتفاصيل'
+            'home': '<i class="fa-solid fa-chart-pie text-primary"></i> Dashboard Overview',
+            'schedule': '<i class="fa-solid fa-table-list text-cyan"></i> Daily Master Schedule',
+            'ameyo': '<i class="fa-solid fa-signal text-success"></i> Ameyo Live Activity Sync',
+            'ready': '<i class="fa-solid fa-circle-check text-success"></i> Ready Agents',
+            'lunch': '<i class="fa-solid fa-utensils text-warning"></i> Lunch Break',
+            'break': '<i class="fa-solid fa-mug-hot text-purple"></i> Short Break',
+            'notready': '<i class="fa-solid fa-circle-xmark text-danger"></i> Offline / Not Ready',
+            'off': '<i class="fa-solid fa-calendar-xmark text-muted"></i> Off Duty (Day OFF)',
+            'sheet1': '<i class="fa-solid fa-file-excel text-success"></i> Main Google Sheet',
+            'sheet2': '<i class="fa-solid fa-file-excel text-cyan"></i> Secondary Sheet',
+            'roster': '<i class="fa-solid fa-users-gear text-purple"></i> Full Roster Directory'
         };
 
         function updateLiveClock() {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             const clockEl = document.getElementById('liveClockDisplay');
             if (clockEl) clockEl.innerText = timeStr;
         }
@@ -966,7 +966,7 @@
         let employees = JSON.parse(localStorage.getItem('evening_in_employees')) || initialEveningEmployees.map(e => ({
             ...e,
             ameyoCategory: (e.status === 'OFF' || e.status === 'Vacation') ? 'OFF' : 'Not Ready',
-            ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'غير متصل',
+            ameyoDetail: (e.status === 'OFF' || e.status === 'Vacation') ? 'Day OFF' : 'Offline',
             breaks: []
         }));
 
@@ -1028,11 +1028,11 @@
             const name2 = document.getElementById('swapEmp2Select').value;
 
             if (!name1 || !name2) {
-                alert('يرجى اختيار الموظفين الاثنين للتبديل');
+                alert('Please select both employees to swap.');
                 return;
             }
             if (name1 === name2) {
-                alert('يرجى اختيار موظفين مختلفين للتبديل بينهما!');
+                alert('Please select two different employees to swap!');
                 return;
             }
 
@@ -1052,10 +1052,10 @@
                 [emp1, emp2].forEach(emp => {
                     if (emp.status.toLowerCase().includes('off') || emp.status === 'Vacation') {
                         emp.ameyoCategory = 'OFF';
-                        emp.ameyoDetail = (emp.status === 'Vacation') ? 'إجازة' : 'Day OFF';
+                        emp.ameyoDetail = (emp.status === 'Vacation') ? 'Vacation' : 'Day OFF';
                     } else if (emp.ameyoCategory === 'OFF') {
                         emp.ameyoCategory = 'Not Ready';
-                        emp.ameyoDetail = 'غير متصل';
+                        emp.ameyoDetail = 'Offline';
                     }
                 });
 
@@ -1068,7 +1068,7 @@
         }
 
         function clearAllManualSwaps() {
-            if (confirm('هل تريد تصفير وإلغاء كافة التبديلات اليدوية اليوم؟')) {
+            if (confirm('Reset and cancel all manual shift swaps for today?')) {
                 localStorage.removeItem('manual_swaps_store');
                 employees.forEach(e => e.isManualSwapped = false);
                 fetchLiveGoogleSheet();
@@ -1077,11 +1077,12 @@
         }
 
         function clean(str) { return (str || '').toLowerCase().replace(/[\s\._\-]/g, ''); }
+        function cleanAlpha(str) { return (str || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
         function save() { localStorage.setItem('evening_in_employees', JSON.stringify(employees)); }
 
         function getShiftHours(status) {
             const st = (status || '').toUpperCase();
-            if (st === 'OFF' || st === 'VACATION') return { isWorking: false, label: 'عطلة رسمية' };
+            if (st === 'OFF' || st === 'VACATION') return { isWorking: false, label: 'Off Duty' };
 
             if (st.includes('6:30-2:30') || st.includes('6:30 - 2:30')) return { isWorking: true, slot1: false, slot2: true, slot3: true, label: '6:30 PM - 2:30 AM' };
             if (st.includes('12:30-8:30') || st.includes('12:30 - 8:30')) return { isWorking: true, slot1: true, slot2: true, slot3: false, label: '12:30 PM - 8:30 PM' };
@@ -1149,7 +1150,7 @@
                 document.getElementById('slotCard3').classList.add('active-slot');
             } else {
                 expectedNow = target3;
-                slotLabelText = 'خارج وقت الشفت الأساسي';
+                slotLabelText = 'Off-Shift Hours';
             }
 
             document.getElementById('expectedAmeyoNow').innerText = expectedNow;
@@ -1217,11 +1218,11 @@
                     } else if (emp.ameyoCategory === 'Break') {
                         ameyoBadge = `<span class="badge badge-break" onclick="toggleState(${emp.id})"><span class="status-dot dot-break"></span> ${emp.ameyoDetail || 'Break'}</span>`;
                     } else {
-                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><span class="status-dot dot-notready"></span> ${emp.ameyoDetail || 'غير متصل'}</span>`;
+                        ameyoBadge = `<span class="badge badge-notready" onclick="toggleState(${emp.id})"><span class="status-dot dot-notready"></span> ${emp.ameyoDetail || 'Offline'}</span>`;
                     }
                 }
 
-                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> مبدّل يدوي</span>` : '';
+                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const homeTr = document.createElement('tr');
@@ -1236,13 +1237,13 @@
 
                 let breakBtns = '';
                 if (emp.status === 'OFF' || emp.status === 'Vacation') {
-                    breakBtns = `<span style="color:var(--text-muted); font-size:0.78rem;">غير مطلوب اليوم</span>`;
+                    breakBtns = `<span style="color:var(--text-muted); font-size:0.78rem;">Off Duty</span>`;
                 } else {
                     const activeB = emp.breaks.find(b => b.active);
                     if (activeB) {
-                        breakBtns = `<button class="btn btn-sm btn-primary" onclick="endBreak(${emp.id})"><i class="fa-solid fa-square-check"></i> إنهاء Break ${activeB.num}</button>`;
+                        breakBtns = `<button class="btn btn-sm btn-primary" onclick="endBreak(${emp.id})"><i class="fa-solid fa-square-check"></i> End Break ${activeB.num}</button>`;
                     } else if (emp.breaks.length >= 3) {
-                        breakBtns = `<span style="color:var(--text-muted); font-size:0.78rem;">مكتمل (3/3)</span>`;
+                        breakBtns = `<span style="color:var(--text-muted); font-size:0.78rem;">Completed (3/3)</span>`;
                     } else {
                         breakBtns = `<button class="btn btn-sm btn-outline" onclick="startBreak(${emp.id})"><i class="fa-solid fa-mug-hot"></i> Break ${emp.breaks.length + 1}</button>`;
                     }
@@ -1286,7 +1287,7 @@
                 const shiftInfo = getShiftHours(emp.status);
                 const isOff = emp.status === 'OFF' || emp.status === 'Vacation';
                 const initials = getInitials(emp.name);
-                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> مبدّل يدوي</span>` : '';
+                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 if (isOff) {
                     offBody.innerHTML += `<tr><td>${offI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span></td></tr>`;
@@ -1298,7 +1299,7 @@
                     } else if (emp.ameyoCategory === 'Break') {
                         breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
                     } else {
-                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> غير متصل</span></td></tr>`;
+                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
                     }
                 }
             });
@@ -1314,7 +1315,7 @@
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
                 let historyLog = emp.breaks.map(b => `<span class="badge badge-shift">${b.time}</span>`).join(' ') || '-';
-                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> مبدّل يدوي</span>` : '';
+                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
@@ -1332,7 +1333,7 @@
             const emp = employees.find(e => e.id === id);
             if (emp) {
                 emp.ameyoCategory = (emp.ameyoCategory === 'Ready') ? 'Not Ready' : 'Ready';
-                emp.ameyoDetail = emp.ameyoCategory;
+                emp.ameyoDetail = (emp.ameyoCategory === 'Ready') ? 'Ready' : 'Offline';
                 save();
                 render();
             }
@@ -1342,7 +1343,7 @@
             const emp = employees.find(e => e.id === id);
             if (!emp || emp.breaks.length >= 3) return;
 
-            const timeStr = new Date().toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
             emp.breaks.push({ num: emp.breaks.length + 1, time: timeStr, active: true });
             save();
             render();
@@ -1358,7 +1359,7 @@
         }
 
         function resetAllBreaks() {
-            if (confirm('هل تريد تصفير جميع استراحات السجل اليوم؟')) {
+            if (confirm('Reset all logged breaks for today?')) {
                 employees.forEach(e => e.breaks = []);
                 save();
                 render();
@@ -1368,7 +1369,7 @@
         function updateAmeyoList() {
             const rawText = document.getElementById('ameyoInput').value;
             if (!rawText || rawText.trim().length === 0) {
-                alert('يرجى لصق النص المنسوخ من Ameyo');
+                alert('Please paste copied raw text from Ameyo.');
                 return;
             }
 
@@ -1376,13 +1377,23 @@
 
             employees.forEach(emp => {
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
-                    const cleanEmpName = clean(emp.name);
+                    const cleanEmp = cleanAlpha(emp.name);
 
                     let foundIndex = -1;
                     for (let idx = 0; idx < lines.length; idx++) {
-                        if (clean(lines[idx]) === cleanEmpName || clean(lines[idx]).includes(cleanEmpName)) {
+                        const lineClean = cleanAlpha(lines[idx]);
+                        
+                        if (lineClean === cleanEmp) {
                             foundIndex = idx;
                             break;
+                        } else if (lineClean.includes(cleanEmp)) {
+                            const longerMatches = employees.filter(e => e.name !== emp.name && cleanAlpha(e.name).includes(cleanEmp) && cleanAlpha(e.name).length > cleanEmp.length);
+                            const isLongerEmpPresentInLine = longerMatches.some(lm => lineClean.includes(cleanAlpha(lm.name)));
+
+                            if (!isLongerEmpPresentInLine) {
+                                foundIndex = idx;
+                                break;
+                            }
                         }
                     }
 
@@ -1400,33 +1411,33 @@
                             emp.ameyoDetail = 'Ready';
                         } else {
                             emp.ameyoCategory = 'Not Ready';
-                            emp.ameyoDetail = 'غير متصل';
+                            emp.ameyoDetail = 'Offline';
                         }
                     } else {
                         emp.ameyoCategory = 'Not Ready';
-                        emp.ameyoDetail = 'غير متصل';
+                        emp.ameyoDetail = 'Offline';
                     }
                 }
             });
 
             save();
             render();
-            alert('تم تحليل حالات الموظفين والأنشطة بنجاح!');
+            alert('Ameyo statuses parsed and updated successfully without name collisions!');
         }
 
         function fetchLiveGoogleSheet() {
             const syncText = document.getElementById('syncText');
-            if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-spinner fa-spin text-warning"></i> Evening / IN • جاري التزامن...</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
+            if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-spinner fa-spin text-warning"></i> Evening / IN • Fetching Schedule...</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
 
             fetch(GOOGLE_SHEET_MAIN_CSV)
                 .then(r => r.text())
                 .then(csv => {
                     parseGoogleSheetCSV(csv);
-                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Sync</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
+                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
                 })
                 .catch(err => {
                     console.error(err);
-                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-database text-muted"></i> Evening / IN • بيانات محليّة</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
+                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-database text-muted"></i> Evening / IN • Local Data</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
                 });
         }
 
@@ -1480,7 +1491,7 @@
                         const existingEmp = employees.find(e => clean(e.name) === clean(name));
                         const breaks = existingEmp ? existingEmp.breaks : [];
                         const ameyoCategory = existingEmp ? existingEmp.ameyoCategory : (shiftToday === 'OFF' ? 'OFF' : 'Not Ready');
-                        const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'غير متصل');
+                        const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'Offline');
 
                         eveningRows.push({
                             id: eveningRows.length + 1,
