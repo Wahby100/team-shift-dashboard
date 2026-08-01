@@ -539,6 +539,7 @@
             <div class="actions">
                 <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> Manual Shift Swap</button>
                 <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> Refresh Schedule</button>
+                <button class="btn btn-outline" onclick="changeSheetUrl()"><i class="fa-solid fa-link text-cyan"></i> Month / Sheet Link</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> Reset Breaks</button>
             </div>
         </header>
@@ -884,7 +885,25 @@
             { id: 23, name: "OthmanFouad", status: "H 6:30-2:30" }
         ];
 
-        const GOOGLE_SHEET_MAIN_CSV = "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
+        let GOOGLE_SHEET_MAIN_CSV = localStorage.getItem('custom_sheet_url') || "https://docs.google.com/spreadsheets/d/1oqa6Q8CO8lVBwZafDUgLMAmPda-obr11i7_2sx1fZ4Q/export?format=csv&gid=1335140115";
+
+        function changeSheetUrl() {
+            const currentUrl = GOOGLE_SHEET_MAIN_CSV;
+            const newUrl = prompt('Enter Google Sheet link or CSV URL for August (Month 8):', currentUrl);
+            if (newUrl && newUrl.trim().length > 0) {
+                let finalUrl = newUrl.trim();
+                if (finalUrl.includes('/edit')) {
+                    const matchGid = finalUrl.match(/gid=([0-9]+)/);
+                    const gid = matchGid ? matchGid[1] : '0';
+                    const baseUrl = finalUrl.split('/edit')[0];
+                    finalUrl = `${baseUrl}/export?format=csv&gid=${gid}`;
+                }
+                localStorage.setItem('custom_sheet_url', finalUrl);
+                GOOGLE_SHEET_MAIN_CSV = finalUrl;
+                fetchLiveGoogleSheet();
+                alert('Google Sheet link updated successfully for Month 8!');
+            }
+        }
 
         let currentSort = 'default';
         let sortAsc = true;
