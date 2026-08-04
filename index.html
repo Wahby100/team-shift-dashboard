@@ -1539,11 +1539,26 @@
 
             const lines = textToParse.split(/[\n\r\t]+/).map(l => l.trim()).filter(l => l.length > 0);
 
+            // Comprehensive status keyword lists
+            const readyKeywords = [
+                'ready', 'available', 'incall', 'in call', 'talking', 'ringing', 'ring', 'dialing', 
+                'connected', 'hungup', 'active', 'idle', 'acw', 'wrapup', 'wrap up', 'loggedin', 
+                'logged in', 'online', 'busy', 'oncall', 'on call', 'occupied', 'disposed'
+            ];
+
+            const lunchKeywords = ['lunch', 'dinner', 'food', 'eat'];
+            const breakKeywords = ['break', 'tea', 'coffee', 'aux', 'pause', 'rest', 'meeting', 'coaching', 'training', 'personal'];
+
             employees.forEach(emp => {
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const cleanEmp = cleanAlpha(emp.name);
 
+                    // Extract name tokens (e.g. "MohammedSalah" -> ["mohammed", "salah"])
+                    const nameTokens = emp.name.replace(/([A-Z])/g, ' $1').trim().toLowerCase().split(/\s+/).filter(t => t.length > 1);
+
                     let foundIndex = -1;
+
+                    // 1. Direct exact or substring match in lines
                     for (let idx = 0; idx < lines.length; idx++) {
                         const lineClean = cleanAlpha(lines[idx]);
                         
@@ -1558,16 +1573,37 @@
                         }
                     }
 
-                    if (foundIndex !== -1) {
-                        const nextLines = lines.slice(foundIndex, foundIndex + 10).join(' ').toLowerCase();
+                    // 2. Token-based match if direct match wasn't found (e.g. "Mohammed Salah" in table cells)
+                    if (foundIndex === -1 && nameTokens.length >= 2) {
+                        for (let idx = 0; idx < lines.length; idx++) {
+                            const lineLower = lines[idx].toLowerCase();
+                            const allTokensInLine = nameTokens.every(token => lineLower.includes(token));
 
-                        if (nextLines.includes('lunch')) {
+                            if (allTokensInLine) {
+                                const longerMatches = employees.filter(e => e.name !== emp.name && e.name.length > emp.name.length);
+                                const isLongerMatch = longerMatches.some(lm => {
+                                    const lmTokens = lm.name.replace(/([A-Z])/g, ' $1').trim().toLowerCase().split(/\s+/).filter(t => t.length > 1);
+                                    return lmTokens.every(t => lineLower.includes(t));
+                                });
+
+                                if (!isLongerMatch) {
+                                    foundIndex = idx;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (foundIndex !== -1) {
+                        const nextLines = lines.slice(foundIndex, Math.min(lines.length, foundIndex + 12)).join(' ').toLowerCase();
+
+                        if (lunchKeywords.some(kw => nextLines.includes(kw))) {
                             emp.ameyoCategory = 'Lunch';
                             emp.ameyoDetail = 'Lunch';
-                        } else if (nextLines.includes('break') || nextLines.includes('tea') || nextLines.includes('aux') || nextLines.includes('pause')) {
+                        } else if (breakKeywords.some(kw => nextLines.includes(kw))) {
                             emp.ameyoCategory = 'Break';
                             emp.ameyoDetail = 'Break';
-                        } else if (nextLines.includes('available') || nextLines.includes('ready') || nextLines.includes('connected') || nextLines.includes('hungup') || nextLines.includes('in call') || nextLines.includes('incall') || nextLines.includes('dialing')) {
+                        } else if (readyKeywords.some(kw => nextLines.includes(kw))) {
                             emp.ameyoCategory = 'Ready';
                             emp.ameyoDetail = 'Ready';
                         } else {
@@ -1575,28 +1611,21 @@
                             emp.ameyoDetail = 'Offline';
                         }
                     } else {
-                        // Dual-Tier Fallback: Search full text snippet if name is present
+                        // Fallback: Check full text snippet if name exists anywhere
                         const fullClean = cleanAlpha(textToParse);
                         if (fullClean.includes(cleanEmp)) {
-                            const longerMatches = employees.filter(e => e.name !== emp.name && cleanAlpha(e.name).includes(cleanEmp) && cleanAlpha(e.name).length > cleanEmp.length);
-                            const isLongerEmpPresentInText = longerMatches.some(lm => fullClean.includes(cleanAlpha(lm.name)));
-
-                            if (!isLongerEmpPresentInText) {
-                                const empIdx = fullClean.indexOf(cleanEmp);
-                                const snippet = fullClean.substring(empIdx, empIdx + 120);
-                                if (snippet.includes('lunch')) {
-                                    emp.ameyoCategory = 'Lunch';
-                                    emp.ameyoDetail = 'Lunch';
-                                } else if (snippet.includes('break') || snippet.includes('tea') || snippet.includes('aux') || snippet.includes('pause')) {
-                                    emp.ameyoCategory = 'Break';
-                                    emp.ameyoDetail = 'Break';
-                                } else if (snippet.includes('available') || snippet.includes('ready') || snippet.includes('connected') || snippet.includes('hungup') || snippet.includes('incall') || snippet.includes('dialing')) {
-                                    emp.ameyoCategory = 'Ready';
-                                    emp.ameyoDetail = 'Ready';
-                                } else {
-                                    emp.ameyoCategory = 'Not Ready';
-                                    emp.ameyoDetail = 'Offline';
-                                }
+                            const empIdx = fullClean.indexOf(cleanEmp);
+                            const snippet = fullClean.substring(empIdx, empIdx + 150);
+                            
+                            if (lunchKeywords.some(kw => snippet.includes(kw))) {
+                                emp.ameyoCategory = 'Lunch';
+                                emp.ameyoDetail = 'Lunch';
+                            } else if (breakKeywords.some(kw => snippet.includes(kw))) {
+                                emp.ameyoCategory = 'Break';
+                                emp.ameyoDetail = 'Break';
+                            } else if (readyKeywords.some(kw => snippet.includes(kw))) {
+                                emp.ameyoCategory = 'Ready';
+                                emp.ameyoDetail = 'Ready';
                             } else {
                                 emp.ameyoCategory = 'Not Ready';
                                 emp.ameyoDetail = 'Offline';
