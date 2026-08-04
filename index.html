@@ -71,13 +71,45 @@
             min-height: 100vh;
             overflow-x: hidden;
             letter-spacing: -0.2px;
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, background-image 0.4s ease;
+        }
+
+        /* 🖼️ 4 Background Ambiance Styles */
+        body.bg-cyber {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        body.bg-slate {
+            background: #08090d;
+            background-image: none;
+        }
+        body.bg-aurora {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.18) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%);
         }
 
         /* Ambient Dynamic Status Glow Header & Glassmorphism */
         body.glow-good { --ambient-glow: rgba(16, 185, 129, 0.22); }
         body.glow-warn { --ambient-glow: rgba(245, 158, 11, 0.22); }
         body.glow-danger { --ambient-glow: rgba(239, 68, 68, 0.22); }
+
+        /* 5️⃣ Dynamic Glow Cards Effects */
+        body.glow-good .card, body.glow-good .targets-panel, body.glow-good .status-wall-col {
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.15);
+        }
+        body.glow-warn .card, body.glow-warn .targets-panel, body.glow-warn .status-wall-col {
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(245, 158, 11, 0.15);
+        }
+        body.glow-danger .card, body.glow-danger .targets-panel, body.glow-danger .status-wall-col {
+            border-color: rgba(239, 68, 68, 0.35);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(239, 68, 68, 0.2);
+        }
 
         header.top-header, .card, .kpi-box, .targets-panel, .modal-card, .emp-grid-card, .status-wall-col {
             background: var(--bg-surface);
@@ -849,6 +881,17 @@
             </div>
 
             <div class="actions">
+                <!-- 🖼️ 4 Background Ambiance Style Selector -->
+                <div class="sort-toolbar" style="padding:0.25rem 0.5rem;">
+                    <label for="bgStyleSelect" style="font-size:0.75rem;"><i class="fa-solid fa-image text-cyan"></i> BG:</label>
+                    <select id="bgStyleSelect" class="input-text" style="padding:0.25rem 0.4rem; font-size:0.75rem;" onchange="setBackgroundAmbiance(this.value)">
+                        <option value="mesh">Obsidian Mesh</option>
+                        <option value="cyber">Cyber Grid</option>
+                        <option value="slate">Matte Slate</option>
+                        <option value="aurora">Aurora Glow</option>
+                    </select>
+                </div>
+
                 <!-- 🎨 Theme Color Accent Switcher -->
                 <div style="display:flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.02); padding:0.3rem 0.6rem; border-radius:8px; border:1px solid var(--border);">
                     <span class="theme-dot" style="background:#3b82f6;" title="Sapphire Blue" onclick="setAccentTheme('sapphire')"></span>
@@ -1270,6 +1313,20 @@
     <script>
         let selectedCustomDate = null;
 
+        function setBackgroundAmbiance(bgStyle) {
+            document.body.classList.remove('bg-cyber', 'bg-slate', 'bg-aurora');
+            if (bgStyle === 'cyber') document.body.classList.add('bg-cyber');
+            else if (bgStyle === 'slate') document.body.classList.add('bg-slate');
+            else if (bgStyle === 'aurora') document.body.classList.add('bg-aurora');
+
+            localStorage.setItem('cc_bg_style', bgStyle);
+            const selectEl = document.getElementById('bgStyleSelect');
+            if (selectEl) selectEl.value = bgStyle;
+        }
+
+        const savedBgStyle = localStorage.getItem('cc_bg_style');
+        if (savedBgStyle) setBackgroundAmbiance(savedBgStyle);
+
         function setAccentTheme(themeName) {
             document.body.classList.remove('theme-emerald', 'theme-violet', 'theme-amber');
             if (themeName === 'emerald') document.body.classList.add('theme-emerald');
@@ -1384,7 +1441,7 @@
             const offset = maxOffset - (maxOffset * percent) / 100;
             gaugeCircleEl.style.strokeDashoffset = offset;
 
-            // Ambient Glow Dynamic Background Colors
+            // Ambient Dynamic Status Glow Header & Glassmorphism
             document.body.classList.remove('glow-good', 'glow-warn', 'glow-danger');
             if (percent >= 100) {
                 gaugeCircleEl.style.stroke = 'var(--success)';
