@@ -34,6 +34,8 @@
             
             --sidebar-width: 250px;
             --radius: 12px;
+
+            --ambient-glow: rgba(16, 185, 129, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -44,6 +46,148 @@
             min-height: 100vh;
             overflow-x: hidden;
             letter-spacing: -0.2px;
+            transition: background 0.3s ease;
+        }
+
+        /* Ambient Dynamic Status Glow Header */
+        body.glow-good { --ambient-glow: rgba(16, 185, 129, 0.2); }
+        body.glow-warn { --ambient-glow: rgba(245, 158, 11, 0.2); }
+        body.glow-danger { --ambient-glow: rgba(239, 68, 68, 0.2); }
+
+        header.top-header {
+            box-shadow: 0 0 35px var(--ambient-glow);
+            transition: box-shadow 0.4s ease;
+        }
+
+        /* TV Wallboard / Kiosk Fullscreen Mode */
+        body.tv-kiosk-mode aside.sidebar { display: none; }
+        body.tv-kiosk-mode main.main-content {
+            margin-left: 0;
+            width: 100%;
+            padding: 1rem 1.5rem;
+        }
+        body.tv-kiosk-mode .top-header .actions .btn-non-tv { display: none; }
+        body.tv-kiosk-mode .kpi-strip { grid-template-columns: repeat(5, 1fr); }
+        body.tv-kiosk-mode .kpi-box h2 { font-size: 2.5rem; }
+        body.tv-kiosk-mode .now-box h2 { font-size: 3.2rem; }
+
+        /* Multi-Layout Switcher Styling */
+        .layout-btn-group {
+            display: inline-flex;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2px;
+            gap: 2px;
+        }
+        .layout-btn {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.76rem;
+            font-weight: 700;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .layout-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Card Grid Layout View */
+        .cards-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .emp-grid-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.1rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .emp-grid-card:hover {
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+        .emp-grid-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+        .emp-grid-card-name { font-weight: 800; font-size: 0.92rem; color: #fff; }
+
+        /* Timeline Bar View */
+        .timeline-container { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+        .timeline-row {
+            display: grid;
+            grid-template-columns: 200px 1fr 140px;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+        }
+        .timeline-bar-wrapper {
+            height: 18px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 9px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+        }
+        .timeline-bar-fill {
+            height: 100%;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Coverage Circular Gauge Gauge Styling */
+        .circular-gauge-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+        }
+        .gauge-svg { width: 70px; height: 70px; transform: rotate(-90deg); }
+        .gauge-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
+        .gauge-fill {
+            fill: none;
+            stroke: var(--success);
+            stroke-width: 7;
+            stroke-dasharray: 220;
+            stroke-dashoffset: 0;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease, stroke 0.4s ease;
+        }
+        .gauge-text-val { font-size: 1.4rem; font-weight: 900; font-family: 'Montserrat', sans-serif; }
+
+        /* Group By Shift Headers */
+        .shift-group-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--cyan);
+            margin: 1.4rem 0 0.6rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.4rem;
         }
 
         /* Enterprise Fixed Sidebar (LTR - Left Side) */
@@ -243,7 +387,7 @@
             padding: 1.1rem 1.4rem;
             margin-bottom: 1.4rem;
             display: grid;
-            grid-template-columns: 1.2fr 3fr;
+            grid-template-columns: 1.2fr 1.2fr 3fr;
             gap: 1.4rem;
             align-items: center;
         }
@@ -537,10 +681,11 @@
             </div>
 
             <div class="actions">
-                <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> Manual Shift Swap</button>
-                <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> Refresh Schedule</button>
-                <button class="btn btn-outline" onclick="changeSheetUrl()"><i class="fa-solid fa-link text-cyan"></i> Month / Sheet Link</button>
-                <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> Reset Breaks</button>
+                <button class="btn btn-primary" onclick="toggleTvKioskMode()"><i class="fa-solid fa-tv"></i> <span id="tvBtnText">TV Mode</span></button>
+                <button class="btn btn-warning btn-non-tv" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> Shift Swap</button>
+                <button class="btn btn-success btn-non-tv" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                <button class="btn btn-outline btn-non-tv" onclick="changeSheetUrl()"><i class="fa-solid fa-link text-cyan"></i> Month Link</button>
+                <button class="btn btn-outline btn-non-tv" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> Reset Breaks</button>
             </div>
         </header>
 
@@ -571,12 +716,24 @@
                 </div>
             </div>
 
-            <!-- Target Requirement Panel -->
+            <!-- Target Requirement Panel with Circular Gauge -->
             <div class="targets-panel">
                 <div class="now-box">
-                    <span><i class="fa-solid fa-bullseye"></i> Current Target Ameyo Count</span>
+                    <span><i class="fa-solid fa-bullseye"></i> Target Ameyo Count</span>
                     <h2 id="expectedAmeyoNow">0</h2>
                     <small id="currentSlotLabel">Active Time Slot</small>
+                </div>
+
+                <!-- ⏱ Circular Coverage Gauge -->
+                <div class="circular-gauge-container">
+                    <svg class="gauge-svg" viewBox="0 0 80 80">
+                        <circle class="gauge-bg" cx="40" cy="40" r="35"></circle>
+                        <circle class="gauge-fill" id="coverageGaugeCircle" cx="40" cy="40" r="35"></circle>
+                    </svg>
+                    <div>
+                        <div class="gauge-text-val" id="coverageGaugePercent" style="color:var(--success)">0%</div>
+                        <small style="color:var(--text-muted); font-weight:700; font-size:0.75rem;">Coverage Met</small>
+                    </div>
                 </div>
                 
                 <div class="slots-grid">
@@ -626,10 +783,20 @@
                     <h3><i class="fa-solid fa-calendar-day text-primary"></i> Daily Master Schedule (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
                     
                     <div class="actions">
+                        <!-- Multi-Layout Switcher (List / Cards / Timeline) -->
+                        <div class="layout-btn-group">
+                            <button class="layout-btn active" id="layoutBtnTable" onclick="setLayoutView('table')"><i class="fa-solid fa-list"></i> Table</button>
+                            <button class="layout-btn" id="layoutBtnGrid" onclick="setLayoutView('grid')"><i class="fa-solid fa-grip"></i> Cards</button>
+                            <button class="layout-btn" id="layoutBtnTimeline" onclick="setLayoutView('timeline')"><i class="fa-solid fa-chart-gantt"></i> Timeline</button>
+                        </div>
+
+                        <!-- Group By Shift Toggle -->
+                        <button class="btn btn-sm btn-outline" id="groupByShiftBtn" onclick="toggleGroupByShift()"><i class="fa-solid fa-folder-tree text-cyan"></i> Group By Shift</button>
+
                         <div class="sort-toolbar">
-                            <label for="sortBySelect"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort By:</label>
-                            <select id="sortBySelect" class="input-text" style="padding:0.35rem 0.75rem; font-size:0.8rem;" onchange="setSortBy(this.value)">
-                                <option value="default">Default Order</option>
+                            <label for="sortBySelect"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort:</label>
+                            <select id="sortBySelect" class="input-text" style="padding:0.35rem 0.65rem; font-size:0.78rem;" onchange="setSortBy(this.value)">
+                                <option value="default">Default</option>
                                 <option value="name">Name (A-Z)</option>
                                 <option value="shift">Shift Type</option>
                                 <option value="status">Ameyo Status</option>
@@ -637,7 +804,7 @@
                             </select>
                         </div>
 
-                        <input type="text" id="searchInput" class="input-text" placeholder="Search employee..." oninput="render()">
+                        <input type="text" id="searchInput" class="input-text" placeholder="Search staff..." oninput="render()">
                         <select id="filterStatus" class="input-text" onchange="render()">
                             <option value="all">All Staff (23)</option>
                             <option value="working">Scheduled Today (13)</option>
@@ -650,7 +817,8 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <!-- View 1: Table View -->
+                <div class="table-responsive" id="tableViewContainer">
                     <table>
                         <thead>
                             <tr>
@@ -666,6 +834,12 @@
                         <tbody id="tableBody"></tbody>
                     </table>
                 </div>
+
+                <!-- View 2: Cards Grid View -->
+                <div class="cards-grid-layout" id="gridViewContainer" style="display:none;"></div>
+
+                <!-- View 3: Timeline Bar View -->
+                <div class="timeline-container" id="timelineViewContainer" style="display:none;"></div>
             </div>
         </div>
 
@@ -850,6 +1024,91 @@
     </div>
 
     <script>
+        let currentLayoutView = 'table';
+        let isGroupByShift = false;
+        let isTvKioskActive = false;
+
+        function toggleTvKioskMode() {
+            isTvKioskActive = !isTvKioskActive;
+            const btnText = document.getElementById('tvBtnText');
+            if (isTvKioskActive) {
+                document.body.classList.add('tv-kiosk-mode');
+                if (btnText) btnText.innerText = 'Exit TV';
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                }
+            } else {
+                document.body.classList.remove('tv-kiosk-mode');
+                if (btnText) btnText.innerText = 'TV Mode';
+                if (document.exitFullscreen && document.fullscreenElement) {
+                    document.exitFullscreen().catch(() => {});
+                }
+            }
+        }
+
+        function setLayoutView(viewType) {
+            currentLayoutView = viewType;
+            document.querySelectorAll('.layout-btn').forEach(btn => btn.classList.remove('active'));
+            if (viewType === 'table') document.getElementById('layoutBtnTable').classList.add('active');
+            else if (viewType === 'grid') document.getElementById('layoutBtnGrid').classList.add('active');
+            else if (viewType === 'timeline') document.getElementById('layoutBtnTimeline').classList.add('active');
+
+            document.getElementById('tableViewContainer').style.display = (viewType === 'table') ? 'block' : 'none';
+            document.getElementById('gridViewContainer').style.display = (viewType === 'grid') ? 'grid' : 'none';
+            document.getElementById('timelineViewContainer').style.display = (viewType === 'timeline') ? 'flex' : 'none';
+
+            render();
+        }
+
+        function toggleGroupByShift() {
+            isGroupByShift = !isGroupByShift;
+            const btn = document.getElementById('groupByShiftBtn');
+            if (btn) {
+                if (isGroupByShift) {
+                    btn.classList.add('btn-primary');
+                    btn.classList.remove('btn-outline');
+                } else {
+                    btn.classList.remove('btn-primary');
+                    btn.classList.add('btn-outline');
+                }
+            }
+            render();
+        }
+
+        function updateCoverageGauge(expectedTarget, readyCount) {
+            const gaugePercentEl = document.getElementById('coverageGaugePercent');
+            const gaugeCircleEl = document.getElementById('coverageGaugeCircle');
+            if (!gaugePercentEl || !gaugeCircleEl) return;
+
+            let percent = 100;
+            if (expectedTarget > 0) {
+                percent = Math.min(100, Math.round((readyCount / expectedTarget) * 100));
+            }
+
+            gaugePercentEl.innerText = `${percent}%`;
+
+            // Circumference of r=35 circle is ~220
+            const maxOffset = 220;
+            const offset = maxOffset - (maxOffset * percent) / 100;
+            gaugeCircleEl.style.strokeDashoffset = offset;
+
+            // Ambient Glow Dynamic Background Colors
+            document.body.classList.remove('glow-good', 'glow-warn', 'glow-danger');
+            if (percent >= 100) {
+                gaugeCircleEl.style.stroke = 'var(--success)';
+                gaugePercentEl.style.color = 'var(--success)';
+                document.body.classList.add('glow-good');
+            } else if (percent >= 75) {
+                gaugeCircleEl.style.stroke = 'var(--warning)';
+                gaugePercentEl.style.color = 'var(--warning)';
+                document.body.classList.add('glow-warn');
+            } else {
+                gaugeCircleEl.style.stroke = 'var(--danger)';
+                gaugePercentEl.style.color = 'var(--danger)';
+                document.body.classList.add('glow-danger');
+            }
+        }
+
         // Helper for initials
         function getInitials(name) {
             if (!name) return 'CC';
@@ -1175,6 +1434,9 @@
             document.getElementById('expectedAmeyoNow').innerText = expectedNow;
             document.getElementById('currentSlotLabel').innerText = slotLabelText;
 
+            // Call Circular Coverage Gauge Updater
+            updateCoverageGauge(expectedNow, readyC);
+
             document.getElementById('totalCount').innerText = employees.length;
             document.getElementById('workingCount').innerText = workingC;
             document.getElementById('readyCount').innerText = readyC;
@@ -1223,6 +1485,24 @@
                 });
             }
 
+            // Render Views based on current layout (Table / Grid Cards / Timeline)
+            if (currentLayoutView === 'grid') {
+                renderGridView(filtered);
+            } else if (currentLayoutView === 'timeline') {
+                renderTimelineView(filtered);
+            }
+
+            // Table View Rendering with Optional Grouping
+            if (isGroupByShift) {
+                renderGroupedTable(filtered, tbody, homeBody);
+            } else {
+                renderStandardTable(filtered, tbody, homeBody);
+            }
+
+            renderStatusPages();
+        }
+
+        function renderStandardTable(filtered, tbody, homeBody) {
             filtered.forEach((emp, index) => {
                 const tr = document.createElement('tr');
                 const shiftInfo = getShiftHours(emp.status);
@@ -1243,7 +1523,7 @@
 
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
-                if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
+                if (emp.status !== 'OFF' && emp.status !== 'Vacation' && homeBody) {
                     const homeTr = document.createElement('tr');
                     homeTr.innerHTML = `
                         <td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
@@ -1268,9 +1548,7 @@
                     }
                 }
 
-                let historyLog = emp.breaks.map(b => {
-                    return `<span class="badge ${b.active ? 'badge-break' : 'badge-shift'}">${b.time}</span>`;
-                }).join(' ') || '-';
+                let historyLog = emp.breaks.map(b => `<span class="badge ${b.active ? 'badge-break' : 'badge-shift'}">${b.time}</span>`).join(' ') || '-';
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
@@ -1284,8 +1562,100 @@
 
                 tbody.appendChild(tr);
             });
+        }
 
-            renderStatusPages();
+        function renderGroupedTable(filtered, tbody, homeBody) {
+            const shiftGroups = {};
+            filtered.forEach(e => {
+                const shiftKey = e.status || 'OFF';
+                if (!shiftGroups[shiftKey]) shiftGroups[shiftKey] = [];
+                shiftGroups[shiftKey].push(e);
+            });
+
+            Object.keys(shiftGroups).forEach(groupKey => {
+                const groupHeaderTr = document.createElement('tr');
+                groupHeaderTr.innerHTML = `
+                    <td colspan="7" style="background:rgba(59, 130, 246, 0.06); font-weight:800; color:var(--cyan); padding:0.6rem 0.9rem;">
+                        <i class="fa-solid fa-layer-group"></i> Shift Group: ${groupKey} (${shiftGroups[groupKey].length} Staff)
+                    </td>
+                `;
+                tbody.appendChild(groupHeaderTr);
+                renderStandardTable(shiftGroups[groupKey], tbody, homeBody);
+            });
+        }
+
+        function renderGridView(filtered) {
+            const container = document.getElementById('gridViewContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            filtered.forEach(emp => {
+                const shiftInfo = getShiftHours(emp.status);
+                const initials = getInitials(emp.name);
+                const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
+
+                let statusBadge = `<span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span>`;
+                if (emp.status === 'OFF' || emp.status === 'Vacation') {
+                    statusBadge = `<span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span>`;
+                } else if (emp.ameyoCategory === 'Ready') {
+                    statusBadge = `<span class="badge badge-ready"><span class="status-dot dot-ready"></span> Ready</span>`;
+                } else if (emp.ameyoCategory === 'Lunch') {
+                    statusBadge = `<span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span>`;
+                } else if (emp.ameyoCategory === 'Break') {
+                    statusBadge = `<span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'emp-grid-card';
+                card.innerHTML = `
+                    <div class="emp-grid-card-top">
+                        <span class="emp-avatar">${initials}</span>
+                        ${statusBadge}
+                    </div>
+                    <div class="emp-grid-card-name">${emp.name} ${swapTag}</div>
+                    <div style="font-size:0.78rem; color:var(--text-muted); margin:0.3rem 0 0.8rem 0;">
+                        <i class="fa-regular fa-clock"></i> ${shiftInfo.label}
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="badge badge-shift">${emp.status}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">Breaks: ${emp.breaks.length}/3</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderTimelineView(filtered) {
+            const container = document.getElementById('timelineViewContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            filtered.forEach(emp => {
+                const shiftInfo = getShiftHours(emp.status);
+                const initials = getInitials(emp.name);
+
+                let fillWidth = '0%';
+                let fillMargin = '0%';
+                if (emp.status.includes('6:30-2:30')) { fillWidth = '50%'; fillMargin = '30%'; }
+                else if (emp.status.includes('12:30-8:30')) { fillWidth = '50%'; fillMargin = '0%'; }
+                else if (emp.status !== 'OFF' && emp.status !== 'Vacation') { fillWidth = '75%'; fillMargin = '15%'; }
+
+                const row = document.createElement('div');
+                row.className = 'timeline-row';
+                row.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <span class="emp-avatar">${initials}</span>
+                        <strong>${emp.name}</strong>
+                    </div>
+                    <div class="timeline-bar-wrapper">
+                        <div class="timeline-bar-fill" style="width:${fillWidth}; margin-left:${fillMargin};"></div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span class="badge badge-shift">${emp.status}</span>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
         }
 
         function renderStatusPages() {
@@ -1484,16 +1854,9 @@
             document.getElementById('todayDateLabel').innerText = `${dayNum}/${monthNum}`;
 
             let todayColIndex = -1;
-            let detectedSheetMonth = '';
 
             for (let i = 0; i < Math.min(15, lines.length); i++) {
                 const rowCols = lines[i].split(',').map(c => c.trim().toLowerCase());
-                
-                const monthMatch = rowCols.find(c => c.match(/^[0-3]?[0-9]\/[0-1]?[0-9]$/));
-                if (monthMatch && !detectedSheetMonth) {
-                    detectedSheetMonth = monthMatch.split('/')[1];
-                }
-
                 for (let c = 0; c < rowCols.length; c++) {
                     const val = rowCols[c];
                     if (targetDateStrings.some(td => val === td)) {
@@ -1506,13 +1869,6 @@
 
             if (todayColIndex === -1) {
                 todayColIndex = 3 + dayNum;
-            }
-
-            const syncText = document.getElementById('syncText');
-            if (detectedSheetMonth && parseInt(detectedSheetMonth) !== monthNum) {
-                if (syncText) {
-                    syncText.innerHTML = `<span style="color:#ef4444; font-weight:700;"><i class="fa-solid fa-triangle-exclamation"></i> Loaded Sheet is Month ${detectedSheetMonth} (Need Month ${monthNum}). Please click [Month / Sheet Link]</span> <span class="live-clock-badge" id="liveClockDisplay">${document.getElementById('liveClockDisplay').innerText}</span>`;
-                }
             }
 
             const manualSwaps = getManualSwapsStore();
