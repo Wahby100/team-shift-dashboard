@@ -924,7 +924,7 @@
             document.getElementById('ameyoApiIntervalInput').value = savedInterval;
             document.getElementById('ameyoAutoSyncToggle').checked = savedAuto;
 
-            const snippet = `setInterval(function(){ var txt = ''; var rows = document.querySelectorAll('tr, .x-grid-row, .grid-row'); if (rows && rows.length > 0) { rows.forEach(function(r){ if(r.innerText) txt += r.innerText.trim() + '\\n'; }); } if (!txt || txt.length < 30) txt = document.body.innerText; if (txt) { try { new BroadcastChannel('ameyo_live_sync').postMessage({rawText: txt}); } catch(e){} localStorage.setItem('ameyo_live_raw_payload', txt); } }, ${(parseInt(savedInterval)||10)*1000}); console.log('✅ Ameyo Live Sync Active!');`;
+            const snippet = `setInterval(function(){ var txt = ''; var frames = document.querySelectorAll('iframe, frame'); if (frames && frames.length > 0) { frames.forEach(function(f){ try { var doc = f.contentDocument || f.contentWindow.document; if (doc && doc.body && doc.body.innerText) { txt += doc.body.innerText + '\\n'; } } catch(e){} }); } var rows = document.querySelectorAll('tr, .x-grid-row, .grid-row, div.x-grid3-row, .x-grid-cell'); if (rows && rows.length > 0) { rows.forEach(function(r){ if(r.innerText) txt += r.innerText.trim() + '\\n'; }); } if (!txt || txt.length < 30) txt = document.body.innerText || ''; if (txt && txt.trim().length > 0) { try { new BroadcastChannel('ameyo_live_sync').postMessage({rawText: txt}); } catch(e){} localStorage.setItem('ameyo_live_raw_payload', txt); } }, ${(parseInt(savedInterval)||10)*1000}); console.log('✅ Ameyo Live Sync Active!');`;
             document.getElementById('bookmarkletSnippet').value = snippet;
 
             document.getElementById('ameyoApiModal').classList.add('active');
@@ -1547,10 +1547,7 @@
                     for (let idx = 0; idx < lines.length; idx++) {
                         const lineClean = cleanAlpha(lines[idx]);
                         
-                        if (lineClean === cleanEmp) {
-                            foundIndex = idx;
-                            break;
-                        } else if (lineClean.includes(cleanEmp)) {
+                        if (lineClean === cleanEmp || lineClean.includes(cleanEmp)) {
                             const longerMatches = employees.filter(e => e.name !== emp.name && cleanAlpha(e.name).includes(cleanEmp) && cleanAlpha(e.name).length > cleanEmp.length);
                             const isLongerEmpPresentInLine = longerMatches.some(lm => lineClean.includes(cleanAlpha(lm.name)));
 
@@ -1562,7 +1559,7 @@
                     }
 
                     if (foundIndex !== -1) {
-                        const nextLines = lines.slice(foundIndex, foundIndex + 8).join(' ').toLowerCase();
+                        const nextLines = lines.slice(foundIndex, foundIndex + 10).join(' ').toLowerCase();
 
                         if (nextLines.includes('lunch')) {
                             emp.ameyoCategory = 'Lunch';
@@ -1570,7 +1567,7 @@
                         } else if (nextLines.includes('break') || nextLines.includes('tea') || nextLines.includes('aux') || nextLines.includes('pause')) {
                             emp.ameyoCategory = 'Break';
                             emp.ameyoDetail = 'Break';
-                        } else if (nextLines.includes('available') || nextLines.includes('ready') || nextLines.includes('connected') || nextLines.includes('hungup')) {
+                        } else if (nextLines.includes('available') || nextLines.includes('ready') || nextLines.includes('connected') || nextLines.includes('hungup') || nextLines.includes('in call') || nextLines.includes('incall') || nextLines.includes('dialing')) {
                             emp.ameyoCategory = 'Ready';
                             emp.ameyoDetail = 'Ready';
                         } else {
@@ -1578,8 +1575,36 @@
                             emp.ameyoDetail = 'Offline';
                         }
                     } else {
-                        emp.ameyoCategory = 'Not Ready';
-                        emp.ameyoDetail = 'Offline';
+                        // Dual-Tier Fallback: Search full text snippet if name is present
+                        const fullClean = cleanAlpha(textToParse);
+                        if (fullClean.includes(cleanEmp)) {
+                            const longerMatches = employees.filter(e => e.name !== emp.name && cleanAlpha(e.name).includes(cleanEmp) && cleanAlpha(e.name).length > cleanEmp.length);
+                            const isLongerEmpPresentInText = longerMatches.some(lm => fullClean.includes(cleanAlpha(lm.name)));
+
+                            if (!isLongerEmpPresentInText) {
+                                const empIdx = fullClean.indexOf(cleanEmp);
+                                const snippet = fullClean.substring(empIdx, empIdx + 120);
+                                if (snippet.includes('lunch')) {
+                                    emp.ameyoCategory = 'Lunch';
+                                    emp.ameyoDetail = 'Lunch';
+                                } else if (snippet.includes('break') || snippet.includes('tea') || snippet.includes('aux') || snippet.includes('pause')) {
+                                    emp.ameyoCategory = 'Break';
+                                    emp.ameyoDetail = 'Break';
+                                } else if (snippet.includes('available') || snippet.includes('ready') || snippet.includes('connected') || snippet.includes('hungup') || snippet.includes('incall') || snippet.includes('dialing')) {
+                                    emp.ameyoCategory = 'Ready';
+                                    emp.ameyoDetail = 'Ready';
+                                } else {
+                                    emp.ameyoCategory = 'Not Ready';
+                                    emp.ameyoDetail = 'Offline';
+                                }
+                            } else {
+                                emp.ameyoCategory = 'Not Ready';
+                                emp.ameyoDetail = 'Offline';
+                            }
+                        } else {
+                            emp.ameyoCategory = 'Not Ready';
+                            emp.ameyoDetail = 'Offline';
+                        }
                     }
                 }
             });
