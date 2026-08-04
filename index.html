@@ -539,6 +539,7 @@
             <div class="actions">
                 <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> Manual Shift Swap</button>
                 <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> Refresh Schedule</button>
+                <button class="btn btn-primary" onclick="openAmeyoApiModal()"><i class="fa-solid fa-bolt text-warning"></i> Ameyo Live API</button>
                 <button class="btn btn-outline" onclick="changeSheetUrl()"><i class="fa-solid fa-link text-cyan"></i> Month / Sheet Link</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> Reset Breaks</button>
             </div>
@@ -821,6 +822,51 @@
         </div>
     </main>
 
+    <!-- Ameyo Live API Configuration Modal -->
+    <div id="ameyoApiModal" class="modal-overlay">
+        <div class="modal-card" style="max-width:540px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-bolt text-warning"></i> Ameyo Direct Live API Integration</h3>
+                <button class="modal-close" onclick="closeAmeyoApiModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-globe text-primary"></i> Ameyo Live Endpoint URL:</label>
+                <input type="text" id="ameyoApiEndpointInput" class="input-text" value="https://ameyo.halasat-ftth.iq:8443/supervisor/service">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fa-solid fa-clock text-warning"></i> Refresh Interval (Seconds):</label>
+                <select id="ameyoApiIntervalInput" class="input-text">
+                    <option value="5">Every 5 Seconds</option>
+                    <option value="10" selected>Every 10 Seconds (Recommended)</option>
+                    <option value="15">Every 15 Seconds</option>
+                    <option value="30">Every 30 Seconds</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="display:flex; align-items:center; gap:0.6rem; margin-top:0.8rem;">
+                <input type="checkbox" id="ameyoAutoSyncToggle" style="width:auto; cursor:pointer;" onchange="toggleAmeyoAutoSync(this.checked)">
+                <label for="ameyoAutoSyncToggle" style="margin:0; cursor:pointer; font-weight:700; color:#fff;">Enable Automatic Live Background Polling</label>
+            </div>
+
+            <div class="card" style="background:rgba(255,255,255,0.02); border-color:var(--border); margin-top:1.2rem; padding:0.9rem;">
+                <h4 style="font-size:0.85rem; font-weight:800; color:var(--cyan); margin-bottom:0.4rem;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Auto-Sync Snippet (Chrome Console)
+                </h4>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.6rem;">
+                    Paste this snippet once in Chrome Console on your open Ameyo tab (<code style="color:var(--warning);">ameyo.halasat-ftth.iq:8443</code>) to push real-time agent updates automatically every 10s!
+                </p>
+                <textarea id="bookmarkletSnippet" rows="3" readonly style="font-family:monospace; font-size:0.72rem; color:#60a5fa; cursor:pointer;" onclick="this.select(); document.execCommand('copy'); alert('Copied snippet to clipboard!');"></textarea>
+            </div>
+
+            <div class="actions" style="margin-top: 1.2rem; justify-content: flex-end;">
+                <button class="btn btn-outline" onclick="closeAmeyoApiModal()">Close</button>
+                <button class="btn btn-success" onclick="saveAmeyoApiConfig()"><i class="fa-solid fa-floppy-disk"></i> Save & Connect Live</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Manual Shift Swap Modal -->
     <div id="swapModal" class="modal-overlay">
         <div class="modal-card">
@@ -850,6 +896,99 @@
     </div>
 
     <script>
+        let ameyoAutoTimer = null;
+        const ameyoLiveChannel = (window.BroadcastChannel) ? new BroadcastChannel('ameyo_live_sync') : null;
+
+        if (ameyoLiveChannel) {
+            ameyoLiveChannel.onmessage = function(event) {
+                if (event.data && event.data.rawText) {
+                    document.getElementById('ameyoInput').value = event.data.rawText;
+                    updateAmeyoList();
+                }
+            };
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'ameyo_live_raw_payload' && e.newValue) {
+                document.getElementById('ameyoInput').value = e.newValue;
+                updateAmeyoList();
+            }
+        });
+
+        function openAmeyoApiModal() {
+            const savedEndpoint = localStorage.getItem('ameyo_api_endpoint') || 'https://ameyo.halasat-ftth.iq:8443/supervisor/service';
+            const savedInterval = localStorage.getItem('ameyo_api_interval') || '10';
+            const savedAuto = localStorage.getItem('ameyo_auto_sync') === 'true';
+
+            document.getElementById('ameyoApiEndpointInput').value = savedEndpoint;
+            document.getElementById('ameyoApiIntervalInput').value = savedInterval;
+            document.getElementById('ameyoAutoSyncToggle').checked = savedAuto;
+
+            const snippet = `setInterval(function(){ var txt = document.body.innerText; if (txt) { try { new BroadcastChannel('ameyo_live_sync').postMessage({rawText: txt}); } catch(e){} localStorage.setItem('ameyo_live_raw_payload', txt); } }, ${(parseInt(savedInterval)||10)*1000}); console.log('✅ Ameyo Live Sync Active!');`;
+            document.getElementById('bookmarkletSnippet').value = snippet;
+
+            document.getElementById('ameyoApiModal').classList.add('active');
+        }
+
+        function closeAmeyoApiModal() {
+            document.getElementById('ameyoApiModal').classList.remove('active');
+        }
+
+        function toggleAmeyoAutoSync(enabled) {
+            localStorage.setItem('ameyo_auto_sync', enabled);
+            if (enabled) startAmeyoAutoSync();
+            else stopAmeyoAutoSync();
+        }
+
+        function saveAmeyoApiConfig() {
+            const endpoint = document.getElementById('ameyoApiEndpointInput').value.trim();
+            const interval = document.getElementById('ameyoApiIntervalInput').value;
+            const enabled = document.getElementById('ameyoAutoSyncToggle').checked;
+
+            localStorage.setItem('ameyo_api_endpoint', endpoint);
+            localStorage.setItem('ameyo_api_interval', interval);
+            localStorage.setItem('ameyo_auto_sync', enabled);
+
+            if (enabled) startAmeyoAutoSync();
+            else stopAmeyoAutoSync();
+
+            fetchAmeyoDirectApi();
+            closeAmeyoApiModal();
+            alert('Ameyo Live Integration settings saved!');
+        }
+
+        function startAmeyoAutoSync() {
+            stopAmeyoAutoSync();
+            const intervalSec = parseInt(localStorage.getItem('ameyo_api_interval') || '10');
+            ameyoAutoTimer = setInterval(fetchAmeyoDirectApi, intervalSec * 1000);
+        }
+
+        function stopAmeyoAutoSync() {
+            if (ameyoAutoTimer) {
+                clearInterval(ameyoAutoTimer);
+                ameyoAutoTimer = null;
+            }
+        }
+
+        function fetchAmeyoDirectApi() {
+            const endpoint = localStorage.getItem('ameyo_api_endpoint') || 'https://ameyo.halasat-ftth.iq:8443/supervisor/service';
+            fetch(endpoint, { credentials: 'include' })
+                .then(r => r.text())
+                .then(text => {
+                    if (text && text.length > 0) {
+                        document.getElementById('ameyoInput').value = text;
+                        updateAmeyoList();
+                    }
+                })
+                .catch(err => {
+                    console.log('Ameyo Direct Fetch note:', err);
+                });
+        }
+
+        if (localStorage.getItem('ameyo_auto_sync') === 'true') {
+            startAmeyoAutoSync();
+        }
+
         // Helper for initials
         function getInitials(name) {
             if (!name) return 'CC';
