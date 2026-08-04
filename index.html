@@ -125,9 +125,130 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 20px var(--primary-glow);
         }
 
+        /* 🎨 Custom Sleek Dark Scrollbars (شريط التمرير الفاخر والداكن) */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(6, 7, 10, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* 2️⃣ Sticky Blur Header (الهيدر العلوي الثابت مع ضبابية زجاجية مضيئة) */
         header.top-header {
-            box-shadow: 0 0 40px var(--ambient-glow);
-            transition: box-shadow 0.4s ease;
+            position: sticky;
+            top: 1rem;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 40px var(--ambient-glow);
+            transition: box-shadow 0.4s ease, border-color 0.3s ease;
+        }
+
+        /* 3️⃣ Micro-Grid Card Textures (نظارات وخلفيات شبكية دقيقة داخل الكروت) */
+        .card, .targets-panel, .status-wall-col, .kpi-box {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) !important;
+            background-size: 16px 16px !important;
+        }
+
+        /* 1️⃣ Card Top Accent Gradient Strips (أشرطة التمييز الملونة العلوية للبطاقات) */
+        .card {
+            border-top: 3px solid transparent;
+            border-image: linear-gradient(90deg, var(--primary), var(--cyan), var(--purple)) 1;
+        }
+
+        /* 2️⃣ Hover Glow Row Highlight (مؤثر الضوء الحركي عند المرور على جدول الموظفين) */
+        tr {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        tr:hover {
+            background: rgba(59, 130, 246, 0.08) !important;
+            border-left-color: var(--primary);
+            box-shadow: inset 0 0 15px rgba(59, 130, 246, 0.05);
+        }
+
+        /* 5️⃣ Gradient Table Divider Lines (فواصل جداول بتدرج نيون ناعم) */
+        td {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.07) !important;
+        }
+
+        /* 4️⃣ Pulsing Sidebar Menu Badges (نبض شارات القائمة الجانبية) */
+        .menu-badge {
+            animation: badgePulse 2.5s infinite ease-in-out;
+        }
+        @keyframes badgePulse {
+            0%, 100% { opacity: 0.85; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); box-shadow: 0 0 8px var(--primary-glow); }
+        }
+
+        /* 5️⃣ Modern High-Vis Status Pills (شارات حالات مكبرة مع أيقونات نيون ناصعة) */
+        .badge {
+            padding: 0.32rem 0.75rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 1️⃣ Dynamic Multi-Gradient Avatars */
+        .emp-avatar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* ✨ Micro-Animations & Dynamic Interactive Effects (حركات بصرية) */
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 5px; height: 5px;
+            background: rgba(255, 255, 255, 0.4);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        .btn:active::after {
+            animation: ripple 0.5s ease-out;
+        }
+        @keyframes ripple {
+            0% { transform: scale(0, 0); opacity: 0.6; }
+            100% { transform: scale(40, 40); opacity: 0; }
+        }
+
+        .kpi-box, .emp-grid-card {
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .kpi-box:hover, .emp-grid-card:hover {
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        .badge-ready { animation: statusGlowReady 3s infinite ease-in-out; }
+        .badge-lunch { animation: statusGlowLunch 3s infinite ease-in-out; }
+        .badge-break { animation: statusGlowBreak 3s infinite ease-in-out; }
+
+        @keyframes statusGlowReady {
+            0%, 100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
+            50% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.5); }
+        }
+        @keyframes statusGlowLunch {
+            0%, 100% { box-shadow: 0 0 5px rgba(245, 158, 11, 0.2); }
+            50% { box-shadow: 0 0 14px rgba(245, 158, 11, 0.5); }
+        }
+        @keyframes statusGlowBreak {
+            0%, 100% { box-shadow: 0 0 5px rgba(168, 85, 247, 0.2); }
+            50% { box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); }
         }
 
         /* 3️⃣ Smooth Tab Entrance Animations */
@@ -1356,6 +1477,25 @@
             }
         }
 
+        const avatarGradients = [
+            'linear-gradient(135deg, #1e40af, #3b82f6)',
+            'linear-gradient(135deg, #065f46, #10b981)',
+            'linear-gradient(135deg, #6b21a8, #a855f7)',
+            'linear-gradient(135deg, #9a3412, #f97316)',
+            'linear-gradient(135deg, #831843, #ec4899)',
+            'linear-gradient(135deg, #164e63, #06b6d4)',
+            'linear-gradient(135deg, #3730a3, #6366f1)'
+        ];
+
+        function getAvatarGradientStyle(empName) {
+            let hash = 0;
+            for (let i = 0; i < empName.length; i++) {
+                hash = empName.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const index = Math.abs(hash) % avatarGradients.length;
+            return `background: ${avatarGradients[index]};`;
+        }
+
         function getAvatarRingClass(emp) {
             if (emp.status === 'OFF' || emp.status === 'Vacation') return 'ring-off';
             if (emp.ameyoCategory === 'Ready') return 'ring-ready';
@@ -1818,10 +1958,11 @@
                 employees.forEach(emp => {
                     const ringClass = getAvatarRingClass(emp);
                     const initials = getInitials(emp.name);
+                    const bgGradientStyle = getAvatarGradientStyle(emp.name);
                     const itemHtml = `
                         <div class="status-wall-item">
                             <div style="display:flex; align-items:center; gap:0.4rem;">
-                                <span class="emp-avatar ${ringClass}">${initials}</span>
+                                <span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span>
                                 <strong style="font-size:0.82rem;">${emp.name}</strong>
                             </div>
                             <span class="badge badge-shift" style="font-size:0.7rem;">${emp.status}</span>
@@ -1941,10 +2082,12 @@
 
                 let historyLog = emp.breaks.map(b => `<span class="badge ${b.active ? 'badge-break' : 'badge-shift'}">${b.time}</span>`).join(' ') || '-';
 
+                const bgGradientStyle = getAvatarGradientStyle(emp.name);
+
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation' && homeBody) {
                     const homeTr = document.createElement('tr');
                     homeTr.innerHTML = `
-                        <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                        <td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
                         <td><span class="badge badge-shift">${emp.status}</span></td>
                         <td><span style="color:var(--text-muted); font-size:0.8rem;">${shiftInfo.label}</span></td>
                         <td>${ameyoBadge}</td>
@@ -1956,7 +2099,7 @@
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                    <td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span></td>
                     <td><span style="color:var(--text-muted); font-size:0.8rem;">${shiftInfo.label}</span></td>
                     <td>${ameyoBadge}</td>
@@ -1997,6 +2140,7 @@
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
                 const ringClass = getAvatarRingClass(emp);
+                const bgGradientStyle = getAvatarGradientStyle(emp.name);
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 let statusBadge = `<span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span>`;
@@ -2014,7 +2158,7 @@
                 card.className = 'emp-grid-card';
                 card.innerHTML = `
                     <div class="emp-grid-card-top">
-                        <span class="emp-avatar ${ringClass}">${initials}</span>
+                        <span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span>
                         ${statusBadge}
                     </div>
                     <div class="emp-grid-card-name">${emp.name} ${swapTag}</div>
@@ -2039,6 +2183,7 @@
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
                 const ringClass = getAvatarRingClass(emp);
+                const bgGradientStyle = getAvatarGradientStyle(emp.name);
 
                 let fillWidth = '0%';
                 let fillMargin = '0%';
@@ -2050,7 +2195,7 @@
                 row.className = 'timeline-row';
                 row.innerHTML = `
                     <div style="display:flex; align-items:center; gap:0.5rem;">
-                        <span class="emp-avatar ${ringClass}">${initials}</span>
+                        <span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span>
                         <strong>${emp.name}</strong>
                     </div>
                     <div class="timeline-bar-wrapper">
@@ -2083,19 +2228,20 @@
                 const isOff = emp.status === 'OFF' || emp.status === 'Vacation';
                 const initials = getInitials(emp.name);
                 const ringClass = getAvatarRingClass(emp);
+                const bgGradientStyle = getAvatarGradientStyle(emp.name);
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 if (isOff) {
-                    offBody.innerHTML += `<tr><td>${offI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span></td></tr>`;
+                    offBody.innerHTML += `<tr><td>${offI++}</td><td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span></td></tr>`;
                 } else {
                     if (emp.ameyoCategory === 'Ready') {
-                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><span class="status-dot dot-ready"></span> Ready</span></td></tr>`;
+                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><span class="status-dot dot-ready"></span> Ready</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Lunch') {
-                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span></td></tr>`;
+                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Break') {
-                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
+                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
                     } else {
-                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
+                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
                     }
                 }
             });
@@ -2111,12 +2257,13 @@
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
                 const ringClass = getAvatarRingClass(emp);
+                const bgGradientStyle = getAvatarGradientStyle(emp.name);
                 let historyLog = emp.breaks.map(b => `<span class="badge badge-shift">${b.time}</span>`).join(' ') || '-';
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                    <td><span class="emp-avatar ${ringClass}" style="${bgGradientStyle}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span> (${shiftInfo.label})</td>
                     <td>${emp.ameyoDetail || 'Day OFF'}</td>
                     <td>${historyLog}</td>
