@@ -205,6 +205,11 @@
             border: 1px solid var(--border-subtle);
         }
 
+        header.top-header {
+            box-shadow: 0 0 40px var(--ambient-glow);
+            transition: box-shadow 0.4s ease;
+        }
+
         /* Crisp KPI Box Accent Tops */
         .kpi-box {
             position: relative;
@@ -292,6 +297,16 @@
             .targets-panel { grid-template-columns: 1fr; }
             header.top-header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
             .actions { width: 100%; justify-content: flex-start; }
+        }
+
+        /* Ambient Dynamic Status Glow Header */
+        body.glow-good { --ambient-glow: rgba(16, 185, 129, 0.2); }
+        body.glow-warn { --ambient-glow: rgba(245, 158, 11, 0.2); }
+        body.glow-danger { --ambient-glow: rgba(239, 68, 68, 0.2); }
+
+        header.top-header {
+            box-shadow: 0 0 35px var(--ambient-glow);
+            transition: box-shadow 0.4s ease;
         }
 
         /* TV Wallboard / Kiosk Fullscreen Mode */
@@ -425,6 +440,22 @@
             padding-bottom: 0.4rem;
         }
 
+        /* Enterprise Fixed Sidebar (LTR - Left Side) */
+        aside.sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.2rem 0.85rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
         .sidebar-brand {
             display: flex;
             align-items: center;
@@ -502,6 +533,14 @@
         }
         .menu-item.active .menu-badge { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
 
+        /* Main Content Container (LTR) */
+        main.main-content {
+            margin-left: var(--sidebar-width);
+            padding: 1.4rem 1.8rem;
+            min-height: 100vh;
+            width: calc(100% - var(--sidebar-width));
+        }
+
         /* Command Top Bar */
         header.top-header {
             display: flex;
@@ -515,7 +554,6 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
-        .page-header-title { display: flex; align-items: center; gap: 0.6rem; }
         .page-header-title h2 { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
         .page-header-title small { color: var(--text-muted); font-size: 0.78rem; font-weight: 600; margin-top: 0.15rem; display: flex; align-items: center; gap: 0.5rem; }
 
@@ -599,7 +637,7 @@
             padding: 1.1rem 1.4rem;
             margin-bottom: 1.4rem;
             display: grid;
-            grid-template-columns: 1.2fr 1.2fr 3fr;
+            grid-template-columns: 1.2fr 3fr;
             gap: 1.4rem;
             align-items: center;
         }
@@ -678,8 +716,8 @@
         }
         th:hover { color: var(--primary); }
 
-        tr { transition: background 0.1s ease; }
-        tr:hover { background: var(--bg-hover); }
+        tr { transition: background 0.2s ease, transform 0.2s ease; }
+        tr:hover { background: var(--bg-hover); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
 
         /* Pulsing Glow LED Status Badges */
         .status-dot {
@@ -721,6 +759,23 @@
             padding: 0.12rem 0.45rem;
             margin-left: 0.35rem;
             border-radius: 5px;
+        }
+
+        /* Avatar Initials Badge */
+        .emp-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            margin-right: 0.5rem;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         /* Modal Dialog */
@@ -791,9 +846,15 @@
         }
         .sheet-frame-container iframe { width: 100%; height: 100%; border: none; }
 
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .page-content { display: none; }
-        .page-content.active-page { display: block; }
+        .page-content.active-page { display: block; animation: fadeInSlide 0.4s ease-out forwards; }
     </style>
+    <!-- Chart.js for Interactive Dashboard Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -809,10 +870,7 @@
             <div class="brand-text">
                 <h2>CC MANAGEMENT</h2>
                 <small>ENTERPRISE DASHBOARD</small>
-            </div>
-        </div>
-
-        <div class="sidebar-menu">
+            </        <div class="sidebar-menu">
             <div class="menu-category">Main Overview</div>
             <div class="menu-item active" onclick="switchPage('home')">
                 <div><i class="fa-solid fa-chart-pie text-primary"></i> <span class="menu-item-text">Dashboard</span></div>
@@ -982,6 +1040,16 @@
                 </div>
             </div>
 
+            <!-- Interactive Analytics Chart (Doughnut) -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-chart-donut text-primary"></i> Live Staff Distribution</h3>
+                </div>
+                <div style="height: 250px; display: flex; justify-content: center; align-items: center; padding: 10px;">
+                    <canvas id="staffChart"></canvas>
+                </div>
+            </div>
+
             <!-- 4️⃣ 3-Column Live Status Wall Grid with Sub-Divisions -->
             <div class="status-wall-grid">
                 <!-- Column 1: Ready Staff -->
@@ -1028,6 +1096,7 @@
                     </div>
                     <div class="status-wall-list" id="wallOffSubList"></div>
                 </div>
+            </div>      </div>
             </div>
 
             <!-- 📝 Shift Leader Notes & Handover Box -->
@@ -1070,6 +1139,11 @@
                     <h3><i class="fa-solid fa-calendar-day text-primary"></i> Daily Master Schedule (<span id="todayDateLabel" style="color:var(--primary)">-</span>)</h3>
                     
                     <div class="actions">
+                        <!-- Export Button -->
+                        <button class="btn btn-outline btn-sm" style="margin-right: 0.5rem; color: var(--success); border-color: var(--success);" onclick="exportTableToCSV('Shift_Schedule.csv')">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+
                         <!-- Multi-Layout Switcher (List / Cards / Timeline) -->
                         <div class="layout-btn-group">
                             <button class="layout-btn active" id="layoutBtnTable" onclick="setLayoutView('table')"><i class="fa-solid fa-list"></i> Table</button>
@@ -1130,7 +1204,7 @@
             </div>
         </div>
 
-        <!-- ================= PAGE 3: AMEYO LIVE SYNC PAGE ================= -->
+        <!-- ================= PAGE 3: AMEYO TEXT PARSER PAGE ================= -->
         <div id="page-ameyo" class="page-content">
             <div class="card">
                 <div class="card-header">
@@ -1311,6 +1385,7 @@
     </div>
 
     <script>
+        let staffChartInstance = null;
         let selectedCustomDate = null;
 
         function setBackgroundAmbiance(bgStyle) {
@@ -1372,10 +1447,6 @@
         if (localStorage.getItem('sidebar_collapsed') === 'true') {
             document.body.classList.add('sidebar-collapsed');
         }
-
-        let currentLayoutView = 'table';
-        let isGroupByShift = false;
-        let isTvKioskActive = false;
 
         function toggleTvKioskMode() {
             isTvKioskActive = !isTvKioskActive;
@@ -1441,7 +1512,7 @@
             const offset = maxOffset - (maxOffset * percent) / 100;
             gaugeCircleEl.style.strokeDashoffset = offset;
 
-            // Ambient Dynamic Status Glow Header & Glassmorphism
+            // Ambient Glow Dynamic Background Colors
             document.body.classList.remove('glow-good', 'glow-warn', 'glow-danger');
             if (percent >= 100) {
                 gaugeCircleEl.style.stroke = 'var(--success)';
@@ -1456,14 +1527,6 @@
                 gaugePercentEl.style.color = 'var(--danger)';
                 document.body.classList.add('glow-danger');
             }
-        }
-
-        // Helper for initials
-        function getInitials(name) {
-            if (!name) return 'CC';
-            const matches = name.match(/[A-Z]/g);
-            if (matches && matches.length >= 2) return matches[0] + matches[1];
-            return name.substring(0, 2).toUpperCase();
         }
 
         // Exact 23 Employees of Evening / IN from Google Sheet
@@ -1901,6 +1964,70 @@
             }
 
             renderStatusPages();
+            updateChart(readyC, lunchC, breakAmeyoC, notReadyC, offC);
+        }
+
+        function updateChart(ready, lunch, shortBreak, notReady, off) {
+            const ctx = document.getElementById('staffChart');
+            if (!ctx) return;
+            
+            if (staffChartInstance) {
+                staffChartInstance.destroy();
+            }
+            
+            staffChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Ready', 'Lunch', 'Short Break', 'Not Ready', 'Off/Vacation'],
+                    datasets: [{
+                        data: [ready, lunch, shortBreak, notReady, off],
+                        backgroundColor: [
+                            '#10b981', // success
+                            '#f59e0b', // warning (lunch)
+                            '#a855f7', // purple (break)
+                            '#ef4444', // danger (not ready)
+                            '#64748b'  // muted (off)
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#f8fafc' } }
+                    }
+                }
+            });
+        }
+
+        function exportTableToCSV(filename) {
+            let csv = [];
+            let rows = document.querySelectorAll("#tableBody tr");
+            
+            // Add Header
+            csv.push("ID,Name,Shift,Ameyo Status,Note,Quality Score");
+            
+            for (let i = 0; i < rows.length; i++) {
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                
+                // We only want the first 6 columns containing data
+                for (let j = 0; j < cols.length && j < 6; j++) {
+                    let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").trim();
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(","));
+            }
+
+            let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+            let downloadLink = document.createElement("a");
+            downloadLink.download = filename;
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
         }
 
         function renderStandardTable(filtered, tbody, homeBody) {
@@ -1996,7 +2123,6 @@
             filtered.forEach(emp => {
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
-                const ringClass = getAvatarRingClass(emp);
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 let statusBadge = `<span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span>`;
@@ -2014,7 +2140,7 @@
                 card.className = 'emp-grid-card';
                 card.innerHTML = `
                     <div class="emp-grid-card-top">
-                        <span class="emp-avatar ${ringClass}">${initials}</span>
+                        <span class="emp-avatar">${initials}</span>
                         ${statusBadge}
                     </div>
                     <div class="emp-grid-card-name">${emp.name} ${swapTag}</div>
@@ -2038,7 +2164,6 @@
             filtered.forEach(emp => {
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
-                const ringClass = getAvatarRingClass(emp);
 
                 let fillWidth = '0%';
                 let fillMargin = '0%';
@@ -2050,7 +2175,7 @@
                 row.className = 'timeline-row';
                 row.innerHTML = `
                     <div style="display:flex; align-items:center; gap:0.5rem;">
-                        <span class="emp-avatar ${ringClass}">${initials}</span>
+                        <span class="emp-avatar">${initials}</span>
                         <strong>${emp.name}</strong>
                     </div>
                     <div class="timeline-bar-wrapper">
@@ -2082,20 +2207,19 @@
                 const shiftInfo = getShiftHours(emp.status);
                 const isOff = emp.status === 'OFF' || emp.status === 'Vacation';
                 const initials = getInitials(emp.name);
-                const ringClass = getAvatarRingClass(emp);
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 if (isOff) {
-                    offBody.innerHTML += `<tr><td>${offI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span></td></tr>`;
+                    offBody.innerHTML += `<tr><td>${offI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span></td></tr>`;
                 } else {
                     if (emp.ameyoCategory === 'Ready') {
-                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><span class="status-dot dot-ready"></span> Ready</span></td></tr>`;
+                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><span class="status-dot dot-ready"></span> Ready</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Lunch') {
-                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span></td></tr>`;
+                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Break') {
-                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
+                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
                     } else {
-                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
+                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
                     }
                 }
             });
@@ -2110,13 +2234,12 @@
                 const tr = document.createElement('tr');
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
-                const ringClass = getAvatarRingClass(emp);
                 let historyLog = emp.breaks.map(b => `<span class="badge badge-shift">${b.time}</span>`).join(' ') || '-';
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                    <td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span> (${shiftInfo.label})</td>
                     <td>${emp.ameyoDetail || 'Day OFF'}</td>
                     <td>${historyLog}</td>
@@ -2230,7 +2353,7 @@
                 .then(r => r.text())
                 .then(csv => {
                     parseGoogleSheetCSV(csv);
-                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Live Sync</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
+                    if (syncText) syncText.innerHTML = '<span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</span><span class="live-clock-badge" id="liveClockDisplay">' + document.getElementById('liveClockDisplay').innerText + '</span>';
                 })
                 .catch(err => {
                     console.error(err);
@@ -2243,7 +2366,7 @@
             const eveningRows = [];
             let inEveningSection = false;
 
-            const now = selectedCustomDate || new Date();
+            const now = new Date();
             const dayNum = now.getDate();
             const monthNum = now.getMonth() + 1;
             
