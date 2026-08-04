@@ -79,17 +79,98 @@
         body.glow-warn { --ambient-glow: rgba(245, 158, 11, 0.22); }
         body.glow-danger { --ambient-glow: rgba(239, 68, 68, 0.22); }
 
-        header.top-header, .card, .kpi-box, .targets-panel, .modal-card, .emp-grid-card {
+        header.top-header, .card, .kpi-box, .targets-panel, .modal-card, .emp-grid-card, .status-wall-col {
             background: var(--bg-surface);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            transition: all 0.25s ease;
+        }
+
+        .card:hover, .emp-grid-card:hover, .status-wall-col:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 20px var(--primary-glow);
         }
 
         header.top-header {
             box-shadow: 0 0 40px var(--ambient-glow);
             transition: box-shadow 0.4s ease;
+        }
+
+        /* 3️⃣ Smooth Tab Entrance Animations */
+        .page-content.active-page {
+            animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 1️⃣ Collapsible Minimal Sidebar */
+        aside.sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.2rem 0.85rem;
+            position: fixed;
+            top: 0; left: 0; height: 100vh;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        main.main-content {
+            margin-left: var(--sidebar-width);
+            padding: 1.4rem 1.8rem;
+            min-height: 100vh;
+            width: calc(100% - var(--sidebar-width));
+            transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body.sidebar-collapsed aside.sidebar { width: 70px; padding: 1.2rem 0.4rem; }
+        body.sidebar-collapsed main.main-content { margin-left: 70px; width: calc(100% - 70px); }
+        body.sidebar-collapsed .brand-text,
+        body.sidebar-collapsed .menu-category,
+        body.sidebar-collapsed .menu-item span.menu-badge,
+        body.sidebar-collapsed .menu-item-text { display: none; }
+        body.sidebar-collapsed .menu-item { justify-content: center; padding: 0.7rem 0; }
+        body.sidebar-collapsed .menu-item div { justify-content: center; }
+
+        /* 4️⃣ 3-Column Status Wall */
+        .status-wall-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            margin-bottom: 1.4rem;
+        }
+        @media (max-width: 992px) { .status-wall-grid { grid-template-columns: 1fr; } }
+
+        .status-wall-col {
+            border-radius: var(--radius);
+            padding: 1.1rem;
+        }
+        .status-wall-header {
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding-bottom: 0.6rem;
+            margin-bottom: 0.9rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .status-wall-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .status-wall-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.015);
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-subtle);
         }
 
         /* Crisp KPI Box Accent Tops */
@@ -166,7 +247,7 @@
             aside.sidebar {
                 position: static;
                 width: 100%;
-                height auto;
+                height: auto;
                 border-right: none;
                 border-bottom: 1px solid var(--border);
             }
@@ -312,22 +393,6 @@
             padding-bottom: 0.4rem;
         }
 
-        /* Enterprise Fixed Sidebar (LTR - Left Side) */
-        aside.sidebar {
-            width: var(--sidebar-width);
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 1.2rem 0.85rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
         .sidebar-brand {
             display: flex;
             align-items: center;
@@ -405,14 +470,6 @@
         }
         .menu-item.active .menu-badge { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
 
-        /* Main Content Container (LTR) */
-        main.main-content {
-            margin-left: var(--sidebar-width);
-            padding: 1.4rem 1.8rem;
-            min-height: 100vh;
-            width: calc(100% - var(--sidebar-width));
-        }
-
         /* Command Top Bar */
         header.top-header {
             display: flex;
@@ -426,6 +483,7 @@
             flex-wrap: wrap;
             gap: 1rem;
         }
+        .page-header-title { display: flex; align-items: center; gap: 0.6rem; }
         .page-header-title h2 { font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
         .page-header-title small { color: var(--text-muted); font-size: 0.78rem; font-weight: 600; margin-top: 0.15rem; display: flex; align-items: center; gap: 0.5rem; }
 
@@ -725,49 +783,49 @@
         <div class="sidebar-menu">
             <div class="menu-category">Main Overview</div>
             <div class="menu-item active" onclick="switchPage('home')">
-                <div><i class="fa-solid fa-chart-pie text-primary"></i> Dashboard</div>
+                <div><i class="fa-solid fa-chart-pie text-primary"></i> <span class="menu-item-text">Dashboard</span></div>
             </div>
             <div class="menu-item" onclick="switchPage('schedule')">
-                <div><i class="fa-solid fa-table-list text-cyan"></i> Full Schedule</div>
+                <div><i class="fa-solid fa-table-list text-cyan"></i> <span class="menu-item-text">Full Schedule</span></div>
                 <span class="menu-badge" id="sideWorkingBadge">13</span>
             </div>
             <div class="menu-item" onclick="switchPage('ameyo')">
-                <div><i class="fa-solid fa-signal text-success"></i> Ameyo Text Parser</div>
+                <div><i class="fa-solid fa-signal text-success"></i> <span class="menu-item-text">Ameyo Text Parser</span></div>
             </div>
 
             <div class="menu-category">Staff Status Today</div>
             <div class="menu-item" onclick="switchPage('ready')">
-                <div><i class="fa-solid fa-circle-check text-success"></i> Ready</div>
+                <div><i class="fa-solid fa-circle-check text-success"></i> <span class="menu-item-text">Ready</span></div>
                 <span class="menu-badge" id="sideReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('lunch')">
-                <div><i class="fa-solid fa-utensils text-warning"></i> Lunch Break</div>
+                <div><i class="fa-solid fa-utensils text-warning"></i> <span class="menu-item-text">Lunch Break</span></div>
                 <span class="menu-badge" id="sideLunchBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('break')">
-                <div><i class="fa-solid fa-mug-hot text-purple"></i> Short Break</div>
+                <div><i class="fa-solid fa-mug-hot text-purple"></i> <span class="menu-item-text">Short Break</span></div>
                 <span class="menu-badge" id="sideBreakBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('notready')">
-                <div><i class="fa-solid fa-circle-xmark text-danger"></i> Offline / Not Ready</div>
+                <div><i class="fa-solid fa-circle-xmark text-danger"></i> <span class="menu-item-text">Offline / Not Ready</span></div>
                 <span class="menu-badge" id="sideNotReadyBadge">0</span>
             </div>
             <div class="menu-item" onclick="switchPage('off')">
-                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> Day OFF</div>
+                <div><i class="fa-solid fa-calendar-xmark text-muted"></i> <span class="menu-item-text">Day OFF</span></div>
                 <span class="menu-badge" id="sideOffBadge">10</span>
             </div>
 
             <div class="menu-category">Live Google Sheets</div>
             <div class="menu-item" onclick="switchPage('sheet1')">
-                <div><i class="fa-solid fa-file-excel text-success"></i> Main Google Sheet</div>
+                <div><i class="fa-solid fa-file-excel text-success"></i> <span class="menu-item-text">Main Google Sheet</span></div>
             </div>
             <div class="menu-item" onclick="switchPage('sheet2')">
-                <div><i class="fa-solid fa-file-excel text-cyan"></i> Secondary Sheet</div>
+                <div><i class="fa-solid fa-file-excel text-cyan"></i> <span class="menu-item-text">Secondary Sheet</span></div>
             </div>
 
             <div class="menu-category">Roster & Records</div>
             <div class="menu-item" onclick="switchPage('roster')">
-                <div><i class="fa-solid fa-users-gear text-purple"></i> Full Roster Details</div>
+                <div><i class="fa-solid fa-users-gear text-purple"></i> <span class="menu-item-text">Full Roster Details</span></div>
                 <span class="menu-badge">23</span>
             </div>
         </div>
@@ -778,11 +836,16 @@
         <!-- Command Top Bar -->
         <header class="top-header">
             <div class="page-header-title">
-                <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> Dashboard Overview</h2>
-                <small id="syncText">
-                    <span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Live Sync</span>
-                    <span class="live-clock-badge" id="liveClockDisplay">--:--:--</span>
-                </small>
+                <button class="btn btn-outline btn-sm" onclick="toggleSidebar()" title="Toggle Sidebar" style="margin-right:0.4rem;">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                </button>
+                <div>
+                    <h2 id="currentPageTitle" style="margin:0;"><i class="fa-solid fa-chart-pie text-primary"></i> Dashboard Overview</h2>
+                    <small id="syncText">
+                        <span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Live Sync</span>
+                        <span class="live-clock-badge" id="liveClockDisplay">--:--:--</span>
+                    </small>
+                </div>
             </div>
 
             <div class="actions">
@@ -873,6 +936,33 @@
                         <div class="slot-card-title"><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> 8:30 PM - 12:30 AM</div>
                         <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">Agents</small></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- 4️⃣ 3-Column Live Status Wall Grid -->
+            <div class="status-wall-grid">
+                <div class="status-wall-col">
+                    <div class="status-wall-header text-success">
+                        <span><i class="fa-solid fa-circle-check"></i> Ready Staff</span>
+                        <span class="badge badge-ready" id="wallReadyCount">0</span>
+                    </div>
+                    <div class="status-wall-list" id="wallReadyList"></div>
+                </div>
+
+                <div class="status-wall-col">
+                    <div class="status-wall-header text-warning">
+                        <span><i class="fa-solid fa-mug-hot"></i> Lunch & Break</span>
+                        <span class="badge badge-warning" id="wallBreakCount">0</span>
+                    </div>
+                    <div class="status-wall-list" id="wallBreakList"></div>
+                </div>
+
+                <div class="status-wall-col">
+                    <div class="status-wall-header text-danger">
+                        <span><i class="fa-solid fa-circle-xmark"></i> Offline / Day OFF</span>
+                        <span class="badge badge-notready" id="wallOfflineCount">0</span>
+                    </div>
+                    <div class="status-wall-list" id="wallOfflineList"></div>
                 </div>
             </div>
 
@@ -1192,6 +1282,15 @@
             if (emp.ameyoCategory === 'Lunch') return 'ring-lunch';
             if (emp.ameyoCategory === 'Break') return 'ring-break';
             return 'ring-notready';
+        }
+
+        function toggleSidebar() {
+            document.body.classList.toggle('sidebar-collapsed');
+            localStorage.setItem('sidebar_collapsed', document.body.classList.contains('sidebar-collapsed'));
+        }
+
+        if (localStorage.getItem('sidebar_collapsed') === 'true') {
+            document.body.classList.add('sidebar-collapsed');
         }
 
         let currentLayoutView = 'table';
@@ -1619,6 +1718,48 @@
             document.getElementById('sideBreakBadge').innerText = breakAmeyoC;
             document.getElementById('sideNotReadyBadge').innerText = notReadyC;
             document.getElementById('sideOffBadge').innerText = offC;
+
+            // Render 3-Column Status Wall
+            const wallReadyList = document.getElementById('wallReadyList');
+            const wallBreakList = document.getElementById('wallBreakList');
+            const wallOfflineList = document.getElementById('wallOfflineList');
+
+            if (wallReadyList && wallBreakList && wallOfflineList) {
+                wallReadyList.innerHTML = '';
+                wallBreakList.innerHTML = '';
+                wallOfflineList.innerHTML = '';
+
+                let wallRCount = 0, wallBCount = 0, wallOffCount = 0;
+
+                employees.forEach(emp => {
+                    const ringClass = getAvatarRingClass(emp);
+                    const initials = getInitials(emp.name);
+                    const itemHtml = `
+                        <div class="status-wall-item">
+                            <div style="display:flex; align-items:center; gap:0.4rem;">
+                                <span class="emp-avatar ${ringClass}">${initials}</span>
+                                <strong style="font-size:0.82rem;">${emp.name}</strong>
+                            </div>
+                            <span class="badge badge-shift" style="font-size:0.7rem;">${emp.status}</span>
+                        </div>
+                    `;
+
+                    if (emp.status === 'OFF' || emp.status === 'Vacation' || emp.ameyoCategory === 'Not Ready') {
+                        wallOfflineList.innerHTML += itemHtml;
+                        wallOffCount++;
+                    } else if (emp.ameyoCategory === 'Ready') {
+                        wallReadyList.innerHTML += itemHtml;
+                        wallRCount++;
+                    } else if (emp.ameyoCategory === 'Lunch' || emp.ameyoCategory === 'Break') {
+                        wallBreakList.innerHTML += itemHtml;
+                        wallBCount++;
+                    }
+                });
+
+                document.getElementById('wallReadyCount').innerText = wallRCount;
+                document.getElementById('wallBreakCount').innerText = wallBCount;
+                document.getElementById('wallOfflineCount').innerText = wallOffCount;
+            }
 
             let filtered = employees.filter(e => {
                 const matchSearch = e.name.toLowerCase().includes(searchVal) || e.status.toLowerCase().includes(searchVal);
