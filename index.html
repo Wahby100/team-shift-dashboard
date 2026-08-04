@@ -483,7 +483,7 @@
                 <span class="menu-badge" id="sideWorkingBadge">13</span>
             </div>
             <div class="menu-item" onclick="switchPage('ameyo')">
-                <div><i class="fa-solid fa-signal text-success"></i> Live Ameyo Sync</div>
+                <div><i class="fa-solid fa-signal text-success"></i> Ameyo Text Parser</div>
             </div>
 
             <div class="menu-category">Staff Status Today</div>
@@ -539,7 +539,6 @@
             <div class="actions">
                 <button class="btn btn-warning" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> Manual Shift Swap</button>
                 <button class="btn btn-success" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> Refresh Schedule</button>
-                <button class="btn btn-primary" onclick="openAmeyoApiModal()"><i class="fa-solid fa-bolt text-warning"></i> Ameyo Live API</button>
                 <button class="btn btn-outline" onclick="changeSheetUrl()"><i class="fa-solid fa-link text-cyan"></i> Month / Sheet Link</button>
                 <button class="btn btn-outline" onclick="resetAllBreaks()"><i class="fa-solid fa-rotate-left"></i> Reset Breaks</button>
             </div>
@@ -674,26 +673,10 @@
         <div id="page-ameyo" class="page-content">
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-signal text-success"></i> Ameyo Live Activity Sync</h3>
+                    <h3><i class="fa-solid fa-signal text-success"></i> Ameyo Text Parser</h3>
                 </div>
-                <textarea id="ameyoInput" rows="10" placeholder="Paste copied raw text from Ameyo here..."></textarea>
-                <button class="btn btn-primary" style="width:100%; padding:0.8rem; margin-bottom:1rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> Parse & Match Statuses Now</button>
-                
-                <h4 style="font-size:0.9rem; font-weight:800; color:var(--cyan); margin-bottom:0.6rem;"><i class="fa-solid fa-list-check"></i> Live Matching Inspector Result</h4>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Staff Name</th>
-                                <th>Matched Ameyo Status</th>
-                                <th>Matched Line / Source</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ameyoInspectorBody">
-                            <tr><td colspan="3" style="color:var(--text-muted);">No text parsed yet. Paste text or activate live sync to inspect.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+                <textarea id="ameyoInput" rows="15" placeholder="Paste copied raw text from Ameyo here..."></textarea>
+                <button class="btn btn-primary" style="width:100%; padding:0.8rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> Parse & Match Statuses Now</button>
             </div>
         </div>
 
@@ -838,51 +821,6 @@
         </div>
     </main>
 
-    <!-- Ameyo Live API Configuration Modal -->
-    <div id="ameyoApiModal" class="modal-overlay">
-        <div class="modal-card" style="max-width:540px;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-bolt text-warning"></i> Ameyo Direct Live API Integration</h3>
-                <button class="modal-close" onclick="closeAmeyoApiModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fa-solid fa-globe text-primary"></i> Ameyo Live Endpoint URL:</label>
-                <input type="text" id="ameyoApiEndpointInput" class="input-text" value="https://ameyo.halasat-ftth.iq:8443/supervisor/service">
-            </div>
-
-            <div class="form-group">
-                <label><i class="fa-solid fa-clock text-warning"></i> Refresh Interval (Seconds):</label>
-                <select id="ameyoApiIntervalInput" class="input-text">
-                    <option value="5">Every 5 Seconds</option>
-                    <option value="10" selected>Every 10 Seconds (Recommended)</option>
-                    <option value="15">Every 15 Seconds</option>
-                    <option value="30">Every 30 Seconds</option>
-                </select>
-            </div>
-
-            <div class="form-group" style="display:flex; align-items:center; gap:0.6rem; margin-top:0.8rem;">
-                <input type="checkbox" id="ameyoAutoSyncToggle" style="width:auto; cursor:pointer;" onchange="toggleAmeyoAutoSync(this.checked)">
-                <label for="ameyoAutoSyncToggle" style="margin:0; cursor:pointer; font-weight:700; color:#fff;">Enable Automatic Live Background Polling</label>
-            </div>
-
-            <div class="card" style="background:rgba(255,255,255,0.02); border-color:var(--border); margin-top:1.2rem; padding:0.9rem;">
-                <h4 style="font-size:0.85rem; font-weight:800; color:var(--cyan); margin-bottom:0.4rem;">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Auto-Sync Snippet (Chrome Console)
-                </h4>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.6rem;">
-                    Paste this snippet once in Chrome Console on your open Ameyo tab (<code style="color:var(--warning);">ameyo.halasat-ftth.iq:8443</code>) to push real-time agent updates automatically every 10s!
-                </p>
-                <textarea id="bookmarkletSnippet" rows="3" readonly style="font-family:monospace; font-size:0.72rem; color:#60a5fa; cursor:pointer;" onclick="this.select(); document.execCommand('copy'); alert('Copied snippet to clipboard!');"></textarea>
-            </div>
-
-            <div class="actions" style="margin-top: 1.2rem; justify-content: flex-end;">
-                <button class="btn btn-outline" onclick="closeAmeyoApiModal()">Close</button>
-                <button class="btn btn-success" onclick="saveAmeyoApiConfig()"><i class="fa-solid fa-floppy-disk"></i> Save & Connect Live</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Manual Shift Swap Modal -->
     <div id="swapModal" class="modal-overlay">
         <div class="modal-card">
@@ -912,99 +850,6 @@
     </div>
 
     <script>
-        let ameyoAutoTimer = null;
-        const ameyoLiveChannel = (window.BroadcastChannel) ? new BroadcastChannel('ameyo_live_sync') : null;
-
-        if (ameyoLiveChannel) {
-            ameyoLiveChannel.onmessage = function(event) {
-                if (event.data && event.data.rawText) {
-                    document.getElementById('ameyoInput').value = event.data.rawText;
-                    updateAmeyoList(true);
-                }
-            };
-        }
-
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'ameyo_live_raw_payload' && e.newValue) {
-                document.getElementById('ameyoInput').value = e.newValue;
-                updateAmeyoList(true);
-            }
-        });
-
-        function openAmeyoApiModal() {
-            const savedEndpoint = localStorage.getItem('ameyo_api_endpoint') || 'https://ameyo.halasat-ftth.iq:8443/supervisor/service';
-            const savedInterval = localStorage.getItem('ameyo_api_interval') || '10';
-            const savedAuto = localStorage.getItem('ameyo_auto_sync') === 'true';
-
-            document.getElementById('ameyoApiEndpointInput').value = savedEndpoint;
-            document.getElementById('ameyoApiIntervalInput').value = savedInterval;
-            document.getElementById('ameyoAutoSyncToggle').checked = savedAuto;
-
-            const snippet = `setInterval(function(){ var txt = ''; var frames = document.querySelectorAll('iframe, frame'); if (frames && frames.length > 0) { frames.forEach(function(f){ try { var doc = f.contentDocument || f.contentWindow.document; if (doc && doc.body && doc.body.innerText) { txt += doc.body.innerText + '\\n'; } } catch(e){} }); } var rows = document.querySelectorAll('tr, .x-grid-row, .grid-row, div.x-grid3-row, .x-grid-cell'); if (rows && rows.length > 0) { rows.forEach(function(r){ if(r.innerText) txt += r.innerText.trim() + '\\n'; }); } if (!txt || txt.length < 30) txt = document.body.innerText || ''; if (txt && txt.trim().length > 0) { try { new BroadcastChannel('ameyo_live_sync').postMessage({rawText: txt}); } catch(e){} localStorage.setItem('ameyo_live_raw_payload', txt); } }, ${(parseInt(savedInterval)||10)*1000}); console.log('✅ Ameyo Live Sync Active!');`;
-            document.getElementById('bookmarkletSnippet').value = snippet;
-
-            document.getElementById('ameyoApiModal').classList.add('active');
-        }
-
-        function closeAmeyoApiModal() {
-            document.getElementById('ameyoApiModal').classList.remove('active');
-        }
-
-        function toggleAmeyoAutoSync(enabled) {
-            localStorage.setItem('ameyo_auto_sync', enabled);
-            if (enabled) startAmeyoAutoSync();
-            else stopAmeyoAutoSync();
-        }
-
-        function saveAmeyoApiConfig() {
-            const endpoint = document.getElementById('ameyoApiEndpointInput').value.trim();
-            const interval = document.getElementById('ameyoApiIntervalInput').value;
-            const enabled = document.getElementById('ameyoAutoSyncToggle').checked;
-
-            localStorage.setItem('ameyo_api_endpoint', endpoint);
-            localStorage.setItem('ameyo_api_interval', interval);
-            localStorage.setItem('ameyo_auto_sync', enabled);
-
-            if (enabled) startAmeyoAutoSync();
-            else stopAmeyoAutoSync();
-
-            fetchAmeyoDirectApi();
-            closeAmeyoApiModal();
-            alert('Ameyo Live Integration settings saved!');
-        }
-
-        function startAmeyoAutoSync() {
-            stopAmeyoAutoSync();
-            const intervalSec = parseInt(localStorage.getItem('ameyo_api_interval') || '10');
-            ameyoAutoTimer = setInterval(fetchAmeyoDirectApi, intervalSec * 1000);
-        }
-
-        function stopAmeyoAutoSync() {
-            if (ameyoAutoTimer) {
-                clearInterval(ameyoAutoTimer);
-                ameyoAutoTimer = null;
-            }
-        }
-
-        function fetchAmeyoDirectApi() {
-            const endpoint = localStorage.getItem('ameyo_api_endpoint') || 'https://ameyo.halasat-ftth.iq:8443/supervisor/service';
-            fetch(endpoint, { credentials: 'include' })
-                .then(r => r.text())
-                .then(text => {
-                    if (text && text.length > 0) {
-                        document.getElementById('ameyoInput').value = text;
-                        updateAmeyoList(true);
-                    }
-                })
-                .catch(err => {
-                    console.log('Ameyo Direct Fetch note:', err);
-                });
-        }
-
-        if (localStorage.getItem('ameyo_auto_sync') === 'true') {
-            startAmeyoAutoSync();
-        }
-
         // Helper for initials
         function getInitials(name) {
             if (!name) return 'CC';
@@ -1066,7 +911,7 @@
         const pageTitles = {
             'home': '<i class="fa-solid fa-chart-pie text-primary"></i> Dashboard Overview',
             'schedule': '<i class="fa-solid fa-table-list text-cyan"></i> Daily Master Schedule',
-            'ameyo': '<i class="fa-solid fa-signal text-success"></i> Ameyo Live Activity Sync',
+            'ameyo': '<i class="fa-solid fa-signal text-success"></i> Ameyo Text Parser',
             'ready': '<i class="fa-solid fa-circle-check text-success"></i> Ready Agents',
             'lunch': '<i class="fa-solid fa-utensils text-warning"></i> Lunch Break',
             'break': '<i class="fa-solid fa-mug-hot text-purple"></i> Short Break',
@@ -1471,7 +1316,7 @@
                     } else if (emp.ameyoCategory === 'Lunch') {
                         lunchBody.innerHTML += `<tr><td>${lI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Break') {
-                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
+                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
                     } else {
                         notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
                     }
@@ -1540,61 +1385,31 @@
             }
         }
 
-        function updateAmeyoList(isSilent = false) {
+        function updateAmeyoList() {
             const rawText = document.getElementById('ameyoInput').value;
             if (!rawText || rawText.trim().length === 0) {
-                if (!isSilent) alert('Please paste copied raw text from Ameyo.');
+                alert('Please paste copied raw text from Ameyo.');
                 return;
             }
 
-            let textToParse = rawText;
-            try {
-                const parsedJson = JSON.parse(rawText);
-                textToParse = JSON.stringify(parsedJson);
-            } catch (err) {}
+            const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
-            const lines = textToParse.split(/[\n\r\t]+/).map(l => l.trim()).filter(l => l.length > 0);
-
-            // Comprehensive status keyword lists
-            const readyKeywords = [
-                'ready', 'available', 'incall', 'in call', 'talking', 'ringing', 'ring', 'dialing', 
-                'connected', 'hungup', 'active', 'idle', 'acw', 'wrapup', 'wrap up', 'loggedin', 
-                'logged in', 'online', 'busy', 'oncall', 'on call', 'occupied', 'disposed'
-            ];
-
-            const lunchKeywords = ['lunch', 'dinner', 'food', 'eat'];
-            const breakKeywords = ['break', 'tea', 'coffee', 'aux', 'pause', 'rest', 'meeting', 'coaching', 'training', 'personal'];
-
-            // Sort employees by name length DESCENDING so longer names match first!
-            const sortedEmployeesForMatching = [...employees].sort((a, b) => b.name.length - a.name.length);
-
-            const matchLogs = [];
-
-            sortedEmployeesForMatching.forEach(emp => {
+            employees.forEach(emp => {
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const cleanEmp = cleanAlpha(emp.name);
-                    const nameTokens = emp.name.replace(/([A-Z])/g, ' $1').trim().toLowerCase().split(/\s+/).filter(t => t.length > 1);
 
                     let foundIndex = -1;
-
-                    // 1. Check exact or prefix-normalized match (e.g. "MAMohammedSalah" -> "mohammedsalah")
                     for (let idx = 0; idx < lines.length; idx++) {
                         const lineClean = cleanAlpha(lines[idx]);
-                        const lineCleanNoMA = lineClean.replace(/^(ma|ftth|cc)[0-9]*/i, '');
-
-                        if (lineClean === cleanEmp || lineCleanNoMA === cleanEmp || lineClean.includes(cleanEmp) || lineCleanNoMA.includes(cleanEmp)) {
+                        
+                        if (lineClean === cleanEmp) {
                             foundIndex = idx;
                             break;
-                        }
-                    }
+                        } else if (lineClean.includes(cleanEmp)) {
+                            const longerMatches = employees.filter(e => e.name !== emp.name && cleanAlpha(e.name).includes(cleanEmp) && cleanAlpha(e.name).length > cleanEmp.length);
+                            const isLongerEmpPresentInLine = longerMatches.some(lm => lineClean.includes(cleanAlpha(lm.name)));
 
-                    // 2. Token-based match if direct match wasn't found
-                    if (foundIndex === -1 && nameTokens.length >= 1) {
-                        for (let idx = 0; idx < lines.length; idx++) {
-                            const lineLower = lines[idx].toLowerCase();
-                            const allTokensInLine = nameTokens.every(token => lineLower.includes(token));
-
-                            if (allTokensInLine) {
+                            if (!isLongerEmpPresentInLine) {
                                 foundIndex = idx;
                                 break;
                             }
@@ -1602,80 +1417,31 @@
                     }
 
                     if (foundIndex !== -1) {
-                        const matchedLine = lines[foundIndex];
-                        const nextLines = lines.slice(foundIndex, Math.min(lines.length, foundIndex + 12)).join(' ').toLowerCase();
+                        const nextLines = lines.slice(foundIndex, foundIndex + 6).join(' ').toLowerCase();
 
-                        if (lunchKeywords.some(kw => nextLines.includes(kw))) {
+                        if (nextLines.includes('lunch')) {
                             emp.ameyoCategory = 'Lunch';
                             emp.ameyoDetail = 'Lunch';
-                        } else if (breakKeywords.some(kw => nextLines.includes(kw))) {
+                        } else if (nextLines.includes('break') || nextLines.includes('tea') || nextLines.includes('aux') || nextLines.includes('pause')) {
                             emp.ameyoCategory = 'Break';
                             emp.ameyoDetail = 'Break';
-                        } else if (readyKeywords.some(kw => nextLines.includes(kw))) {
+                        } else if (nextLines.includes('available') || nextLines.includes('ready') || nextLines.includes('connected') || nextLines.includes('hungup')) {
                             emp.ameyoCategory = 'Ready';
                             emp.ameyoDetail = 'Ready';
                         } else {
                             emp.ameyoCategory = 'Not Ready';
                             emp.ameyoDetail = 'Offline';
                         }
-
-                        matchLogs.push({ name: emp.name, status: emp.ameyoCategory, line: matchedLine });
                     } else {
-                        // Fallback: Check full text snippet
-                        const fullClean = cleanAlpha(textToParse);
-                        const fullCleanNoMA = fullClean.replace(/^(ma|ftth|cc)[0-9]*/gi, '');
-
-                        if (fullClean.includes(cleanEmp) || fullCleanNoMA.includes(cleanEmp)) {
-                            const empIdx = fullClean.indexOf(cleanEmp);
-                            const snippet = fullClean.substring(Math.max(0, empIdx - 20), empIdx + 150);
-                            
-                            if (lunchKeywords.some(kw => snippet.includes(kw))) {
-                                emp.ameyoCategory = 'Lunch';
-                                emp.ameyoDetail = 'Lunch';
-                            } else if (breakKeywords.some(kw => snippet.includes(kw))) {
-                                emp.ameyoCategory = 'Break';
-                                emp.ameyoDetail = 'Break';
-                            } else if (readyKeywords.some(kw => snippet.includes(kw))) {
-                                emp.ameyoCategory = 'Ready';
-                                emp.ameyoDetail = 'Ready';
-                            } else {
-                                emp.ameyoCategory = 'Not Ready';
-                                emp.ameyoDetail = 'Offline';
-                            }
-                            matchLogs.push({ name: emp.name, status: emp.ameyoCategory, line: 'Snippet Fallback' });
-                        } else {
-                            emp.ameyoCategory = 'Not Ready';
-                            emp.ameyoDetail = 'Offline';
-                            matchLogs.push({ name: emp.name, status: 'Not Found in Text', line: '-' });
-                        }
+                        emp.ameyoCategory = 'Not Ready';
+                        emp.ameyoDetail = 'Offline';
                     }
                 }
             });
 
             save();
             render();
-
-            // Render live match inspector on Ameyo page
-            const inspectorBody = document.getElementById('ameyoInspectorBody');
-            if (inspectorBody) {
-                inspectorBody.innerHTML = matchLogs.map(log => `
-                    <tr>
-                        <td><strong>${log.name}</strong></td>
-                        <td><span class="badge ${log.status==='Ready'?'badge-ready':(log.status==='Lunch'?'badge-lunch':(log.status==='Break'?'badge-break':'badge-notready'))}">${log.status}</span></td>
-                        <td><code style="font-size:0.75rem; color:var(--cyan);">${log.line}</code></td>
-                    </tr>
-                `).join('');
-            }
-
-            const syncText = document.getElementById('syncText');
-            if (syncText && isSilent) {
-                const nowTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-                syncText.innerHTML = `<span><i class="fa-solid fa-bolt text-success"></i> Ameyo Auto-Synced at ${nowTime}</span> <span class="live-clock-badge" id="liveClockDisplay">${document.getElementById('liveClockDisplay').innerText}</span>`;
-            }
-
-            if (!isSilent) {
-                alert('Ameyo statuses parsed and updated successfully without name collisions!');
-            }
+            alert('Ameyo statuses parsed and updated successfully without name collisions!');
         }
 
         function fetchLiveGoogleSheet() {
@@ -1695,8 +1461,6 @@
         }
 
         function parseGoogleSheetCSV(csvText) {
-            if (!csvText || csvText.trim().length === 0) return;
-
             const lines = csvText.split('\n');
             const eveningRows = [];
             let inEveningSection = false;
@@ -1755,18 +1519,16 @@
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
-                if (line.includes('Evening / IN') || line.includes('Evening/IN') || line.includes('Evening') || line.includes('IN Shift')) {
+                if (line.includes('Evening / IN')) {
                     inEveningSection = true;
-                } else if (line.includes('Morning Shift') || line.includes('Attend Morning Shift') || line.includes('Morning')) {
+                } else if (line.includes('Morning Shift') || line.includes('Attend Morning Shift')) {
                     inEveningSection = false;
                 }
 
-                const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-                if (cols.length >= 2 && cols[1] && cols[1] !== 'Name' && cols[1] !== 'Shift' && cols[1].length > 2) {
-                    const name = cols[1];
-                    const isKnownEmp = initialEveningEmployees.some(e => clean(e.name) === clean(name));
-
-                    if (inEveningSection || isKnownEmp) {
+                if (inEveningSection) {
+                    const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                    if (cols.length >= 4 && cols[1] && cols[1] !== 'Name' && cols[1] !== 'Shift') {
+                        const name = cols[1];
                         let shiftToday = cols[todayColIndex] || cols[4] || 'OFF';
                         let isManualSwapped = false;
 
@@ -1780,17 +1542,15 @@
                         const ameyoCategory = existingEmp ? existingEmp.ameyoCategory : (shiftToday === 'OFF' ? 'OFF' : 'Not Ready');
                         const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'Offline');
 
-                        if (!eveningRows.some(e => clean(e.name) === clean(name))) {
-                            eveningRows.push({
-                                id: eveningRows.length + 1,
-                                name: name,
-                                status: shiftToday,
-                                isManualSwapped: isManualSwapped,
-                                ameyoCategory: ameyoCategory,
-                                ameyoDetail: ameyoDetail,
-                                breaks: breaks
-                            });
-                        }
+                        eveningRows.push({
+                            id: eveningRows.length + 1,
+                            name: name,
+                            status: shiftToday,
+                            isManualSwapped: isManualSwapped,
+                            ameyoCategory: ameyoCategory,
+                            ameyoDetail: ameyoDetail,
+                            breaks: breaks
+                        });
                     }
                 }
             }
