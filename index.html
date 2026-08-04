@@ -903,7 +903,7 @@
             ameyoLiveChannel.onmessage = function(event) {
                 if (event.data && event.data.rawText) {
                     document.getElementById('ameyoInput').value = event.data.rawText;
-                    updateAmeyoList();
+                    updateAmeyoList(true);
                 }
             };
         }
@@ -911,7 +911,7 @@
         window.addEventListener('storage', function(e) {
             if (e.key === 'ameyo_live_raw_payload' && e.newValue) {
                 document.getElementById('ameyoInput').value = e.newValue;
-                updateAmeyoList();
+                updateAmeyoList(true);
             }
         });
 
@@ -924,7 +924,7 @@
             document.getElementById('ameyoApiIntervalInput').value = savedInterval;
             document.getElementById('ameyoAutoSyncToggle').checked = savedAuto;
 
-            const snippet = `setInterval(function(){ var txt = document.body.innerText; if (txt) { try { new BroadcastChannel('ameyo_live_sync').postMessage({rawText: txt}); } catch(e){} localStorage.setItem('ameyo_live_raw_payload', txt); } }, ${(parseInt(savedInterval)||10)*1000}); console.log('✅ Ameyo Live Sync Active!');`;
+            const snippet = `setInterval(function(){ var txt = ''; var rows = document.querySelectorAll('tr, .x-grid-row, .grid-row'); if (rows && rows.length > 0) { rows.forEach(function(r){ if(r.innerText) txt += r.innerText.trim() + '\\n'; }); } if (!txt || txt.length < 30) txt = document.body.innerText; if (txt) { try { new BroadcastChannel('ameyo_live_sync').postMessage({rawText: txt}); } catch(e){} localStorage.setItem('ameyo_live_raw_payload', txt); } }, ${(parseInt(savedInterval)||10)*1000}); console.log('✅ Ameyo Live Sync Active!');`;
             document.getElementById('bookmarkletSnippet').value = snippet;
 
             document.getElementById('ameyoApiModal').classList.add('active');
@@ -977,7 +977,7 @@
                 .then(text => {
                     if (text && text.length > 0) {
                         document.getElementById('ameyoInput').value = text;
-                        updateAmeyoList();
+                        updateAmeyoList(true);
                     }
                 })
                 .catch(err => {
@@ -1524,14 +1524,20 @@
             }
         }
 
-        function updateAmeyoList() {
+        function updateAmeyoList(isSilent = false) {
             const rawText = document.getElementById('ameyoInput').value;
             if (!rawText || rawText.trim().length === 0) {
-                alert('Please paste copied raw text from Ameyo.');
+                if (!isSilent) alert('Please paste copied raw text from Ameyo.');
                 return;
             }
 
-            const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            let textToParse = rawText;
+            try {
+                const parsedJson = JSON.parse(rawText);
+                textToParse = JSON.stringify(parsedJson);
+            } catch (err) {}
+
+            const lines = textToParse.split(/[\n\r\t]+/).map(l => l.trim()).filter(l => l.length > 0);
 
             employees.forEach(emp => {
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
@@ -1556,7 +1562,7 @@
                     }
 
                     if (foundIndex !== -1) {
-                        const nextLines = lines.slice(foundIndex, foundIndex + 6).join(' ').toLowerCase();
+                        const nextLines = lines.slice(foundIndex, foundIndex + 8).join(' ').toLowerCase();
 
                         if (nextLines.includes('lunch')) {
                             emp.ameyoCategory = 'Lunch';
@@ -1564,7 +1570,7 @@
                         } else if (nextLines.includes('break') || nextLines.includes('tea') || nextLines.includes('aux') || nextLines.includes('pause')) {
                             emp.ameyoCategory = 'Break';
                             emp.ameyoDetail = 'Break';
-                        } else if (nextLines.includes('available') || nextLines.includes('connected') || nextLines.includes('hungup')) {
+                        } else if (nextLines.includes('available') || nextLines.includes('ready') || nextLines.includes('connected') || nextLines.includes('hungup')) {
                             emp.ameyoCategory = 'Ready';
                             emp.ameyoDetail = 'Ready';
                         } else {
@@ -1580,7 +1586,16 @@
 
             save();
             render();
-            alert('Ameyo statuses parsed and updated successfully without name collisions!');
+
+            const syncText = document.getElementById('syncText');
+            if (syncText && isSilent) {
+                const nowTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+                syncText.innerHTML = `<span><i class="fa-solid fa-bolt text-success"></i> Ameyo Auto-Synced at ${nowTime}</span> <span class="live-clock-badge" id="liveClockDisplay">${document.getElementById('liveClockDisplay').innerText}</span>`;
+            }
+
+            if (!isSilent) {
+                alert('Ameyo statuses parsed and updated successfully without name collisions!');
+            }
         }
 
         function fetchLiveGoogleSheet() {
