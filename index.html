@@ -939,8 +939,9 @@
                 </div>
             </div>
 
-            <!-- 4️⃣ 3-Column Live Status Wall Grid -->
+            <!-- 4️⃣ 3-Column Live Status Wall Grid with Sub-Divisions -->
             <div class="status-wall-grid">
+                <!-- Column 1: Ready Staff -->
                 <div class="status-wall-col">
                     <div class="status-wall-header text-success">
                         <span><i class="fa-solid fa-circle-check"></i> Ready Staff</span>
@@ -949,20 +950,40 @@
                     <div class="status-wall-list" id="wallReadyList"></div>
                 </div>
 
+                <!-- Column 2: Lunch & Short Break Split -->
                 <div class="status-wall-col">
                     <div class="status-wall-header text-warning">
-                        <span><i class="fa-solid fa-mug-hot"></i> Lunch & Break</span>
+                        <span><i class="fa-solid fa-mug-hot"></i> Lunch & Short Break</span>
                         <span class="badge badge-warning" id="wallBreakCount">0</span>
                     </div>
-                    <div class="status-wall-list" id="wallBreakList"></div>
+                    
+                    <div style="font-size:0.75rem; font-weight:800; color:var(--warning); margin:0.4rem 0 0.2rem 0; text-transform:uppercase; letter-spacing:0.5px;">
+                        <i class="fa-solid fa-utensils"></i> On Lunch
+                    </div>
+                    <div class="status-wall-list" id="wallLunchSubList"></div>
+
+                    <div style="font-size:0.75rem; font-weight:800; color:var(--purple); margin:0.8rem 0 0.2rem 0; text-transform:uppercase; letter-spacing:0.5px; border-top:1px dashed var(--border-subtle); padding-top:0.6rem;">
+                        <i class="fa-solid fa-mug-hot"></i> On Short Break
+                    </div>
+                    <div class="status-wall-list" id="wallBreakSubList"></div>
                 </div>
 
+                <!-- Column 3: Offline & Day OFF Split -->
                 <div class="status-wall-col">
                     <div class="status-wall-header text-danger">
-                        <span><i class="fa-solid fa-circle-xmark"></i> Offline / Day OFF</span>
+                        <span><i class="fa-solid fa-circle-xmark"></i> Offline & Day OFF</span>
                         <span class="badge badge-notready" id="wallOfflineCount">0</span>
                     </div>
-                    <div class="status-wall-list" id="wallOfflineList"></div>
+
+                    <div style="font-size:0.75rem; font-weight:800; color:var(--danger); margin:0.4rem 0 0.2rem 0; text-transform:uppercase; letter-spacing:0.5px;">
+                        <i class="fa-solid fa-circle-xmark"></i> Offline / Not Ready
+                    </div>
+                    <div class="status-wall-list" id="wallOfflineSubList"></div>
+
+                    <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); margin:0.8rem 0 0.2rem 0; text-transform:uppercase; letter-spacing:0.5px; border-top:1px dashed var(--border-subtle); padding-top:0.6rem;">
+                        <i class="fa-solid fa-calendar-xmark"></i> Day OFF
+                    </div>
+                    <div class="status-wall-list" id="wallOffSubList"></div>
                 </div>
             </div>
 
@@ -1719,15 +1740,19 @@
             document.getElementById('sideNotReadyBadge').innerText = notReadyC;
             document.getElementById('sideOffBadge').innerText = offC;
 
-            // Render 3-Column Status Wall
+            // Render 3-Column Status Wall with Sub-Divisions
             const wallReadyList = document.getElementById('wallReadyList');
-            const wallBreakList = document.getElementById('wallBreakList');
-            const wallOfflineList = document.getElementById('wallOfflineList');
+            const wallLunchSubList = document.getElementById('wallLunchSubList');
+            const wallBreakSubList = document.getElementById('wallBreakSubList');
+            const wallOfflineSubList = document.getElementById('wallOfflineSubList');
+            const wallOffSubList = document.getElementById('wallOffSubList');
 
-            if (wallReadyList && wallBreakList && wallOfflineList) {
+            if (wallReadyList && wallLunchSubList && wallBreakSubList && wallOfflineSubList && wallOffSubList) {
                 wallReadyList.innerHTML = '';
-                wallBreakList.innerHTML = '';
-                wallOfflineList.innerHTML = '';
+                wallLunchSubList.innerHTML = '';
+                wallBreakSubList.innerHTML = '';
+                wallOfflineSubList.innerHTML = '';
+                wallOffSubList.innerHTML = '';
 
                 let wallRCount = 0, wallBCount = 0, wallOffCount = 0;
 
@@ -1744,14 +1769,20 @@
                         </div>
                     `;
 
-                    if (emp.status === 'OFF' || emp.status === 'Vacation' || emp.ameyoCategory === 'Not Ready') {
-                        wallOfflineList.innerHTML += itemHtml;
+                    if (emp.status === 'OFF' || emp.status === 'Vacation') {
+                        wallOffSubList.innerHTML += itemHtml;
+                        wallOffCount++;
+                    } else if (emp.ameyoCategory === 'Not Ready') {
+                        wallOfflineSubList.innerHTML += itemHtml;
                         wallOffCount++;
                     } else if (emp.ameyoCategory === 'Ready') {
                         wallReadyList.innerHTML += itemHtml;
                         wallRCount++;
-                    } else if (emp.ameyoCategory === 'Lunch' || emp.ameyoCategory === 'Break') {
-                        wallBreakList.innerHTML += itemHtml;
+                    } else if (emp.ameyoCategory === 'Lunch') {
+                        wallLunchSubList.innerHTML += itemHtml;
+                        wallBCount++;
+                    } else if (emp.ameyoCategory === 'Break') {
+                        wallBreakSubList.innerHTML += itemHtml;
                         wallBCount++;
                     }
                 });
