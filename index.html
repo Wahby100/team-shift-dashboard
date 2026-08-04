@@ -676,8 +676,24 @@
                 <div class="card-header">
                     <h3><i class="fa-solid fa-signal text-success"></i> Ameyo Live Activity Sync</h3>
                 </div>
-                <textarea id="ameyoInput" rows="15" placeholder="Paste copied raw text from Ameyo here..."></textarea>
-                <button class="btn btn-primary" style="width:100%; padding:0.8rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> Parse & Match Statuses Now</button>
+                <textarea id="ameyoInput" rows="10" placeholder="Paste copied raw text from Ameyo here..."></textarea>
+                <button class="btn btn-primary" style="width:100%; padding:0.8rem; margin-bottom:1rem;" onclick="updateAmeyoList()"><i class="fa-solid fa-wand-magic-sparkles"></i> Parse & Match Statuses Now</button>
+                
+                <h4 style="font-size:0.9rem; font-weight:800; color:var(--cyan); margin-bottom:0.6rem;"><i class="fa-solid fa-list-check"></i> Live Matching Inspector Result</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Staff Name</th>
+                                <th>Matched Ameyo Status</th>
+                                <th>Matched Line / Source</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ameyoInspectorBody">
+                            <tr><td colspan="3" style="color:var(--text-muted);">No text parsed yet. Paste text or activate live sync to inspect.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -1549,52 +1565,44 @@
             const lunchKeywords = ['lunch', 'dinner', 'food', 'eat'];
             const breakKeywords = ['break', 'tea', 'coffee', 'aux', 'pause', 'rest', 'meeting', 'coaching', 'training', 'personal'];
 
-            employees.forEach(emp => {
+            // Sort employees by name length DESCENDING so longer names match first!
+            const sortedEmployeesForMatching = [...employees].sort((a, b) => b.name.length - a.name.length);
+
+            const matchLogs = [];
+
+            sortedEmployeesForMatching.forEach(emp => {
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
                     const cleanEmp = cleanAlpha(emp.name);
-
-                    // Extract name tokens (e.g. "MohammedSalah" -> ["mohammed", "salah"])
                     const nameTokens = emp.name.replace(/([A-Z])/g, ' $1').trim().toLowerCase().split(/\s+/).filter(t => t.length > 1);
 
                     let foundIndex = -1;
 
-                    // 1. Direct exact or substring match in lines
+                    // 1. Check exact or prefix-normalized match (e.g. "MAMohammedSalah" -> "mohammedsalah")
                     for (let idx = 0; idx < lines.length; idx++) {
                         const lineClean = cleanAlpha(lines[idx]);
-                        
-                        if (lineClean === cleanEmp || lineClean.includes(cleanEmp)) {
-                            const longerMatches = employees.filter(e => e.name !== emp.name && cleanAlpha(e.name).includes(cleanEmp) && cleanAlpha(e.name).length > cleanEmp.length);
-                            const isLongerEmpPresentInLine = longerMatches.some(lm => lineClean.includes(cleanAlpha(lm.name)));
+                        const lineCleanNoMA = lineClean.replace(/^(ma|ftth|cc)[0-9]*/i, '');
 
-                            if (!isLongerEmpPresentInLine) {
+                        if (lineClean === cleanEmp || lineCleanNoMA === cleanEmp || lineClean.includes(cleanEmp) || lineCleanNoMA.includes(cleanEmp)) {
+                            foundIndex = idx;
+                            break;
+                        }
+                    }
+
+                    // 2. Token-based match if direct match wasn't found
+                    if (foundIndex === -1 && nameTokens.length >= 1) {
+                        for (let idx = 0; idx < lines.length; idx++) {
+                            const lineLower = lines[idx].toLowerCase();
+                            const allTokensInLine = nameTokens.every(token => lineLower.includes(token));
+
+                            if (allTokensInLine) {
                                 foundIndex = idx;
                                 break;
                             }
                         }
                     }
 
-                    // 2. Token-based match if direct match wasn't found (e.g. "Mohammed Salah" in table cells)
-                    if (foundIndex === -1 && nameTokens.length >= 2) {
-                        for (let idx = 0; idx < lines.length; idx++) {
-                            const lineLower = lines[idx].toLowerCase();
-                            const allTokensInLine = nameTokens.every(token => lineLower.includes(token));
-
-                            if (allTokensInLine) {
-                                const longerMatches = employees.filter(e => e.name !== emp.name && e.name.length > emp.name.length);
-                                const isLongerMatch = longerMatches.some(lm => {
-                                    const lmTokens = lm.name.replace(/([A-Z])/g, ' $1').trim().toLowerCase().split(/\s+/).filter(t => t.length > 1);
-                                    return lmTokens.every(t => lineLower.includes(t));
-                                });
-
-                                if (!isLongerMatch) {
-                                    foundIndex = idx;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
                     if (foundIndex !== -1) {
+                        const matchedLine = lines[foundIndex];
                         const nextLines = lines.slice(foundIndex, Math.min(lines.length, foundIndex + 12)).join(' ').toLowerCase();
 
                         if (lunchKeywords.some(kw => nextLines.includes(kw))) {
@@ -1610,12 +1618,16 @@
                             emp.ameyoCategory = 'Not Ready';
                             emp.ameyoDetail = 'Offline';
                         }
+
+                        matchLogs.push({ name: emp.name, status: emp.ameyoCategory, line: matchedLine });
                     } else {
-                        // Fallback: Check full text snippet if name exists anywhere
+                        // Fallback: Check full text snippet
                         const fullClean = cleanAlpha(textToParse);
-                        if (fullClean.includes(cleanEmp)) {
+                        const fullCleanNoMA = fullClean.replace(/^(ma|ftth|cc)[0-9]*/gi, '');
+
+                        if (fullClean.includes(cleanEmp) || fullCleanNoMA.includes(cleanEmp)) {
                             const empIdx = fullClean.indexOf(cleanEmp);
-                            const snippet = fullClean.substring(empIdx, empIdx + 150);
+                            const snippet = fullClean.substring(Math.max(0, empIdx - 20), empIdx + 150);
                             
                             if (lunchKeywords.some(kw => snippet.includes(kw))) {
                                 emp.ameyoCategory = 'Lunch';
@@ -1630,9 +1642,11 @@
                                 emp.ameyoCategory = 'Not Ready';
                                 emp.ameyoDetail = 'Offline';
                             }
+                            matchLogs.push({ name: emp.name, status: emp.ameyoCategory, line: 'Snippet Fallback' });
                         } else {
                             emp.ameyoCategory = 'Not Ready';
                             emp.ameyoDetail = 'Offline';
+                            matchLogs.push({ name: emp.name, status: 'Not Found in Text', line: '-' });
                         }
                     }
                 }
@@ -1640,6 +1654,18 @@
 
             save();
             render();
+
+            // Render live match inspector on Ameyo page
+            const inspectorBody = document.getElementById('ameyoInspectorBody');
+            if (inspectorBody) {
+                inspectorBody.innerHTML = matchLogs.map(log => `
+                    <tr>
+                        <td><strong>${log.name}</strong></td>
+                        <td><span class="badge ${log.status==='Ready'?'badge-ready':(log.status==='Lunch'?'badge-lunch':(log.status==='Break'?'badge-break':'badge-notready'))}">${log.status}</span></td>
+                        <td><code style="font-size:0.75rem; color:var(--cyan);">${log.line}</code></td>
+                    </tr>
+                `).join('');
+            }
 
             const syncText = document.getElementById('syncText');
             if (syncText && isSilent) {
@@ -1669,6 +1695,8 @@
         }
 
         function parseGoogleSheetCSV(csvText) {
+            if (!csvText || csvText.trim().length === 0) return;
+
             const lines = csvText.split('\n');
             const eveningRows = [];
             let inEveningSection = false;
@@ -1697,7 +1725,6 @@
             for (let i = 0; i < Math.min(15, lines.length); i++) {
                 const rowCols = lines[i].split(',').map(c => c.trim().toLowerCase());
                 
-                // Detect sheet month from header row if present (e.g. 01/7 vs 01/8)
                 const monthMatch = rowCols.find(c => c.match(/^[0-3]?[0-9]\/[0-1]?[0-9]$/));
                 if (monthMatch && !detectedSheetMonth) {
                     detectedSheetMonth = monthMatch.split('/')[1];
@@ -1713,7 +1740,6 @@
                 if (todayColIndex !== -1) break;
             }
 
-            // Fallback calculation: Day 1 = Col 4, Day 2 = Col 5 -> Col 3 + dayNum
             if (todayColIndex === -1) {
                 todayColIndex = 3 + dayNum;
             }
@@ -1729,16 +1755,18 @@
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
-                if (line.includes('Evening / IN')) {
+                if (line.includes('Evening / IN') || line.includes('Evening/IN') || line.includes('Evening') || line.includes('IN Shift')) {
                     inEveningSection = true;
-                } else if (line.includes('Morning Shift') || line.includes('Attend Morning Shift')) {
+                } else if (line.includes('Morning Shift') || line.includes('Attend Morning Shift') || line.includes('Morning')) {
                     inEveningSection = false;
                 }
 
-                if (inEveningSection) {
-                    const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-                    if (cols.length >= 4 && cols[1] && cols[1] !== 'Name' && cols[1] !== 'Shift') {
-                        const name = cols[1];
+                const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+                if (cols.length >= 2 && cols[1] && cols[1] !== 'Name' && cols[1] !== 'Shift' && cols[1].length > 2) {
+                    const name = cols[1];
+                    const isKnownEmp = initialEveningEmployees.some(e => clean(e.name) === clean(name));
+
+                    if (inEveningSection || isKnownEmp) {
                         let shiftToday = cols[todayColIndex] || cols[4] || 'OFF';
                         let isManualSwapped = false;
 
@@ -1752,15 +1780,17 @@
                         const ameyoCategory = existingEmp ? existingEmp.ameyoCategory : (shiftToday === 'OFF' ? 'OFF' : 'Not Ready');
                         const ameyoDetail = existingEmp ? existingEmp.ameyoDetail : (shiftToday === 'OFF' ? 'Day OFF' : 'Offline');
 
-                        eveningRows.push({
-                            id: eveningRows.length + 1,
-                            name: name,
-                            status: shiftToday,
-                            isManualSwapped: isManualSwapped,
-                            ameyoCategory: ameyoCategory,
-                            ameyoDetail: ameyoDetail,
-                            breaks: breaks
-                        });
+                        if (!eveningRows.some(e => clean(e.name) === clean(name))) {
+                            eveningRows.push({
+                                id: eveningRows.length + 1,
+                                name: name,
+                                status: shiftToday,
+                                isManualSwapped: isManualSwapped,
+                                ameyoCategory: ameyoCategory,
+                                ameyoDetail: ameyoDetail,
+                                breaks: breaks
+                            });
+                        }
                     }
                 }
             }
