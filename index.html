@@ -999,7 +999,7 @@
             <!-- Quick Table Card -->
             <div class="card">
                 <div class="card-header">
-                    <h3><i class="fa-solid fa-bolt text-warning"></i> Scheduled Agents Overview</h3>
+                    <h3><i class="fa-solid fa-bolt text-warning"></i> Scheduled Agents Overview & Live Break Logger</h3>
                     <button class="btn btn-sm btn-outline" onclick="switchPage('schedule')">Full Schedule <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
                 <div class="table-responsive">
@@ -1010,6 +1010,8 @@
                                 <th>Assigned Shift</th>
                                 <th>Working Hours</th>
                                 <th>Ameyo Status</th>
+                                <th>Break Logger (3 Max)</th>
+                                <th>Break History Log</th>
                             </tr>
                         </thead>
                         <tbody id="homePreviewBody"></tbody>
@@ -1866,17 +1868,6 @@
 
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
-                if (emp.status !== 'OFF' && emp.status !== 'Vacation' && homeBody) {
-                    const homeTr = document.createElement('tr');
-                    homeTr.innerHTML = `
-                        <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
-                        <td><span class="badge badge-shift">${emp.status}</span></td>
-                        <td><span style="color:var(--text-muted); font-size:0.8rem;">${shiftInfo.label}</span></td>
-                        <td>${ameyoBadge}</td>
-                    `;
-                    homeBody.appendChild(homeTr);
-                }
-
                 let breakBtns = '';
                 if (emp.status === 'OFF' || emp.status === 'Vacation') {
                     breakBtns = `<span style="color:var(--text-muted); font-size:0.78rem;">Off Duty</span>`;
@@ -1892,6 +1883,19 @@
                 }
 
                 let historyLog = emp.breaks.map(b => `<span class="badge ${b.active ? 'badge-break' : 'badge-shift'}">${b.time}</span>`).join(' ') || '-';
+
+                if (emp.status !== 'OFF' && emp.status !== 'Vacation' && homeBody) {
+                    const homeTr = document.createElement('tr');
+                    homeTr.innerHTML = `
+                        <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                        <td><span class="badge badge-shift">${emp.status}</span></td>
+                        <td><span style="color:var(--text-muted); font-size:0.8rem;">${shiftInfo.label}</span></td>
+                        <td>${ameyoBadge}</td>
+                        <td>${breakBtns}</td>
+                        <td>${historyLog}</td>
+                    `;
+                    homeBody.appendChild(homeTr);
+                }
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
