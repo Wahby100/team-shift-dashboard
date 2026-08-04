@@ -12,16 +12,16 @@
     <style>
         :root {
             --bg-body: #08090e;
-            --bg-surface: #0f111a;
+            --bg-surface: rgba(15, 17, 26, 0.85);
             --bg-sidebar: #0b0d14;
-            --bg-hover: #161926;
+            --bg-hover: rgba(22, 25, 38, 0.8);
             
             --border: rgba(255, 255, 255, 0.08);
             --border-subtle: rgba(255, 255, 255, 0.04);
             --border-focus: rgba(59, 130, 246, 0.4);
             
             --primary: #3b82f6;
-            --primary-glow: rgba(59, 130, 246, 0.15);
+            --primary-glow: rgba(59, 130, 246, 0.2);
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -38,6 +38,26 @@
             --ambient-glow: rgba(16, 185, 129, 0.15);
         }
 
+        /* 🎨 4 Premium Color Accent Schemes */
+        body.theme-emerald {
+            --primary: #10b981;
+            --cyan: #34d399;
+            --primary-glow: rgba(16, 185, 129, 0.25);
+            --border-focus: rgba(16, 185, 129, 0.4);
+        }
+        body.theme-violet {
+            --primary: #a855f7;
+            --cyan: #c084fc;
+            --primary-glow: rgba(168, 85, 247, 0.25);
+            --border-focus: rgba(168, 85, 247, 0.4);
+        }
+        body.theme-amber {
+            --primary: #f59e0b;
+            --cyan: #fbbf24;
+            --primary-glow: rgba(245, 158, 11, 0.25);
+            --border-focus: rgba(245, 158, 11, 0.4);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
         body {
@@ -49,14 +69,98 @@
             transition: background 0.3s ease;
         }
 
-        /* Ambient Dynamic Status Glow Header */
+        /* Ambient Dynamic Status Glow Header & Glassmorphism */
         body.glow-good { --ambient-glow: rgba(16, 185, 129, 0.2); }
         body.glow-warn { --ambient-glow: rgba(245, 158, 11, 0.2); }
         body.glow-danger { --ambient-glow: rgba(239, 68, 68, 0.2); }
 
+        header.top-header, .card, .kpi-box, .targets-panel, .modal-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
         header.top-header {
             box-shadow: 0 0 35px var(--ambient-glow);
             transition: box-shadow 0.4s ease;
+        }
+
+        /* 🌟 Pulsing Avatar Status Rings */
+        .emp-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-family: 'Montserrat', sans-serif;
+            margin-right: 0.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .emp-avatar.ring-ready {
+            border-color: var(--success);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            animation: pulseRing 2s infinite;
+        }
+        .emp-avatar.ring-lunch {
+            border-color: var(--warning);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+            animation: pulseRing 2s infinite;
+        }
+        .emp-avatar.ring-break {
+            border-color: var(--purple);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+            animation: pulseRing 2s infinite;
+        }
+        .emp-avatar.ring-notready {
+            border-color: var(--danger);
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+        }
+        .emp-avatar.ring-off {
+            border-color: var(--text-muted);
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Theme Color Picker Buttons */
+        .theme-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-block;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: transform 0.15s ease;
+        }
+        .theme-dot:hover { transform: scale(1.25); }
+
+        /* 📱 Mobile & Tablet Responsive View Improvements */
+        @media (max-width: 768px) {
+            aside.sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            main.main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1rem 0.8rem;
+            }
+            .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+            .targets-panel { grid-template-columns: 1fr; }
+            header.top-header { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+            .actions { width: 100%; justify-content: flex-start; }
         }
 
         /* TV Wallboard / Kiosk Fullscreen Mode */
@@ -511,23 +615,6 @@
             border-radius: 5px;
         }
 
-        /* Avatar Initials Badge */
-        .emp-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 7px;
-            background: rgba(59, 130, 246, 0.12);
-            color: var(--primary);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.72rem;
-            font-weight: 800;
-            font-family: 'Montserrat', sans-serif;
-            margin-right: 0.5rem;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-
         /* Modal Dialog */
         .modal-overlay {
             position: fixed;
@@ -675,12 +762,23 @@
             <div class="page-header-title">
                 <h2 id="currentPageTitle"><i class="fa-solid fa-chart-pie text-primary"></i> Dashboard Overview</h2>
                 <small id="syncText">
-                    <span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Google Sheet Live Sync</span>
+                    <span><i class="fa-solid fa-circle-dot text-success"></i> Evening / IN • Live Sync</span>
                     <span class="live-clock-badge" id="liveClockDisplay">--:--:--</span>
                 </small>
             </div>
 
             <div class="actions">
+                <!-- 🎨 Theme Color Accent Switcher -->
+                <div style="display:flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.02); padding:0.3rem 0.6rem; border-radius:8px; border:1px solid var(--border);">
+                    <span class="theme-dot" style="background:#3b82f6;" title="Sapphire Blue" onclick="setAccentTheme('sapphire')"></span>
+                    <span class="theme-dot" style="background:#10b981;" title="Cyber Emerald" onclick="setAccentTheme('emerald')"></span>
+                    <span class="theme-dot" style="background:#a855f7;" title="Neon Violet" onclick="setAccentTheme('violet')"></span>
+                    <span class="theme-dot" style="background:#f59e0b;" title="Solar Amber" onclick="setAccentTheme('amber')"></span>
+                </div>
+
+                <!-- 📅 Date Picker Selector -->
+                <input type="date" id="datePickerSelect" class="input-text" style="padding:0.35rem 0.6rem; font-size:0.78rem;" onchange="onCustomDateSelect(this.value)">
+
                 <button class="btn btn-primary" onclick="toggleTvKioskMode()"><i class="fa-solid fa-tv"></i> <span id="tvBtnText">TV Mode</span></button>
                 <button class="btn btn-warning btn-non-tv" onclick="openSwapModal()"><i class="fa-solid fa-repeat"></i> Shift Swap</button>
                 <button class="btn btn-success btn-non-tv" onclick="fetchLiveGoogleSheet()"><i class="fa-solid fa-rotate"></i> Refresh</button>
@@ -752,6 +850,15 @@
                         <div class="slot-card-val"><span id="targetSlot3" style="color:var(--cyan)">0</span> <small style="font-size:0.75rem; color:var(--text-muted)">Agents</small></div>
                     </div>
                 </div>
+            </div>
+
+            <!-- 📝 Shift Leader Notes & Handover Box -->
+            <div class="card" style="margin-bottom:1.4rem;">
+                <div class="card-header" style="margin-bottom:0.6rem; border-bottom:none; padding-bottom:0;">
+                    <h3><i class="fa-solid fa-pen-to-square text-cyan"></i> Shift Leader Notes & Handover Log</h3>
+                    <small style="color:var(--text-muted);">Saves automatically to browser</small>
+                </div>
+                <textarea id="shiftLeaderNotes" rows="3" placeholder="Write handover notes for the next shift leader here..." oninput="saveShiftNotes(this.value)" style="margin-bottom:0; font-size:0.84rem;"></textarea>
             </div>
 
             <!-- Quick Table Card -->
@@ -1024,6 +1131,45 @@
     </div>
 
     <script>
+        let selectedCustomDate = null;
+
+        function setAccentTheme(themeName) {
+            document.body.classList.remove('theme-emerald', 'theme-violet', 'theme-amber');
+            if (themeName === 'emerald') document.body.classList.add('theme-emerald');
+            else if (themeName === 'violet') document.body.classList.add('theme-violet');
+            else if (themeName === 'amber') document.body.classList.add('theme-amber');
+            localStorage.setItem('cc_accent_theme', themeName);
+        }
+
+        const savedTheme = localStorage.getItem('cc_accent_theme');
+        if (savedTheme) setAccentTheme(savedTheme);
+
+        function saveShiftNotes(val) {
+            localStorage.setItem('shift_leader_notes', val);
+        }
+
+        function loadShiftNotes() {
+            const notesEl = document.getElementById('shiftLeaderNotes');
+            if (notesEl) {
+                notesEl.value = localStorage.getItem('shift_leader_notes') || '';
+            }
+        }
+
+        function onCustomDateSelect(dateStr) {
+            if (dateStr) {
+                selectedCustomDate = new Date(dateStr);
+                fetchLiveGoogleSheet();
+            }
+        }
+
+        function getAvatarRingClass(emp) {
+            if (emp.status === 'OFF' || emp.status === 'Vacation') return 'ring-off';
+            if (emp.ameyoCategory === 'Ready') return 'ring-ready';
+            if (emp.ameyoCategory === 'Lunch') return 'ring-lunch';
+            if (emp.ameyoCategory === 'Break') return 'ring-break';
+            return 'ring-notready';
+        }
+
         let currentLayoutView = 'table';
         let isGroupByShift = false;
         let isTvKioskActive = false;
@@ -1507,6 +1653,7 @@
                 const tr = document.createElement('tr');
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
+                const ringClass = getAvatarRingClass(emp);
 
                 let ameyoBadge = `<span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span>`;
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation') {
@@ -1526,7 +1673,7 @@
                 if (emp.status !== 'OFF' && emp.status !== 'Vacation' && homeBody) {
                     const homeTr = document.createElement('tr');
                     homeTr.innerHTML = `
-                        <td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                        <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
                         <td><span class="badge badge-shift">${emp.status}</span></td>
                         <td><span style="color:var(--text-muted); font-size:0.8rem;">${shiftInfo.label}</span></td>
                         <td>${ameyoBadge}</td>
@@ -1552,7 +1699,7 @@
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                    <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span></td>
                     <td><span style="color:var(--text-muted); font-size:0.8rem;">${shiftInfo.label}</span></td>
                     <td>${ameyoBadge}</td>
@@ -1592,6 +1739,7 @@
             filtered.forEach(emp => {
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
+                const ringClass = getAvatarRingClass(emp);
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 let statusBadge = `<span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span>`;
@@ -1609,7 +1757,7 @@
                 card.className = 'emp-grid-card';
                 card.innerHTML = `
                     <div class="emp-grid-card-top">
-                        <span class="emp-avatar">${initials}</span>
+                        <span class="emp-avatar ${ringClass}">${initials}</span>
                         ${statusBadge}
                     </div>
                     <div class="emp-grid-card-name">${emp.name} ${swapTag}</div>
@@ -1633,6 +1781,7 @@
             filtered.forEach(emp => {
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
+                const ringClass = getAvatarRingClass(emp);
 
                 let fillWidth = '0%';
                 let fillMargin = '0%';
@@ -1644,7 +1793,7 @@
                 row.className = 'timeline-row';
                 row.innerHTML = `
                     <div style="display:flex; align-items:center; gap:0.5rem;">
-                        <span class="emp-avatar">${initials}</span>
+                        <span class="emp-avatar ${ringClass}">${initials}</span>
                         <strong>${emp.name}</strong>
                     </div>
                     <div class="timeline-bar-wrapper">
@@ -1676,19 +1825,20 @@
                 const shiftInfo = getShiftHours(emp.status);
                 const isOff = emp.status === 'OFF' || emp.status === 'Vacation';
                 const initials = getInitials(emp.name);
+                const ringClass = getAvatarRingClass(emp);
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 if (isOff) {
-                    offBody.innerHTML += `<tr><td>${offI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span></td></tr>`;
+                    offBody.innerHTML += `<tr><td>${offI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td><span class="badge badge-off"><span class="status-dot dot-off"></span> Day OFF</span></td></tr>`;
                 } else {
                     if (emp.ameyoCategory === 'Ready') {
-                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><span class="status-dot dot-ready"></span> Ready</span></td></tr>`;
+                        readyBody.innerHTML += `<tr><td>${rI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-ready"><span class="status-dot dot-ready"></span> Ready</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Lunch') {
-                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span></td></tr>`;
+                        lunchBody.innerHTML += `<tr><td>${lI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-lunch"><span class="status-dot dot-lunch"></span> Lunch</span></td></tr>`;
                     } else if (emp.ameyoCategory === 'Break') {
-                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
+                        breakBody.innerHTML += `<tr><td>${bI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td>${shiftInfo.label}</td><td><span class="badge badge-break"><span class="status-dot dot-break"></span> Break</span></td></tr>`;
                     } else {
-                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
+                        notreadyBody.innerHTML += `<tr><td>${nrI++}</td><td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td><td><span class="badge badge-shift">${emp.status}</span></td><td>${shiftInfo.label}</td><td><span class="badge badge-notready"><span class="status-dot dot-notready"></span> Offline</span></td></tr>`;
                     }
                 }
             });
@@ -1703,12 +1853,13 @@
                 const tr = document.createElement('tr');
                 const shiftInfo = getShiftHours(emp.status);
                 const initials = getInitials(emp.name);
+                const ringClass = getAvatarRingClass(emp);
                 let historyLog = emp.breaks.map(b => `<span class="badge badge-shift">${b.time}</span>`).join(' ') || '-';
                 const swapTag = emp.isManualSwapped ? `<span class="badge badge-swap"><i class="fa-solid fa-repeat"></i> Swapped</span>` : '';
 
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td><span class="emp-avatar">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
+                    <td><span class="emp-avatar ${ringClass}">${initials}</span><strong>${emp.name}</strong> ${swapTag}</td>
                     <td><span class="badge badge-shift">${emp.status}</span> (${shiftInfo.label})</td>
                     <td>${emp.ameyoDetail || 'Day OFF'}</td>
                     <td>${historyLog}</td>
@@ -1835,7 +1986,7 @@
             const eveningRows = [];
             let inEveningSection = false;
 
-            const now = new Date();
+            const now = selectedCustomDate || new Date();
             const dayNum = now.getDate();
             const monthNum = now.getMonth() + 1;
             
@@ -1919,6 +2070,7 @@
         }
 
         fetchLiveGoogleSheet();
+        loadShiftNotes();
         render();
     </script>
 </body>
